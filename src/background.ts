@@ -21,6 +21,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 
-// useStore.subscribe(() => {
-//   chrome.tabs.reload();
-// });
+useStore.subscribe(() => {
+  chrome.tabs.reload();
+});
