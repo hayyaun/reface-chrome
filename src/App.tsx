@@ -1,23 +1,19 @@
-import { useEffect, useState } from "react";
-import "./App.css";
 import reactLogo from "./assets/react.svg";
+import { useStore } from "./store";
 import viteLogo from "/vite.svg";
 
 export default function App() {
-  const [count, setCount] = useState(0);
+  const count = useStore((s) => s.count);
+  const inc = useStore((s) => s.inc);
+  const urls = useStore((s) => s.urls);
+  const updateURL = useStore((s) => s.updateURL);
 
   const onClick = () => {
-    setCount((count) => count + 1);
-    chrome.storage.local.set({ targetDomain: "wikipedia.org" });
+    inc();
+    updateURL("wikipedia.org", { fixes: [] });
   };
 
-  const [items, setItems] = useState<{ [key: string]: string }>({});
-
-  useEffect(() => {
-    chrome.storage.local.get(null, (items) => setItems(items));
-  }, []);
-
-  console.log(items);
+  console.log(urls);
 
   return (
     <>
@@ -39,13 +35,11 @@ export default function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <p>
-        {Object.keys(items).map((k, i) => (
-          <p key={i}>
-            {k}: {items[k]}
-          </p>
+      <div>
+        {Object.keys(urls).map((url, i) => (
+          <p key={i}>{url}</p>
         ))}
-      </p>
+      </div>
     </>
   );
 }
