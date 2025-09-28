@@ -3,8 +3,16 @@
   "description": "Better Browsing Community",
   "version": "1.0.1",
   "manifest_version": 3,
+  "icons": {
+    "512": "logo.png"
+  },
   "action": {
     "default_popup": "index.html",
     "default_icon": "logo.png"
-  }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["scripting", "tabs", "storage", "activeTab"],
+  "host_permissions": ["<all_urls>"]
 }
