@@ -2,13 +2,14 @@ import type { Fix } from "../types";
 
 export const wikipediaCool: Fix = {
   name: "Cool Wikipedia",
-  details: "Cool Theme and Features for Wikipedai",
+  details: "Cool Theme and Features for Wikipedia",
   keywords: ["wikipedia", "cool"],
   urls: ["wikipedia.org", "www.wikipedia.org"],
   func: () => {
-    document.querySelectorAll("div").forEach((v) => {
-      v.style.backgroundColor = "black";
-      v.style.color = "white";
+    document.body.style.backgroundColor = "black";
+    document.querySelectorAll("div").forEach((el) => {
+      el.style.backgroundColor = "black";
+      el.style.color = "white";
     });
   },
 };

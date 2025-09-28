@@ -1,29 +1,47 @@
+import { RiAddFill, RiDeleteBinFill } from "react-icons/ri";
 import { useStore } from "../store";
 import type { Fix } from "../types";
 
 interface Props {
-  activeTab: string;
-  key: string;
+  hostname: string;
+  fixKey: string;
   fix: Fix;
 }
 
-export default function FixItem({ activeTab, key, fix }: Props) {
+export default function FixItem({ hostname, fixKey, fix }: Props) {
   const urls = useStore((s) => s.urls);
   const updateURL = useStore((s) => s.updateURL); // FIXME
 
   const onApply = () => {
-    updateURL(activeTab, { enabled: [key] }); // FIXME
+    updateURL(hostname, { enabled: [fixKey] }); // FIXME
   };
 
+  const onRemove = () => {
+    updateURL(hostname, { enabled: [] }); // FIXME
+  };
+
+  const enabled = !urls[hostname] || !urls[hostname].enabled.includes(fixKey);
+
   return (
-    <div className="flex justify-between gap-2 p-2 hover:bg-white/5">
-      <span>{fix.name}</span>
-      {urls[activeTab].enabled.includes(key) ? (
-        <button onClick={onApply}>apply</button>
+    <div className="flex items-center justify-between gap-2 p-2 transition select-none hover:bg-white/2">
+      <div className="flex flex-col gap-1">
+        <span>{fix.name}</span>
+        <span className="text-2xs line-clamp-1 opacity-45">{fix.details}</span>
+      </div>
+      {enabled ? (
+        <div
+          className="rounded-sm bg-green-400/5 p-1 transition hover:bg-green-400/25"
+          onClick={onApply}
+        >
+          <RiAddFill className="size-4 cursor-pointer text-green-400" />
+        </div>
       ) : (
-        <button className="bg-red-400" onClick={() => {}}>
-          remove
-        </button>
+        <div
+          className="rounded-sm bg-red-400/5 p-1 transition hover:bg-red-400/25"
+          onClick={onRemove}
+        >
+          <RiDeleteBinFill className="size-4 cursor-pointer text-red-400" />
+        </div>
       )}
     </div>
   );

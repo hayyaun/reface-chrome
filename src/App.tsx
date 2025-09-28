@@ -7,7 +7,7 @@ import { useStore } from "./store";
 
 export default function App() {
   const urls = useStore((s) => s.urls);
-  const [activeTab, setActiveTab] = useState("betterer.dev");
+  const [hostname, setHostname] = useState("betterer.dev");
 
   console.log(urls);
 
@@ -17,39 +17,44 @@ export default function App() {
       const activeTab = tabs[0];
       if (!activeTab) return;
       const url = new URL(activeTab.url!);
-      setActiveTab(url.hostname);
+      setHostname(url.hostname);
     });
   }, []);
 
   const active = useMemo(
-    () => Object.keys(urls).find((url) => activeTab.includes(url)),
-    [activeTab, urls],
+    () => Object.keys(urls).find((url) => hostname === url),
+    [hostname, urls],
   );
 
   const relevantFixKeys = useMemo(
     () =>
       Object.keys(fixes).filter((k) =>
-        fixes[k].urls.find((url) => url === activeTab),
+        fixes[k].urls.find((url) => hostname === url),
       ),
-    [activeTab],
+    [hostname],
   );
 
   return (
     <>
-      <header className="flex items-center justify-between gap-2 bg-white/5 p-2">
-        <p>{activeTab}</p>
+      <header className="flex items-center justify-between gap-2 bg-white/5 p-2 text-xs">
+        <p>{hostname}</p>
         {!!active && <RiCheckboxCircleFill className="size-4 text-green-400" />}
       </header>
-      <main className="p-2">
+      <main className="">
         {relevantFixKeys.map((fixKey) => (
-          <FixItem activeTab={activeTab} key={fixKey} fix={fixes[fixKey]} />
+          <FixItem
+            key={fixKey}
+            hostname={hostname}
+            fixKey={fixKey}
+            fix={fixes[fixKey]}
+          />
         ))}
       </main>
-      <footer className="flex items-center gap-2 p-2 text-sm">
+      <footer className="flex items-center gap-2 p-2">
         <a href={strings.github} className="text-current">
           <RiGithubFill className="size-4" />
         </a>
-        <span className="opacity-15">{"Contribute on Github"}</span>
+        <span className="text-2xs opacity-25">{"Contribute on Github"}</span>
       </footer>
     </>
   );

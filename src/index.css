@@ -26,11 +26,10 @@
   }
 
   body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
+    @apply m-0 flex min-h-[100vh] min-w-80 place-items-center;
+
+    /* chrome extension */
+    font-size: 100% !important;
   }
 
   h1 {
@@ -58,6 +57,13 @@
 
 @layer components {
   #root {
-    @apply mx-auto my-0 flex w-full max-w-80 flex-col gap-2 min-lg:border min-lg:border-white/5;
+    @apply mx-auto my-0 flex w-full max-w-80 flex-col gap-2 text-xs min-lg:border min-lg:border-white/5;
+  }
+}
+
+@layer utilities {
+  .text-2xs {
+    font-size: 0.625rem; /* 10px */
+    line-height: 0.75rem; /* 12px */
   }
 }
