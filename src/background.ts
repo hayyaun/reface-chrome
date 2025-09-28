@@ -7,10 +7,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!urls) return;
   for (const url of Object.keys(urls)) {
     const hostname = new URL(tab.url).hostname;
-    console.log({ hostname, url });
+    console.debug({ hostname, url, urls });
     if (!url || !hostname.includes(url) || !urls[url]) continue;
     const fixKeys = urls[url].enabled;
-    console.log("fix for " + hostname, { fixKeys });
+    console.debug("fix for " + hostname, { fixKeys });
     for (const fixKey of fixKeys) {
       const fix = fixes[fixKey];
       chrome.scripting.executeScript({
@@ -22,5 +22,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 useStore.subscribe(() => {
+  console.debug("reloading");
   chrome.tabs.reload();
 });

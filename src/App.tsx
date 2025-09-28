@@ -9,8 +9,6 @@ export default function App() {
   const urls = useStore((s) => s.urls);
   const [hostname, setHostname] = useState("betterer.dev");
 
-  console.log(urls);
-
   useEffect(() => {
     if (import.meta.env.DEV) return;
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
