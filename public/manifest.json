@@ -11,7 +11,8 @@
     "default_icon": "logo.png"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "permissions": ["scripting", "tabs", "storage", "activeTab"],
   "host_permissions": ["<all_urls>"]

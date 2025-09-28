@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { RiCheckboxCircleFill } from "react-icons/ri";
 import { useStore } from "./store";
 
 export default function App() {
@@ -23,10 +24,17 @@ export default function App() {
     });
   }, []);
 
+  const extActive = useMemo(() => {
+    return !!Object.keys(urls).find((url) => activeTab.includes(url));
+  }, [activeTab, urls]);
+
   return (
     <>
-      <header className="bg-white/5 p-2 px-4">
+      <header className="flex justify-between gap-2 bg-white/5 p-2">
         <p>{activeTab}</p>
+        {extActive && (
+          <RiCheckboxCircleFill className="size-4 text-green-400" />
+        )}
       </header>
       <div className="">
         <button onClick={onClick}>update</button>
