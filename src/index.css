@@ -71,9 +71,8 @@
   }
 }
 
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+@layer components {
+  #root {
+    @apply max-w-80 w-full mx-auto my-0 p-8 flex flex-col gap-2;
+  }
 }

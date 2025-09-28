@@ -18,8 +18,6 @@ const chromeStorage = {
 };
 
 type Store = {
-  count: number;
-  inc: () => void;
   urls: { [url: string]: URLConfig };
   updateURL: (url: string, config: URLConfig) => void;
 };
@@ -27,8 +25,6 @@ type Store = {
 export const useStore = create(
   persist<Store>(
     (set) => ({
-      count: 0,
-      inc: () => set((state) => ({ count: state.count + 1 })),
       urls: {},
       updateURL: (url, config) => {
         set((state) => ({ urls: { ...state.urls, [url]: config } }));

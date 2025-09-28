@@ -1,40 +1,36 @@
-import reactLogo from "./assets/react.svg";
+import { useEffect, useState } from "react";
 import { useStore } from "./store";
-import viteLogo from "/vite.svg";
 
 export default function App() {
-  const count = useStore((s) => s.count);
-  const inc = useStore((s) => s.inc);
   const urls = useStore((s) => s.urls);
   const updateURL = useStore((s) => s.updateURL);
 
   const onClick = () => {
-    inc();
     updateURL("wikipedia.org", { fixes: [] });
   };
 
   console.log(urls);
 
+  const [activeTab, setActiveTab] = useState("Better");
+
+  useEffect(() => {
+    if (import.meta.env.DEV) return;
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const activeTab = tabs[0];
+      if (!activeTab) return;
+      const url = new URL(activeTab.url!);
+      setActiveTab(url.hostname);
+    });
+  }, []);
+
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <header className="bg-white/5 p-2 px-4">
+        <p>{activeTab}</p>
+      </header>
+      <div className="">
+        <button onClick={onClick}>update</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={onClick}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
       <div>
         {Object.keys(urls).map((url, i) => (
           <p key={i}>{url}</p>
