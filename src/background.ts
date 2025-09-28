@@ -9,7 +9,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const hostname = new URL(tab.url).hostname;
     if (!url || hostname.includes(url) || !urls[url]) continue;
     const fixKeys = urls[url].enabled;
-    console.log({ fixKeys });
+    console.debug("fix for " + hostname, { fixKeys });
     for (const fixKey of fixKeys) {
       const fix = fixes[fixKey];
       if (!fix.urls.includes(url)) continue;
@@ -21,6 +21,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 
-useStore.subscribe(() => {
-  chrome.tabs.reload();
-});
+// useStore.subscribe(() => {
+//   chrome.tabs.reload();
+// });
