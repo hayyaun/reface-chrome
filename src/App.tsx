@@ -54,7 +54,7 @@ export default function App() {
         <a href={strings.github} className="text-current">
           <RiGithubFill className="size-4" />
         </a>
-        <span className="text-2xs opacity-25">{"Contribute on Github"}</span>
+        <span className="text-tiny opacity-25">{"Contribute on Github"}</span>
       </footer>
     </>
   );

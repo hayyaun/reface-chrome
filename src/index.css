@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --text-tiny: 0.625rem;
+  --text-tiny--line-height: 1.5rem;
+  --text-tiny--letter-spacing: 0.125rem;
+  --text-tiny--font-weight: 500;
+}
+
 @layer base {
   :root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -58,12 +65,5 @@
 @layer components {
   #root {
     @apply mx-auto my-0 flex w-full max-w-80 flex-col gap-2 text-xs min-lg:border min-lg:border-white/5;
-  }
-}
-
-@layer utilities {
-  .text-2xs {
-    font-size: 0.625rem; /* 10px */
-    line-height: 0.75rem; /* 12px */
   }
 }
