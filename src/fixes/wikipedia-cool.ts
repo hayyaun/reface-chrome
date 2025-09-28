@@ -6,11 +6,23 @@ export const wikipediaCool: Fix = {
   keywords: ["wikipedia", "cool"],
   urls: ["wikipedia.org", "www.wikipedia.org"],
   func: () => {
-    document.querySelectorAll(".wmde-banner").forEach((el) => {
-      (el as HTMLDivElement).style.display = "none";
-    });
-    document.querySelectorAll("#siteNotice").forEach((el) => {
-      (el as HTMLDivElement).style.display = "none";
-    });
+    console.log("here!");
+    const config = { count: 0 };
+    const id = setInterval(() => {
+      config.count++;
+      if (config.count > 10) {
+        clearInterval(id);
+        return;
+      }
+      document.querySelectorAll(".wmde-banner").forEach((el) => {
+        (el as HTMLDivElement).style.display = "none";
+      });
+      document
+        .getElementById("siteNotice")
+        ?.style.setProperty("display", "none");
+      document
+        .getElementById("pt-sitesupport-2")
+        ?.style.setProperty("display", "none");
+    }, 1000);
   },
 };

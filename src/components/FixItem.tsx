@@ -30,17 +30,17 @@ export default function FixItem({ hostname, fixKey, fix }: Props) {
       </div>
       {enabled ? (
         <div
-          className="rounded-sm bg-green-400/5 p-1 transition hover:bg-green-400/25"
+          className="cursor-pointer rounded-sm bg-green-400/5 p-1 transition hover:bg-green-400/25"
           onClick={onApply}
         >
-          <RiAddFill className="size-4 cursor-pointer text-green-400" />
+          <RiAddFill className="size-4 text-green-400" />
         </div>
       ) : (
         <div
-          className="rounded-sm bg-red-400/5 p-1 transition hover:bg-red-400/25"
+          className="cursor-pointer rounded-sm bg-red-400/5 p-1 transition hover:bg-red-400/25"
           onClick={onRemove}
         >
-          <RiDeleteBinFill className="size-4 cursor-pointer text-red-400" />
+          <RiDeleteBinFill className="size-4 text-red-400" />
         </div>
       )}
     </div>
