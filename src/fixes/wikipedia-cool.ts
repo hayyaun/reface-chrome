@@ -6,10 +6,11 @@ export const wikipediaCool: Fix = {
   keywords: ["wikipedia", "cool"],
   urls: ["wikipedia.org", "www.wikipedia.org"],
   func: () => {
-    document.body.style.backgroundColor = "black";
-    document.querySelectorAll("div").forEach((el) => {
-      el.style.backgroundColor = "black";
-      el.style.color = "white";
+    document.querySelectorAll(".wmde-banner").forEach((el) => {
+      (el as HTMLDivElement).style.display = "none";
+    });
+    document.querySelectorAll("#siteNotice").forEach((el) => {
+      (el as HTMLDivElement).style.display = "none";
     });
   },
 };

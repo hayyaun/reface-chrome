@@ -22,14 +22,14 @@ export default function App() {
   }, []);
 
   const active = useMemo(
-    () => Object.keys(urls).find((url) => hostname === url),
+    () => Object.keys(urls).find((url) => hostname.includes(url)),
     [hostname, urls],
   );
 
   const relevantFixKeys = useMemo(
     () =>
       Object.keys(fixes).filter((k) =>
-        fixes[k].urls.find((url) => hostname === url),
+        fixes[k].urls.find((url) => hostname.includes(url)),
       ),
     [hostname],
   );
