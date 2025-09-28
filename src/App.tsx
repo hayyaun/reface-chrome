@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { RiCheckboxCircleFill } from "react-icons/ri";
+import { RiCheckboxCircleFill, RiGithubFill } from "react-icons/ri";
+import FixItem from "./components/FixItem";
+import strings from "./config/strings";
+import fixes from "./fixes";
 import { useStore } from "./store";
 
 export default function App() {
   const urls = useStore((s) => s.urls);
-  const updateURL = useStore((s) => s.updateURL);
-  const [activeTab, setActiveTab] = useState("Better");
+  const [activeTab, setActiveTab] = useState("betterer.dev");
 
   console.log(urls);
 
@@ -19,30 +21,36 @@ export default function App() {
     });
   }, []);
 
-  const onClick = () => {
-    updateURL(activeTab, { enabled: ["wikipedia-cool"] });
-  };
+  const active = useMemo(
+    () => Object.keys(urls).find((url) => activeTab.includes(url)),
+    [activeTab, urls],
+  );
 
-  const extActive = useMemo(() => {
-    return !!Object.keys(urls).find((url) => activeTab.includes(url));
-  }, [activeTab, urls]);
+  const relevantFixKeys = useMemo(
+    () =>
+      Object.keys(fixes).filter((k) =>
+        fixes[k].urls.find((url) => url === activeTab),
+      ),
+    [activeTab],
+  );
 
   return (
     <>
-      <header className="flex justify-between gap-2 bg-white/5 p-2">
+      <header className="flex items-center justify-between gap-2 bg-white/5 p-2">
         <p>{activeTab}</p>
-        {extActive && (
-          <RiCheckboxCircleFill className="size-4 text-green-400" />
-        )}
+        {!!active && <RiCheckboxCircleFill className="size-4 text-green-400" />}
       </header>
-      <div className="">
-        <button onClick={onClick}>update</button>
-      </div>
-      <div>
-        {Object.keys(urls).map((url, i) => (
-          <p key={i}>{url}</p>
+      <main className="p-2">
+        {relevantFixKeys.map((fixKey) => (
+          <FixItem activeTab={activeTab} key={fixKey} fix={fixes[fixKey]} />
         ))}
-      </div>
+      </main>
+      <footer className="flex items-center gap-2 p-2 text-sm">
+        <a href={strings.github} className="text-current">
+          <RiGithubFill className="size-4" />
+        </a>
+        <span className="opacity-15">{"Contribute on Github"}</span>
+      </footer>
     </>
   );
 }
