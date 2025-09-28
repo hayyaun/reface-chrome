@@ -1,9 +1,10 @@
 export interface URLConfig {
-  fixes: Fix[];
+  enabled: string[];
 }
 
 export interface Fix {
-  repo: string;
+  // repo: string;
+  func: () => void;
   name: string;
   details: string;
   keywords: string[];

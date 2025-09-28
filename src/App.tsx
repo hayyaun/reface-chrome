@@ -7,7 +7,7 @@ export default function App() {
   const updateURL = useStore((s) => s.updateURL);
 
   const onClick = () => {
-    updateURL("wikipedia.org", { fixes: [] });
+    updateURL("wikipedia.org", { enabled: ["wikipedia-cool"] });
   };
 
   console.log(urls);
