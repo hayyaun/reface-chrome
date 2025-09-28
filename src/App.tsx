@@ -5,14 +5,9 @@ import { useStore } from "./store";
 export default function App() {
   const urls = useStore((s) => s.urls);
   const updateURL = useStore((s) => s.updateURL);
-
-  const onClick = () => {
-    updateURL("wikipedia.org", { enabled: ["wikipedia-cool"] });
-  };
+  const [activeTab, setActiveTab] = useState("Better");
 
   console.log(urls);
-
-  const [activeTab, setActiveTab] = useState("Better");
 
   useEffect(() => {
     if (import.meta.env.DEV) return;
@@ -23,6 +18,10 @@ export default function App() {
       setActiveTab(url.hostname);
     });
   }, []);
+
+  const onClick = () => {
+    updateURL(activeTab, { enabled: ["wikipedia-cool"] });
+  };
 
   const extActive = useMemo(() => {
     return !!Object.keys(urls).find((url) => activeTab.includes(url));

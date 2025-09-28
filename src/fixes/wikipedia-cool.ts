@@ -11,6 +11,6 @@ export const wikipediaCool: Fix = {
   name: "Cool Wikipedia",
   details: "Cool Theme and Features for Wikipedai",
   keywords: ["wikipedia", "cool"],
-  urls: ["wikipedia.org"],
+  urls: ["wikipedia.org", "www.wikipedia.org"],
   func,
 };
