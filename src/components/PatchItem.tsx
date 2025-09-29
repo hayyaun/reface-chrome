@@ -1,4 +1,5 @@
 import { RiAddFill, RiDeleteBinFill } from "react-icons/ri";
+import { reloadActiveTab } from "../chrome/utils";
 import { useStore } from "../store";
 import type { Patch } from "../types";
 
@@ -17,19 +18,27 @@ export default function PatchItem({ hostname, patchKey, patch }: Props) {
     <div className="flex items-center justify-between gap-2 p-2 transition select-none hover:bg-white/2">
       <div className="flex flex-col gap-1">
         <span>{patch.name}</span>
-        <span className="text-tiny line-clamp-1 opacity-45">{patch.details}</span>
+        <span className="text-tiny line-clamp-1 opacity-45">
+          {patch.details}
+        </span>
       </div>
       {enabled ? (
         <div
           className="cursor-pointer rounded-sm bg-green-400/5 p-1 transition hover:bg-green-400/25"
-          onClick={() => addPatch(hostname, patchKey)}
+          onClick={() => {
+            addPatch(hostname, patchKey);
+            setTimeout(reloadActiveTab, 1000);
+          }}
         >
           <RiAddFill className="size-4 text-green-400" />
         </div>
       ) : (
         <div
           className="cursor-pointer rounded-sm bg-red-400/5 p-1 transition hover:bg-red-400/25"
-          onClick={() => removePatch(hostname, patchKey)}
+          onClick={() => {
+            removePatch(hostname, patchKey);
+            setTimeout(reloadActiveTab, 1000);
+          }}
         >
           <RiDeleteBinFill className="size-4 text-red-400" />
         </div>

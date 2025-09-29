@@ -30,40 +30,42 @@
   }
 
   body {
-    @apply m-0 flex min-h-[100vh] min-w-80 place-items-center;
+    @apply relative m-0 flex min-h-[100vh] min-w-80 flex-col place-items-center overflow-hidden;
 
     /* chrome extension */
     font-size: 100% !important;
   }
 
   h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-3xl;
+  }
+  h3 {
+    @apply text-2xl;
+  }
+  h4 {
+    @apply text-xl;
+  }
+  h5 {
+    @apply text-lg;
   }
 
   button {
     @apply cursor-pointer rounded-lg border-none bg-zinc-900 px-4 py-2 font-medium hover:bg-purple-700;
   }
 
-  @media (prefers-color-scheme: light) {
-    :root {
-      color: #213547;
-      background-color: #ffffff;
-    }
-    a:hover {
-      color: #747bff;
-    }
-    button {
-      background-color: #f9f9f9;
-    }
+  main {
+    @apply flex-1;
   }
 }
 
 @layer components {
   #root-popup {
-    @apply mx-auto my-0 flex w-full max-w-80 flex-col gap-2 text-xs min-lg:border min-lg:border-white/5;
+    @apply relative mx-auto flex min-h-80 w-full max-w-80 flex-col text-xs min-lg:border min-lg:border-white/5;
   }
   #root-options {
-    @apply mx-auto my-0 flex w-full max-w-80 flex-col gap-2 text-xs min-lg:border min-lg:border-white/5;
+    @apply relative mx-auto my-auto flex h-160 max-h-[100vh] w-full max-w-160 flex-col text-xs min-lg:border min-lg:border-white/5;
   }
 }
