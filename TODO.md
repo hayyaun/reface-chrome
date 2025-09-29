@@ -1,6 +1,5 @@
 ## TODO
 
-- Rename project
 - Logo for each patch package
 - Create screenshots for store
 - Write Description
@@ -9,4 +8,5 @@
 
 ## DONE
 
+- Rename project
 - Create logos for extension
