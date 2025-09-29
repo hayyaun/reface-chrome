@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { RiCheckboxCircleFill, RiGithubFill } from "react-icons/ri";
 import PatchItem from "./components/PatchItem";
 import strings from "./config/strings";
-import patches from "./patches";
+import patches from "./config/patches";
 import { useStore } from "./store";
 
 export default function App() {

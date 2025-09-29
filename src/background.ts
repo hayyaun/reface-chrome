@@ -1,4 +1,3 @@
-import patches from "./patches";
 import { useStore, type Store } from "./store";
 
 let state: Store = useStore.getInitialState();
@@ -29,10 +28,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const patchKeys = urls[url].enabled;
     console.debug("Patch for " + hostname, patchKeys);
     for (const patchKey of patchKeys) {
-      const patch = patches[patchKey];
       chrome.scripting.executeScript({
         target: { tabId },
-        func: patch.func,
+        files: [`patches/${patchKey}.js`],
       });
     }
   }

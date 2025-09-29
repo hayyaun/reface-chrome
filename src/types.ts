@@ -11,7 +11,7 @@ export interface Patch {
    *
    * ⚠️ Must be self-contained since injected.
    */
-  func: () => void;
+  // func: () => void;
 
   /** A short, descriptive name for the patch */
   name: string;
