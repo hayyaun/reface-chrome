@@ -69,3 +69,10 @@
     @apply relative mx-auto my-auto flex h-160 max-h-[100vh] w-full max-w-160 flex-col text-xs min-lg:border min-lg:border-white/5;
   }
 }
+
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    height: 0; /* hide horizontal scrollbar */
+    width: 0;
+  }
+}

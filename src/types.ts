@@ -6,13 +6,6 @@ export interface URLConfig {
  * Represents a patch or patch that can be applied to a web page or system.
  */
 export interface Patch {
-  /**
-   * The main function that applies the patch.
-   *
-   * ⚠️ Must be self-contained since injected.
-   */
-  // func: () => void;
-
   /** A short, descriptive name for the patch */
   name: string;
 
