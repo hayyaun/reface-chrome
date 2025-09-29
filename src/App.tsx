@@ -38,7 +38,7 @@ export default function App() {
         <p>{hostname}</p>
         {!!active && <RiCheckboxCircleFill className="size-4 text-green-400" />}
       </header>
-      <main className="">
+      <main className="flex flex-col gap-1">
         {relevantPatchKeys.map((patchKey) => (
           <PatchItem
             key={patchKey}
