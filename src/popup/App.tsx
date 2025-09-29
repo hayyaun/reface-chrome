@@ -45,7 +45,11 @@ export default function App() {
     <>
       <header className="flex items-center justify-between gap-2 bg-white/5 p-2 text-xs">
         <p>{hostname}</p>
-        {!!active && <RiCheckboxCircleFill className="size-4 text-green-400" />}
+        {!!active && (
+          <div className="p-1">
+            <RiCheckboxCircleFill className="size-4 text-green-400" />
+          </div>
+        )}
       </header>
       <main className="flex flex-col gap-1">
         {relevantPatchKeys.map((patchKey) => (
@@ -64,10 +68,9 @@ export default function App() {
           </a>
           <span className="text-tiny opacity-25">{"Contribute on Github"}</span>
         </div>
-        <RiSettingsFill
-          className="size-4 cursor-pointer"
-          onClick={openOptions}
-        />
+        <div className="cursor-pointer p-1" onClick={openOptions}>
+          <RiSettingsFill className="size-4 cursor-pointer" />
+        </div>
       </footer>
     </>
   );
