@@ -27,7 +27,7 @@ export default function PatchList({ hostname }: Props) {
   );
 
   return (
-    <section className="flex flex-1 flex-col overflow-y-scroll">
+    <section className="flex flex-1 flex-col overflow-y-auto">
       <div className="hide-scrollbar flex gap-2 overflow-x-scroll p-2">
         {Object.keys(categories).map((k, i) => (
           <div

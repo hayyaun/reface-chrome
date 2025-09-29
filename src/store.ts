@@ -9,6 +9,9 @@ export type Store = {
   urls: { [url: string]: URLConfig };
   addPatch: (hostname: string, patchKey: string) => void;
   removePatch: (hostname: string, patchKey: string) => void;
+
+  ads: boolean;
+  setAds: (v: boolean) => void;
 };
 
 export const useStore = create(
@@ -31,6 +34,9 @@ export const useStore = create(
           if (index !== -1) state.urls[hostname].enabled.splice(index, 1);
         });
       },
+
+      ads: false,
+      setAds: (ads) => set({ ads }),
     })),
     {
       name: "main",

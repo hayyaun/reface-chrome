@@ -1,0 +1,41 @@
+import clsx from "clsx";
+import { RiCheckboxBlankLine, RiCheckboxFill } from "react-icons/ri";
+
+interface Props {
+  enabled: boolean;
+  onChange: (v: boolean) => void;
+  title: string;
+  details: string;
+}
+
+export default function CheckboxItem({
+  enabled,
+  onChange,
+  title,
+  details,
+}: Props) {
+  return (
+    <div className="flex items-center justify-between gap-2 p-2 transition select-none hover:bg-white/2">
+      <div className="flex flex-col gap-1">
+        <span>{title}</span>
+        <span className="text-tiny line-clamp-1 opacity-45">{details}</span>
+      </div>
+
+      <div
+        className={clsx(
+          "cursor-pointer rounded-sm p-1 transition",
+          enabled
+            ? "bg-green-400/5 hover:bg-green-400/25"
+            : "bg-white/5 hover:bg-white/25",
+        )}
+        onClick={() => onChange(!enabled)}
+      >
+        {enabled ? (
+          <RiCheckboxFill className="size-4 text-green-400" />
+        ) : (
+          <RiCheckboxBlankLine className="size-4 text-white" />
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { RiAddFill, RiDeleteBinFill } from "react-icons/ri";
 import { reloadActiveTab } from "../chrome/utils";
 import { useStore } from "../store";
@@ -22,27 +23,25 @@ export default function PatchItem({ hostname, patchKey, patch }: Props) {
           {patch.details}
         </span>
       </div>
-      {enabled ? (
-        <div
-          className="cursor-pointer rounded-sm bg-green-400/5 p-1 transition hover:bg-green-400/25"
-          onClick={() => {
-            addPatch(hostname, patchKey);
-            setTimeout(reloadActiveTab, 1000);
-          }}
-        >
+      <div
+        className={clsx(
+          "cursor-pointer rounded-sm p-1 transition",
+          enabled
+            ? "bg-green-400/5 hover:bg-green-400/25"
+            : "bg-red-400/5 hover:bg-red-400/25",
+        )}
+        onClick={() => {
+          if (!enabled) addPatch(hostname, patchKey);
+          else removePatch(hostname, patchKey);
+          setTimeout(reloadActiveTab, 1000);
+        }}
+      >
+        {enabled ? (
           <RiAddFill className="size-4 text-green-400" />
-        </div>
-      ) : (
-        <div
-          className="cursor-pointer rounded-sm bg-red-400/5 p-1 transition hover:bg-red-400/25"
-          onClick={() => {
-            removePatch(hostname, patchKey);
-            setTimeout(reloadActiveTab, 1000);
-          }}
-        >
+        ) : (
           <RiDeleteBinFill className="size-4 text-red-400" />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
