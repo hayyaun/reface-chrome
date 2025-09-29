@@ -1,0 +1,1 @@
+- Logo for patch packages
