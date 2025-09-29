@@ -60,7 +60,10 @@
 }
 
 @layer components {
-  #root {
+  #root-popup {
+    @apply mx-auto my-0 flex w-full max-w-80 flex-col gap-2 text-xs min-lg:border min-lg:border-white/5;
+  }
+  #root-options {
     @apply mx-auto my-0 flex w-full max-w-80 flex-col gap-2 text-xs min-lg:border min-lg:border-white/5;
   }
 }

@@ -25,7 +25,8 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       input: {
-        main: "index.html",
+        popup: "popup.html",
+        options: "options.html",
         background: "src/background.ts",
         ...patchFiles,
       },

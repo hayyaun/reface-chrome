@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { RiCheckboxCircleFill, RiGithubFill } from "react-icons/ri";
-import PatchItem from "./components/PatchItem";
-import strings from "./config/strings";
-import patches from "./config/patches";
-import { useStore } from "./store";
+import {
+  RiCheckboxCircleFill,
+  RiGithubFill,
+  RiSettingsFill,
+} from "react-icons/ri";
+import PatchItem from "../components/PatchItem";
+import patches from "../config/patches";
+import strings from "../config/strings";
+import { useStore } from "../store";
 
 export default function App() {
   const urls = useStore((s) => s.urls);
@@ -32,6 +36,11 @@ export default function App() {
     [hostname],
   );
 
+  const openOptions = () => {
+    if (import.meta.env.DEV) return;
+    chrome.runtime.openOptionsPage();
+  };
+
   return (
     <>
       <header className="flex items-center justify-between gap-2 bg-white/5 p-2 text-xs">
@@ -48,11 +57,17 @@ export default function App() {
           />
         ))}
       </main>
-      <footer className="flex items-center gap-2 p-2">
-        <a href={strings.github} target="_blank" className="text-current">
-          <RiGithubFill className="size-4" />
-        </a>
-        <span className="text-tiny opacity-25">{"Contribute on Github"}</span>
+      <footer className="flex items-center justify-between gap-2 p-2">
+        <div className="flex items-center gap-2">
+          <a href={strings.github} target="_blank" className="text-current">
+            <RiGithubFill className="size-4" />
+          </a>
+          <span className="text-tiny opacity-25">{"Contribute on Github"}</span>
+        </div>
+        <RiSettingsFill
+          className="size-4 cursor-pointer"
+          onClick={openOptions}
+        />
       </footer>
     </>
   );

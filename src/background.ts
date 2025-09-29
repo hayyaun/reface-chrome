@@ -1,5 +1,7 @@
 import { useStore, type Store } from "./store";
 
+// TODO add cache map to skip injected tabs already
+
 let state: Store = useStore.getInitialState();
 
 // Load storage on startup
