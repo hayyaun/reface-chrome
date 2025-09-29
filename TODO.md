@@ -1,1 +1,6 @@
 - Logo for patch packages
+- Rename project
+- Create logos for extension
+- Create screenshots for store
+- Write Description
+- Update README for contributers
