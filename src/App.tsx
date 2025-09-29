@@ -49,7 +49,7 @@ export default function App() {
         ))}
       </main>
       <footer className="flex items-center gap-2 p-2">
-        <a href={strings.github} className="text-current">
+        <a href={strings.github} target="_blank" className="text-current">
           <RiGithubFill className="size-4" />
         </a>
         <span className="text-tiny opacity-25">{"Contribute on Github"}</span>

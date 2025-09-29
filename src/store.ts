@@ -1,26 +1,41 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { chromeStorage } from "./chrome";
+import { immer } from "zustand/middleware/immer";
+import { chromeStorage } from "./chrome/storage";
+import { reloadActiveTab } from "./chrome/utils";
 import type { URLConfig } from "./types";
 
-type Store = {
+export type Store = {
   urls: { [url: string]: URLConfig };
-  updateURL: (url: string, config: URLConfig) => void;
+  addURLFix: (hostname: string, fixKey: string) => void;
+  removeURLFix: (hostname: string, fixKey: string) => void;
 };
 
 export const useStore = create(
-  persist<Store>(
-    (set) => ({
+  persist(
+    immer<Store>((set) => ({
       urls: {},
-      updateURL: (url, config) => {
-        set((state) => ({ urls: { ...state.urls, [url]: config } }));
+      addURLFix: (hostname, fixKey) => {
+        set((state) => {
+          const url = state.urls[hostname];
+          if (!url) state.urls[hostname] = { enabled: [] };
+          if (state.urls[hostname].enabled.includes(fixKey)) return;
+          state.urls[hostname].enabled.push(fixKey);
+        });
+        setTimeout(reloadActiveTab, 1000);
       },
-      // TODO addURLFix
-      // TODO removeURLFix
-      // TODO ...
-    }),
+      removeURLFix: (hostname, fixKey) => {
+        set((state) => {
+          const url = state.urls[hostname];
+          if (!url) state.urls[hostname] = { enabled: [] };
+          const index = state.urls[hostname].enabled.indexOf(fixKey);
+          if (index !== -1) state.urls[hostname].enabled.splice(index, 1);
+        });
+        setTimeout(reloadActiveTab, 1000);
+      },
+    })),
     {
-      name: "better-ext",
+      name: "main",
       storage: createJSONStorage(() =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         import.meta.env.DEV ? (localStorage as any) : chromeStorage,
