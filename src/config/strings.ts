@@ -1,3 +1,3 @@
 export default {
-  github: "https://github.com/hayyaun/better-ext",
+  github: "https://github.com/hayyaun/reface-chrome",
 };

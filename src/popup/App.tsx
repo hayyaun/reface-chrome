@@ -6,7 +6,7 @@ import { useStore } from "../store";
 
 export default function App() {
   const urls = useStore((s) => s.urls);
-  const [hostname, setHostname] = useState("betterer.dev");
+  const [hostname, setHostname] = useState("reface");
 
   useEffect(() => {
     if (import.meta.env.DEV) return;
