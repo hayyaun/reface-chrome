@@ -1,6 +1,6 @@
-import type { Fix } from "../types";
+import type { Patch } from "../types";
 
-export const wikipediaCool: Fix = {
+export const wikipediaCool: Patch = {
   name: "Cool Wikipedia",
   details: "Cool Theme and Features for Wikipedia",
   keywords: ["wikipedia", "cool"],

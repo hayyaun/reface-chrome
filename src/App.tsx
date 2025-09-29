@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { RiCheckboxCircleFill, RiGithubFill } from "react-icons/ri";
-import FixItem from "./components/FixItem";
+import PatchItem from "./components/PatchItem";
 import strings from "./config/strings";
-import fixes from "./fixes";
+import patches from "./patches";
 import { useStore } from "./store";
 
 export default function App() {
@@ -24,10 +24,10 @@ export default function App() {
     [hostname, urls],
   );
 
-  const relevantFixKeys = useMemo(
+  const relevantPatchKeys = useMemo(
     () =>
-      Object.keys(fixes).filter((k) =>
-        fixes[k].urls.find((url) => hostname.includes(url)),
+      Object.keys(patches).filter((k) =>
+        patches[k].urls.find((url) => hostname.includes(url)),
       ),
     [hostname],
   );
@@ -39,12 +39,12 @@ export default function App() {
         {!!active && <RiCheckboxCircleFill className="size-4 text-green-400" />}
       </header>
       <main className="">
-        {relevantFixKeys.map((fixKey) => (
-          <FixItem
-            key={fixKey}
+        {relevantPatchKeys.map((patchKey) => (
+          <PatchItem
+            key={patchKey}
             hostname={hostname}
-            fixKey={fixKey}
-            fix={fixes[fixKey]}
+            patchKey={patchKey}
+            patch={patches[patchKey]}
           />
         ))}
       </main>

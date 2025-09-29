@@ -1,4 +1,4 @@
-import fixes from "./fixes";
+import patches from "./patches";
 import { useStore, type Store } from "./store";
 
 let state: Store = useStore.getInitialState();
@@ -26,13 +26,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const hostname = new URL(tab.url).hostname;
     console.debug({ hostname, url, urls });
     if (!url || !hostname.includes(url) || !urls[url]) continue;
-    const fixKeys = urls[url].enabled;
-    console.debug("fix for " + hostname, fixKeys);
-    for (const fixKey of fixKeys) {
-      const fix = fixes[fixKey];
+    const patchKeys = urls[url].enabled;
+    console.debug("Patch for " + hostname, patchKeys);
+    for (const patchKey of patchKeys) {
+      const patch = patches[patchKey];
       chrome.scripting.executeScript({
         target: { tabId },
-        func: fix.func,
+        func: patch.func,
       });
     }
   }

@@ -7,28 +7,28 @@ import type { URLConfig } from "./types";
 
 export type Store = {
   urls: { [url: string]: URLConfig };
-  addURLFix: (hostname: string, fixKey: string) => void;
-  removeURLFix: (hostname: string, fixKey: string) => void;
+  addPatch: (hostname: string, patchKey: string) => void;
+  removePatch: (hostname: string, patchKey: string) => void;
 };
 
 export const useStore = create(
   persist(
     immer<Store>((set) => ({
       urls: {},
-      addURLFix: (hostname, fixKey) => {
+      addPatch: (hostname, patchKey) => {
         set((state) => {
           const url = state.urls[hostname];
           if (!url) state.urls[hostname] = { enabled: [] };
-          if (state.urls[hostname].enabled.includes(fixKey)) return;
-          state.urls[hostname].enabled.push(fixKey);
+          if (state.urls[hostname].enabled.includes(patchKey)) return;
+          state.urls[hostname].enabled.push(patchKey);
         });
         setTimeout(reloadActiveTab, 1000);
       },
-      removeURLFix: (hostname, fixKey) => {
+      removePatch: (hostname, patchKey) => {
         set((state) => {
           const url = state.urls[hostname];
           if (!url) state.urls[hostname] = { enabled: [] };
-          const index = state.urls[hostname].enabled.indexOf(fixKey);
+          const index = state.urls[hostname].enabled.indexOf(patchKey);
           if (index !== -1) state.urls[hostname].enabled.splice(index, 1);
         });
         setTimeout(reloadActiveTab, 1000);
