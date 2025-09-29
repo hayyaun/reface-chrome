@@ -6,7 +6,7 @@ export const categories: { [key: string]: string } = {
   theme: "theme",
   fix: "fix",
   feature: "feature",
-  general: "general",
+  mix: "mix",
 };
 
 const patches: { [key: string]: Patch } = {

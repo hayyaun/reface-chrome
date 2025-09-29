@@ -23,10 +23,8 @@ export default function CheckboxItem({
 
       <div
         className={clsx(
-          "cursor-pointer rounded-sm p-1 transition",
-          enabled
-            ? "bg-green-400/5 hover:bg-green-400/25"
-            : "bg-white/5 hover:bg-white/25",
+          "cursor-pointer rounded-sm bg-white/5 p-1 transition",
+          enabled ? "hover:bg-green-400/25" : "hover:bg-white/25",
         )}
         onClick={() => onChange(!enabled)}
       >

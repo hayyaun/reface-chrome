@@ -1,7 +1,7 @@
-import clsx from "clsx";
 import { useMemo, useState } from "react";
 import PatchItem from "../components/PatchItem";
 import patches, { categories } from "../config/patches";
+import Chips from "./Chips";
 
 interface Props {
   hostname: string;
@@ -30,19 +30,12 @@ export default function PatchList({ hostname }: Props) {
     <section className="flex flex-1 flex-col overflow-y-auto">
       <div className="hide-scrollbar flex gap-2 overflow-x-scroll p-2">
         {Object.keys(categories).map((k, i) => (
-          <div
+          <Chips
             key={i}
-            className={clsx(
-              "cursor-pointer rounded-full border border-white/15 px-2 py-0.5 transition select-none hover:bg-white/5",
-              {
-                "border-white bg-white/25 hover:bg-white/25":
-                  selected === categories[k],
-              },
-            )}
+            title={categories[k]}
+            active={selected === categories[k]}
             onClick={() => setSelected(k)}
-          >
-            {categories[k]}
-          </div>
+          />
         ))}
       </div>
       {relevantPatchKeys.map((patchKey) => (
