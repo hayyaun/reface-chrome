@@ -2,14 +2,16 @@ import { useStore, type Store } from "./store";
 
 let state: Store = useStore.getInitialState();
 
+// Badge
+
 function resetBadgeState() {
   chrome.action.setBadgeBackgroundColor({ color: "#000000" });
   chrome.action.setBadgeTextColor({ color: "#ffffff" });
 }
 
 function setBadgeStateActive() {
-  chrome.action.setBadgeBackgroundColor({ color: "#5eff99" });
-  chrome.action.setBadgeTextColor({ color: "#000000" });
+  chrome.action.setBadgeBackgroundColor({ color: "#000000" });
+  chrome.action.setBadgeTextColor({ color: "#5eff99" });
 }
 
 function updateBadge(count: number, tabId?: number) {
