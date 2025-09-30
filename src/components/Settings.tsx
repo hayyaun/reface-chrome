@@ -21,7 +21,7 @@ export default function Settings() {
       />
       <CheckboxItem
         title="Dark-mode"
-        details="Enables best dark theme from available themes for available websites"
+        details="Enables best dark theme from available website themes"
         enabled={false}
         onChange={() => {}}
       />

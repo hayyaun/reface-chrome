@@ -10,8 +10,12 @@ export type Store = {
   addPatch: (hostname: string, patchKey: string) => void;
   removePatch: (hostname: string, patchKey: string) => void;
   // options
+  recommend: boolean;
+  setRecommend: (v: boolean) => void;
   ads: boolean;
   setAds: (v: boolean) => void;
+  dark: boolean;
+  setDark: (v: boolean) => void;
 };
 
 export const useStore = create(
@@ -36,8 +40,12 @@ export const useStore = create(
         });
       },
       // options
+      recommend: false,
+      setRecommend: (recommend) => set({ recommend }),
       ads: false,
       setAds: (ads) => set({ ads }),
+      dark: false,
+      setDark: (dark) => set({ dark }),
     })),
     {
       name: "main",
