@@ -23,13 +23,6 @@ export default function App() {
     [hostname, urls],
   );
 
-  useEffect(() => {
-    if (import.meta.env.DEV || !active) return;
-    const count = urls[active].enabled.length;
-    if (!count) return;
-    chrome.runtime.sendMessage({ type: "updateBadge", count });
-  }, [active, urls]);
-
   return (
     <>
       <header className="flex items-center justify-between gap-2 bg-white/5 p-2 text-xs">
