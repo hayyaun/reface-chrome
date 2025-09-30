@@ -18,7 +18,7 @@ export default function PatchItem({ hostname, patchKey, patch }: Props) {
   const enabled = urls[hostname] && urls[hostname].enabled.includes(patchKey);
   const Icon = icons[patch.keywords[0] ?? categories.all];
   return (
-    <div className="flex items-center gap-3 p-2 transition select-none hover:bg-white/2">
+    <div className="flex items-center gap-3 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       {Icon && (
         <div className="rounded-lg bg-white/10 p-1.75">
           {<Icon className="size-5" />}
@@ -27,8 +27,8 @@ export default function PatchItem({ hostname, patchKey, patch }: Props) {
       <div className="flex flex-col gap-1">
         <span>{patch.name}</span>
         <span
-          title={patch.details.length > 80 ? patch.details : undefined}
-          className="text-tiny line-clamp-2 opacity-45"
+          title={patch.details.length > 40 ? patch.details : undefined}
+          className="text-tiny line-clamp-1 opacity-45"
         >
           {patch.details}
         </span>
