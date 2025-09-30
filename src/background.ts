@@ -37,14 +37,12 @@ function updateBadgeForTab(tab: chrome.tabs.Tab) {
 
 // Load storage on startup
 chrome.storage.local.get("main", (data) => {
-  console.debug({ data });
   if (!data.main) return;
   state = JSON.parse(data.main).state;
 });
 
 // Listen for storage changes from popup or elsewhere
 chrome.storage.onChanged.addListener((changes, area) => {
-  console.debug({ changes });
   if (area === "local" && changes.main) {
     state = JSON.parse(changes.main.newValue).state;
     // update badge for active tab
@@ -65,9 +63,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status !== "complete" || !tab.url) return;
   const urls = state.urls;
   if (!urls) return;
+  const hostname = new URL(tab.url).hostname;
   for (const url of Object.keys(urls)) {
-    const hostname = new URL(tab.url).hostname;
-    console.debug({ hostname, url, urls });
     if (!url || hostname !== url || !urls[url]) continue;
     const patchKeys = urls[url].enabled;
     console.debug("Patch for " + hostname, patchKeys);
@@ -85,7 +82,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 chrome.tabs.onActivated.addListener((activeInfo) => {
   // activeInfo.tabId and activeInfo.windowId
   chrome.tabs.get(activeInfo.tabId, (tab) => {
-    console.log("Switched to tab:", tab.url);
     updateBadgeForTab(tab);
   });
 });
