@@ -25,6 +25,17 @@ function updateBadge(count: number) {
   chrome.action.setBadgeText({ text: count.toString() });
 }
 
+function updateBadgeForActiveTab(tab: chrome.tabs.Tab) {
+  if (!tab.url || !state.showBadge || !tab.active) return;
+  const hostname = new URL(tab.url).hostname;
+  const patchKeys = state.urls[hostname]?.enabled ?? [];
+  // update badge
+  if (!patchKeys.length) return;
+  chrome.windows.get(tab.windowId, (win) => {
+    if (win.focused) updateBadge(patchKeys.length);
+  });
+}
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status !== "complete" || !tab.url) return;
   const urls = state.urls;
@@ -32,15 +43,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   for (const url of Object.keys(urls)) {
     const hostname = new URL(tab.url).hostname;
     console.debug({ hostname, url, urls });
-    if (!url || !hostname.includes(url) || !urls[url]) continue;
+    if (!url || hostname !== url || !urls[url]) continue;
     const patchKeys = urls[url].enabled;
     console.debug("Patch for " + hostname, patchKeys);
-    // update badge
-    if (tab.active && !!patchKeys.length) {
-      chrome.windows.get(tab.windowId, (win) => {
-        if (win.focused) updateBadge(patchKeys.length);
-      });
-    }
+    updateBadgeForActiveTab(tab);
     // apply patches
     for (const patchKey of patchKeys) {
       chrome.scripting.executeScript({
@@ -51,7 +57,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 
-// events
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  // activeInfo.tabId and activeInfo.windowId
+  chrome.tabs.get(activeInfo.tabId, (tab) => {
+    console.log("Switched to tab:", tab.url);
+    updateBadgeForActiveTab(tab);
+  });
+});
+
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.type === "updateBadge") {
     updateBadge(msg.count);

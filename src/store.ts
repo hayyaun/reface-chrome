@@ -10,6 +10,8 @@ export type Store = {
   addPatch: (hostname: string, patchKey: string) => void;
   removePatch: (hostname: string, patchKey: string) => void;
   // options
+  showBadge: boolean;
+  setShowBadge: (v: boolean) => void;
   recommend: boolean;
   setRecommend: (v: boolean) => void;
   ads: boolean;
@@ -40,6 +42,8 @@ export const useStore = create(
         });
       },
       // options
+      showBadge: true,
+      setShowBadge: (showBadge) => set({ showBadge }),
       recommend: false,
       setRecommend: (recommend) => set({ recommend }),
       ads: false,
