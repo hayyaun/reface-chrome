@@ -1,8 +1,37 @@
 import { useStore, type Store } from "./store";
 
-// TODO add cache map to skip injected tabs already
-
 let state: Store = useStore.getInitialState();
+
+function resetBadgeState() {
+  chrome.action.setBadgeBackgroundColor({ color: "#000000" });
+  chrome.action.setBadgeTextColor({ color: "#ffffff" });
+}
+
+function setBadgeStateActive() {
+  chrome.action.setBadgeBackgroundColor({ color: "#5eff99" });
+  chrome.action.setBadgeTextColor({ color: "#000000" });
+}
+
+function updateBadge(count: number, tabId?: number) {
+  resetBadgeState();
+  chrome.action.setBadgeText({ text: count.toString(), tabId });
+}
+
+function clearBadge(tabId?: number) {
+  chrome.action.setBadgeText({ text: "", tabId });
+}
+
+function updateBadgeForTab(tab: chrome.tabs.Tab) {
+  if (!state.showBadge) return clearBadge(tab.id);
+  if (!tab.url) return;
+  const hostname = new URL(tab.url).hostname;
+  const patchKeys = state.urls[hostname]?.enabled ?? [];
+  // update badge
+  if (!patchKeys.length) return;
+  updateBadge(patchKeys.length, tab.id);
+}
+
+// Storage
 
 // Load storage on startup
 chrome.storage.local.get("main", (data) => {
@@ -16,27 +45,21 @@ chrome.storage.onChanged.addListener((changes, area) => {
   console.debug({ changes });
   if (area === "local" && changes.main) {
     state = JSON.parse(changes.main.newValue).state;
+    // update badge for active tab
+    if (!state.showBadge) return clearBadge();
+    else {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (!tabs.length || !tabs[0]) return;
+        updateBadgeForTab(tabs[0]);
+      });
+    }
   }
 });
 
-function updateBadge(count: number) {
-  chrome.action.setBadgeBackgroundColor({ color: "#000000" });
-  chrome.action.setBadgeTextColor({ color: "#ffffff" });
-  chrome.action.setBadgeText({ text: count.toString() });
-}
-
-function updateBadgeForActiveTab(tab: chrome.tabs.Tab) {
-  if (!tab.url || !state.showBadge || !tab.active) return;
-  const hostname = new URL(tab.url).hostname;
-  const patchKeys = state.urls[hostname]?.enabled ?? [];
-  // update badge
-  if (!patchKeys.length) return;
-  chrome.windows.get(tab.windowId, (win) => {
-    if (win.focused) updateBadge(patchKeys.length);
-  });
-}
+// Tabs
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  updateBadgeForTab(tab);
   if (changeInfo.status !== "complete" || !tab.url) return;
   const urls = state.urls;
   if (!urls) return;
@@ -46,7 +69,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (!url || hostname !== url || !urls[url]) continue;
     const patchKeys = urls[url].enabled;
     console.debug("Patch for " + hostname, patchKeys);
-    updateBadgeForActiveTab(tab);
     // apply patches
     for (const patchKey of patchKeys) {
       chrome.scripting.executeScript({
@@ -55,15 +77,18 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       });
     }
   }
+  setBadgeStateActive();
 });
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
   // activeInfo.tabId and activeInfo.windowId
   chrome.tabs.get(activeInfo.tabId, (tab) => {
     console.log("Switched to tab:", tab.url);
-    updateBadgeForActiveTab(tab);
+    updateBadgeForTab(tab);
   });
 });
+
+// Runtime
 
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.type === "updateBadge") {
