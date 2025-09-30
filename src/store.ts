@@ -9,7 +9,7 @@ export type Store = {
   urls: { [url: string]: URLConfig };
   addPatch: (hostname: string, patchKey: string) => void;
   removePatch: (hostname: string, patchKey: string) => void;
-
+  // options
   ads: boolean;
   setAds: (v: boolean) => void;
 };
@@ -24,6 +24,7 @@ export const useStore = create(
           if (!url) state.urls[hostname] = { enabled: [] };
           if (state.urls[hostname].enabled.includes(patchKey)) return;
           state.urls[hostname].enabled.push(patchKey);
+          console.log(state.urls[hostname].enabled);
         });
       },
       removePatch: (hostname, patchKey) => {
@@ -34,7 +35,7 @@ export const useStore = create(
           if (index !== -1) state.urls[hostname].enabled.splice(index, 1);
         });
       },
-
+      // options
       ads: false,
       setAds: (ads) => set({ ads }),
     })),
