@@ -15,7 +15,7 @@ export default function CheckboxItem({
   details,
 }: Props) {
   return (
-    <div className="flex items-center justify-between gap-2 p-2 transition select-none hover:bg-white/2">
+    <div className="flex items-center justify-between gap-2 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       <div aria-label="Content" className="flex flex-col gap-1">
         <span>{title}</span>
         <span

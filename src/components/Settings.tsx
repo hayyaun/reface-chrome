@@ -13,12 +13,14 @@ export default function Settings() {
 
   return (
     <section className="flex flex-1 flex-col">
+      <p className="my-2 p-2 font-bold underline-offset-4">General</p>
       <CheckboxItem
         title="Show Badge"
         details="Show the number of enabled patches for active tab"
         enabled={showBadge}
         onChange={setShowBadge}
       />
+      <p className="my-2 mt-4 p-2 font-bold underline-offset-4">Patches</p>
       <CheckboxItem
         title="Recommendation"
         details="Shows recommendation popup of the most popular patches for every website"
