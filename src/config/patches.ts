@@ -1,3 +1,11 @@
+import type { IconType } from "react-icons";
+import {
+  RiPaletteLine,
+  RiProhibitedLine,
+  RiPuzzleLine,
+  RiShiningLine,
+  RiToolsLine,
+} from "react-icons/ri";
 import type { Patch } from "../types";
 
 export const categories: { [key: string]: string } = {
@@ -7,6 +15,14 @@ export const categories: { [key: string]: string } = {
   fix: "fix",
   feature: "feature",
   mix: "mix",
+};
+
+export const icons: { [key: string]: IconType } = {
+  [categories.ads]: RiProhibitedLine,
+  [categories.theme]: RiPaletteLine,
+  [categories.fix]: RiToolsLine,
+  [categories.feature]: RiPuzzleLine,
+  [categories.mix]: RiShiningLine,
 };
 
 const patches: { [key: string]: Patch } = {

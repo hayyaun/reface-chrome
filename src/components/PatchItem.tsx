@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { RiAddFill, RiDeleteBinFill } from "react-icons/ri";
 import { reloadActiveTab } from "../chrome/utils";
+import { categories, icons } from "../config/patches";
 import { useStore } from "../store";
 import type { Patch } from "../types";
 
@@ -15,8 +16,14 @@ export default function PatchItem({ hostname, patchKey, patch }: Props) {
   const addPatch = useStore((s) => s.addPatch);
   const removePatch = useStore((s) => s.removePatch);
   const enabled = urls[hostname] && urls[hostname].enabled.includes(patchKey);
+  const Icon = icons[patch.keywords[0] ?? categories.all];
   return (
-    <div className="flex items-center justify-between gap-2 p-2 transition select-none hover:bg-white/2">
+    <div className="flex items-center gap-3 p-2 transition select-none hover:bg-white/2">
+      {Icon && (
+        <div className="rounded-lg bg-white/10 p-1.75">
+          {<Icon className="size-5" />}
+        </div>
+      )}
       <div className="flex flex-col gap-1">
         <span>{patch.name}</span>
         <span
@@ -26,12 +33,13 @@ export default function PatchItem({ hostname, patchKey, patch }: Props) {
           {patch.details}
         </span>
       </div>
+      <div className="flex-1" />
       <div
         className={clsx(
           "cursor-pointer rounded-sm p-1 transition",
           !enabled
-            ? "bg-green-400/5 hover:bg-green-400/25"
-            : "bg-red-400/5 hover:bg-red-400/25",
+            ? "bg-green-400/10 hover:bg-green-400/25"
+            : "bg-red-400/10 hover:bg-red-400/25",
         )}
         onClick={() => {
           if (!enabled) addPatch(hostname, patchKey);
