@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import PatchItem from "../components/PatchItem";
-import patches, { categories } from "../config/patches";
+import { categories } from "../config/mapping";
+import patches from "../config/patches";
 import strings from "../config/strings";
 import Chips from "./Chips";
 
