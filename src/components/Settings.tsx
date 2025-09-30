@@ -2,16 +2,20 @@ import { useStore } from "../store";
 import CheckboxItem from "./CheckboxItem";
 
 export default function Settings() {
+  const recommend = useStore((s) => s.recommend);
+  const setRecommend = useStore((s) => s.setRecommend);
   const ads = useStore((s) => s.ads);
   const setAds = useStore((s) => s.setAds);
+  const dark = useStore((s) => s.dark);
+  const setDark = useStore((s) => s.setDark);
 
   return (
     <section className="flex flex-1 flex-col">
       <CheckboxItem
         title="Recommendation"
         details="Shows recommendation popup of the most popular patches for every website"
-        enabled={false}
-        onChange={() => {}}
+        enabled={recommend}
+        onChange={setRecommend}
       />
       <CheckboxItem
         title="Remove all ads"
@@ -22,8 +26,8 @@ export default function Settings() {
       <CheckboxItem
         title="Dark-mode"
         details="Enables best dark theme from available website themes"
-        enabled={false}
-        onChange={() => {}}
+        enabled={dark}
+        onChange={setDark}
       />
     </section>
   );
