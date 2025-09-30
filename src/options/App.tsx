@@ -9,22 +9,22 @@ import { useStore } from "../store";
 export default function App() {
   const urls = useStore((s) => s.urls);
   const [selected, setSelected] = useState<string | null>(null);
-
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
-
   const relevantItems = useMemo(
     () => Object.keys(urls).filter((k) => k.includes(deferredQuery)),
     [deferredQuery, urls],
   );
-
   return (
     <>
       <header className="flex items-center justify-between gap-2 bg-white/5 p-2 text-xs">
         Settings
       </header>
       <main className="relative flex min-h-0 flex-1 items-stretch">
-        <aside className="flex basis-48 flex-col border-r border-white/5">
+        <aside
+          aria-label="Tabs"
+          className="flex basis-48 flex-col border-r border-white/5"
+        >
           <div className="flex flex-1 flex-col overflow-y-auto">
             <ListItem
               title={
@@ -54,7 +54,7 @@ export default function App() {
             />
           </div>
         </aside>
-        <section className="flex flex-1 flex-col">
+        <section aria-label="Content" className="flex flex-1 flex-col">
           {!selected ? <Settings /> : <PatchList hostname={selected} />}
           <Footer />
         </section>
