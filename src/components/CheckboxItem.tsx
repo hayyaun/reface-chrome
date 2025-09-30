@@ -18,7 +18,9 @@ export default function CheckboxItem({
     <div className="flex items-center justify-between gap-2 p-2 transition select-none hover:bg-white/2">
       <div aria-label="Content" className="flex flex-col gap-1">
         <span>{title}</span>
-        <span className="text-tiny line-clamp-2 opacity-45">{details}</span>
+        <span title={details} className="text-tiny line-clamp-2 opacity-45">
+          {details}
+        </span>
       </div>
       <div
         aria-label="Toggle Button"
