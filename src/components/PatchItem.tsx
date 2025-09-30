@@ -19,7 +19,7 @@ export default function PatchItem({ hostname, patchKey, patch }: Props) {
     <div className="flex items-center justify-between gap-2 p-2 transition select-none hover:bg-white/2">
       <div className="flex flex-col gap-1">
         <span>{patch.name}</span>
-        <span className="text-tiny line-clamp-1 opacity-45">
+        <span className="text-tiny line-clamp-2 opacity-45">
           {patch.details}
         </span>
       </div>
