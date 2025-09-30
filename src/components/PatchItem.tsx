@@ -20,7 +20,7 @@ export default function PatchItem({ hostname, patchKey, patch }: Props) {
       <div className="flex flex-col gap-1">
         <span>{patch.name}</span>
         <span
-          title={patch.details}
+          title={patch.details.length > 80 ? patch.details : undefined}
           className="text-tiny line-clamp-2 opacity-45"
         >
           {patch.details}

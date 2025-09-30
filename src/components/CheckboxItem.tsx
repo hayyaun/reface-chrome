@@ -18,7 +18,10 @@ export default function CheckboxItem({
     <div className="flex items-center justify-between gap-2 p-2 transition select-none hover:bg-white/2">
       <div aria-label="Content" className="flex flex-col gap-1">
         <span>{title}</span>
-        <span title={details} className="text-tiny line-clamp-2 opacity-45">
+        <span
+          title={details.length > 80 ? details : undefined}
+          className="text-tiny line-clamp-2 opacity-45"
+        >
           {details}
         </span>
       </div>
