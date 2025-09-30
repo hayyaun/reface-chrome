@@ -19,6 +19,12 @@ chrome.storage.onChanged.addListener((changes, area) => {
   }
 });
 
+function updateBadge(count: number) {
+  chrome.action.setBadgeBackgroundColor({ color: "#000000" });
+  chrome.action.setBadgeTextColor({ color: "#ffffff" });
+  chrome.action.setBadgeText({ text: count.toString() });
+}
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status !== "complete" || !tab.url) return;
   const urls = state.urls;
@@ -29,6 +35,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (!url || !hostname.includes(url) || !urls[url]) continue;
     const patchKeys = urls[url].enabled;
     console.debug("Patch for " + hostname, patchKeys);
+    // update badge
+    if (tab.active && !!patchKeys.length) {
+      chrome.windows.get(tab.windowId, (win) => {
+        if (win.focused) updateBadge(patchKeys.length);
+      });
+    }
+    // apply patches
     for (const patchKey of patchKeys) {
       chrome.scripting.executeScript({
         target: { tabId },
@@ -38,4 +51,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 
-chrome.tabs.reload();
+// events
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.type === "updateBadge") {
+    updateBadge(msg.count);
+  }
+});

@@ -5,6 +5,7 @@
 - Write Description
 - Update README for contributers
 - Dynamic logos based on different conditions
+- Cache unchanged tabs and don't reapply
 
 ## DONE
 
