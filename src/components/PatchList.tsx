@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import PatchItem from "../components/PatchItem";
 import patches, { categories } from "../config/patches";
+import strings from "../config/strings";
 import Chips from "./Chips";
 
 interface Props {
@@ -26,6 +27,10 @@ export default function PatchList({ hostname }: Props) {
     [hostname, selected],
   );
 
+  const supportParams = new URLSearchParams({
+    title: `Add support for ${hostname}`,
+  });
+
   return (
     <section className="flex flex-1 flex-col overflow-y-auto">
       <div className="hide-scrollbar flex gap-2 overflow-x-scroll p-2">
@@ -38,6 +43,17 @@ export default function PatchList({ hostname }: Props) {
           />
         ))}
       </div>
+      {!relevantPatchKeys.length && (
+        <div className="flex flex-1 flex-col items-center justify-center gap-1">
+          Nothing to show...
+          <a
+            target="_blank"
+            href={strings.github + "/issues/new?" + supportParams}
+          >
+            Request support
+          </a>
+        </div>
+      )}
       {relevantPatchKeys.map((patchKey) => (
         <PatchItem
           key={patchKey}

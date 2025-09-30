@@ -1,6 +1,7 @@
 import type { URLConfig } from "../types";
 
 export const devUrls: { [url: string]: URLConfig } = {
+  "google.com": { enabled: [] },
   "wikipedia.org": { enabled: ["wikipedia-cool", "read-time"] },
   "en.wikipedia.org": { enabled: ["wikipedia-cool", "read-time"] },
   "aa.wikipedia.org": { enabled: ["wikipedia-cool", "read-time"] },
