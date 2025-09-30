@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { RiAddFill, RiDeleteBinFill } from "react-icons/ri";
 import { reloadActiveTab } from "../chrome/utils";
-import { categories, icons } from "../config/patches";
+import { categories, icons } from "../config/mapping";
 import { useStore } from "../store";
 import type { Patch } from "../types";
 
