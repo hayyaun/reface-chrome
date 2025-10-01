@@ -1,3 +1,9 @@
+![Reface Chrome](/store/screenshots/screenshot-1.jpg)
+
+With Reface extension you can get rid of legacy issues on older websites.
+
+![Reface Chrome](/store/screenshots/screenshot-2.jpg)
+
 # Contribution
 
 After forking you can find it easy to follow these steps:
