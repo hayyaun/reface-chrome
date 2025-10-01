@@ -1,3 +1,4 @@
+import terser from "@rollup/plugin-terser";
 import fs from "fs";
 import path from "path";
 import { defineConfig } from "vite";
@@ -21,6 +22,7 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: false,
     copyPublicDir: false,
+    minify: false,
     rollupOptions: {
       input: {
         background: "src/background.ts",
@@ -30,6 +32,14 @@ export default defineConfig({
         entryFileNames: "[name].js",
         format: "es",
       },
+      plugins: [
+        terser({
+          mangle: {
+            toplevel: true,
+            nth_identifier: { get: (n: number) => "reface_" + n },
+          },
+        }),
+      ],
     },
   },
 });
