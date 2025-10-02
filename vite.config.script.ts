@@ -34,13 +34,11 @@ export default defineConfig({
       },
       plugins: [
         terser({
-          maxWorkers: 0,
           mangle: {
-            eval: false,
-            module: true,
             toplevel: true,
             nth_identifier: {
-              get: () => `rc_${crypto.randomUUID().replaceAll("-", "_")}`,
+              // TODO use babel for only chaning root-level names
+              get: () => `rc_${crypto.randomUUID().replaceAll("-", "")}`,
             },
           },
         }),
