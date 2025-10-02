@@ -18,8 +18,11 @@ function renderReadingTime(
   target.appendChild(badge);
 }
 
-// TODO change article and target based on other websites too
-renderReadingTime(
-  document.querySelector<HTMLDivElement>("#mw-content-text"),
-  document.querySelector<HTMLDivElement>("#firstHeading"),
-);
+const hostname = window.location.hostname;
+
+if (hostname.includes("wikipedia.org")) {
+  renderReadingTime(
+    document.querySelector<HTMLDivElement>("#mw-content-text"),
+    document.querySelector<HTMLDivElement>("#firstHeading"),
+  );
+}
