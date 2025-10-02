@@ -15,6 +15,13 @@ const patches: { [key: string]: Patch } = {
     keywords: [categories.theme],
     urls: ["wikipedia.org"],
   },
+  // ArXiv.org
+  "arxiv-lovely": {
+    name: "ArXiv Lovely Theme",
+    details: "Lovely theme for ArXiv homepage",
+    keywords: [categories.theme],
+    urls: ["arxiv.org"],
+  },
   // General
   "read-time": {
     name: "Reading Time",
