@@ -12,18 +12,15 @@ interface Props {
 export default function PatchList({ hostname }: Props) {
   const [selected, setSelected] = useState(categories.all);
 
+  console.log(patches);
+
   const relevantPatchKeys = useMemo(
     () =>
       Object.keys(patches).filter((k) => {
         const patch = patches[k];
-        if (!patch.urls.find((url) => hostname.includes(url))) return false;
-        if (
-          selected !== categories.all &&
-          !patch.keywords.find((kw) => selected === kw)
-        ) {
-          return false;
-        }
-        return true;
+        if (!patch.urls.some((url) => hostname.includes(url))) return false;
+        if (selected === categories.all) return true;
+        return patch.keywords.some((kw) => selected === kw);
       }),
     [hostname, selected],
   );
@@ -49,7 +46,7 @@ export default function PatchList({ hostname }: Props) {
           Nothing to show...
           <a
             target="_blank"
-            href={strings.github + "/issues/new?" + supportParams}
+            href={`${strings.github}/issues/new?${supportParams}`}
           >
             Request support
           </a>

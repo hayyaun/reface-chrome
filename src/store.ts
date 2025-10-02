@@ -30,7 +30,6 @@ export const useStore = create(
           if (!url) state.urls[hostname] = { enabled: [] };
           if (state.urls[hostname].enabled.includes(patchKey)) return;
           state.urls[hostname].enabled.push(patchKey);
-          console.log(state.urls[hostname].enabled);
         });
       },
       removePatch: (hostname, patchKey) => {

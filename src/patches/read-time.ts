@@ -10,7 +10,7 @@ function renderReadingTime(
   // matchAll returns an iterator, convert to array to get word count
   const wordCount = [...words].length;
   const readingTime = Math.round(wordCount / 200);
-  console.log({ wordCount, readingTime });
+  console.debug({ wordCount, readingTime });
   const badge = document.createElement("span");
   // Use the same styling as the publish information in an article's header
   badge.classList.add("color-secondary-text", "type--caption");

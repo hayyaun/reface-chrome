@@ -33,7 +33,7 @@ export default function App() {
           </div>
         )}
       </header>
-      <main className="mt-1 flex flex-col gap-1">
+      <main className="mt-1 flex flex-1 flex-col gap-1">
         <PatchList hostname={hostname} />
       </main>
       <Footer />

@@ -2,13 +2,6 @@ import type { Patch } from "../types";
 import { categories } from "./mapping";
 
 const patches: { [key: string]: Patch } = {
-  // General
-  "read-time": {
-    name: "Reading Time",
-    details: "Adds minutes read time to Articles",
-    keywords: [categories.feature, "time", "read", "wikipedia"],
-    urls: ["wikipedia.org"],
-  },
   // Wikipedia.org
   "wikipedia-focus": {
     name: "Wikipedia Focus",
@@ -21,6 +14,19 @@ const patches: { [key: string]: Patch } = {
     details: "Remove annoying borders from figures and tables",
     keywords: [categories.theme],
     urls: ["wikipedia.org"],
+  },
+  // General
+  "read-time": {
+    name: "Reading Time",
+    details: "Adds minutes read time to Articles",
+    keywords: [categories.feature, "time", "read", "wikipedia"],
+    urls: ["wikipedia.org"],
+  },
+  "show-fps": {
+    name: "Show FPS",
+    details: "Indicate fps for all websites",
+    keywords: [categories.feature],
+    urls: [""],
   },
 };
 
