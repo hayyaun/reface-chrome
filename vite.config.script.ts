@@ -34,9 +34,14 @@ export default defineConfig({
       },
       plugins: [
         terser({
+          maxWorkers: 0,
           mangle: {
+            eval: false,
+            module: true,
             toplevel: true,
-            nth_identifier: { get: (n: number) => "reface_" + n },
+            nth_identifier: {
+              get: () => `rc_${crypto.randomUUID().replaceAll("-", "_")}`,
+            },
           },
         }),
       ],

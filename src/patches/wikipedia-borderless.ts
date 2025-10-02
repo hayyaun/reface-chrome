@@ -6,7 +6,5 @@ function run() {
     ?.forEach((el) => el.style.setProperty("border", "none"));
 }
 
-run();
-
 if (document.readyState === "complete") run();
 else document.addEventListener("DOMContentLoaded", run);
