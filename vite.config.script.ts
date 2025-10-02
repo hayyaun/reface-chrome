@@ -37,9 +37,16 @@ export default defineConfig({
           mangle: {
             toplevel: true,
             nth_identifier: {
-              // TODO use babel for only chaning root-level names
-              get: () => `rc_${crypto.randomUUID().replaceAll("-", "")}`,
+              get: (n: number) =>
+                `rc_${crypto.randomUUID().split("-")[0]}_${n}`,
             },
+          },
+        }),
+        terser({
+          module: false,
+          compress: false,
+          mangle: {
+            toplevel: false,
           },
         }),
       ],
