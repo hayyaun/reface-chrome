@@ -70,10 +70,18 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     console.debug("Patch for " + hostname, patchKeys);
     // apply patches
     for (const patchKey of patchKeys) {
-      chrome.scripting.executeScript({
-        target: { tabId },
-        files: [`patches/${patchKey}.js`],
-      });
+      if (patchKey.includes("-css")) {
+        chrome.scripting.insertCSS({
+          target: { tabId },
+          files: [`patches/${patchKey.replace("-css", ".css")}`],
+          origin: "USER",
+        });
+      } else {
+        chrome.scripting.executeScript({
+          target: { tabId },
+          files: [`patches/${patchKey}.js`],
+        });
+      }
     }
   }
   setBadgeStateActive();

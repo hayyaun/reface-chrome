@@ -1,7 +1,7 @@
 import terser from "@rollup/plugin-terser";
 import fs from "fs";
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, Plugin } from "vite";
 
 const patchesDir = "src/patches";
 const patchFiles = fs
@@ -16,8 +16,40 @@ const patchFiles = fs
     {} as Record<string, string>,
   );
 
+function dynamicCSSCopyPipelinePlugin(
+  replacements: [string, string][],
+): Plugin {
+  return {
+    name: "dynamic-css-pipeline",
+    buildStart() {
+      const cssDir = path.resolve(__dirname, patchesDir);
+      const files = fs.readdirSync(cssDir).filter((f) => f.endsWith(".css"));
+
+      files.forEach((file) => {
+        let content = fs.readFileSync(path.join(cssDir, file), "utf-8");
+
+        // Apply replacements in order
+        for (const [search, replace] of replacements) {
+          content = content.replaceAll(search, replace);
+        }
+
+        this.emitFile({
+          type: "asset",
+          fileName: `patches/${file}`,
+          source: content,
+        });
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [],
+  plugins: [
+    dynamicCSSCopyPipelinePlugin([
+      ["!important;", ";"],
+      [";", "!important;"],
+    ]),
+  ],
   build: {
     outDir: "dist",
     emptyOutDir: false,

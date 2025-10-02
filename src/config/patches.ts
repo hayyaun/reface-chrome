@@ -16,7 +16,7 @@ const patches: { [key: string]: Patch } = {
     urls: ["wikipedia.org"],
   },
   // ArXiv.org
-  "arxiv-lovely": {
+  "arxiv-lovely-css": {
     name: "ArXiv Lovely Theme",
     details: "Lovely theme for ArXiv homepage",
     keywords: [categories.theme],
