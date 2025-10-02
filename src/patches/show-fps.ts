@@ -5,15 +5,15 @@ const styles = `
   .fps-indicator {
     position: fixed;
     z-index: 999;
-    top: 1.5rem;
-    left: 1.5rem;
-    padding: 1rem 2rem;
+    bottom: 20px;
+    left: 20px;
+    padding: 16px 32px;
     background-color: #000;
     border: 1px solid #fff2;
     border-radius: 8px;
     color: #fff;
-    opacity: 0.25;
-    font-size: 0.75rem;
+    opacity: 0.5;
+    font-size: 12px;
     cursor: pointer;
     transition: all ease 0.5s;
   }
