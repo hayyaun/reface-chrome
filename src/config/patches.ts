@@ -10,8 +10,8 @@ const patches: { [key: string]: Patch } = {
     urls: ["wikipedia.org"],
   },
   // Wikipedia.org
-  "wikipedia-cool": {
-    name: "Cool Wikipedia",
+  "wikipedia-focus": {
+    name: "Wikipedia Focus",
     details: "Removes irrelavant notices and popups from Wikipedia",
     keywords: [categories.ads, "wikipedia", "cool"],
     urls: ["wikipedia.org"],
