@@ -61,6 +61,12 @@ chrome.storage.onChanged.addListener((changes, area) => {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   updateBadgeForTab(tab);
+  if (state.fadeIn) {
+    chrome.scripting.insertCSS({
+      target: { tabId },
+      css: `body { opacity: 0; transition: opacity 0.5s ease; }`,
+    });
+  }
   if (changeInfo.status !== "complete" || !tab.url) return;
   const hostnames = state.hostnames;
   if (!hostnames) return;
@@ -95,6 +101,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     }
   }
   setBadgeStateActive();
+  if (state.fadeIn) {
+    chrome.scripting.insertCSS({
+      target: { tabId },
+      css: `body { opacity: 1 !important; transition: opacity 0.5s ease; }`,
+    });
+  }
 });
 
 chrome.tabs.onActivated.addListener((activeInfo) => {

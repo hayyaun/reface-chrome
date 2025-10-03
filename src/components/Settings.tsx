@@ -2,6 +2,8 @@ import { useStore } from "../store";
 import CheckboxItem from "./CheckboxItem";
 
 export default function Settings() {
+  const fadeIn = useStore((s) => s.fadeIn);
+  const setFadeIn = useStore((s) => s.setFadeIn);
   const showBadge = useStore((s) => s.showBadge);
   const setShowBadge = useStore((s) => s.setShowBadge);
   const recommend = useStore((s) => s.recommend);
@@ -19,6 +21,12 @@ export default function Settings() {
         details="Show the number of enabled patches for active tab"
         enabled={showBadge}
         onChange={setShowBadge}
+      />
+      <CheckboxItem
+        title="Fade In"
+        details="Show websites final look after changes applied"
+        enabled={fadeIn}
+        onChange={setFadeIn}
       />
       <p className="my-2 mt-4 p-2 font-bold underline-offset-4">Patches</p>
       <CheckboxItem

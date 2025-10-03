@@ -10,6 +10,8 @@ export type Store = {
   addPatch: (hostname: string, patchKey: string) => void;
   removePatch: (hostname: string, patchKey: string) => void;
   // options
+  fadeIn: boolean;
+  setFadeIn: (v: boolean) => void;
   showBadge: boolean;
   setShowBadge: (v: boolean) => void;
   recommend: boolean;
@@ -41,6 +43,8 @@ export const useStore = create(
         });
       },
       // options
+      fadeIn: false,
+      setFadeIn: (fadeIn) => set({ fadeIn }),
       showBadge: true,
       setShowBadge: (showBadge) => set({ showBadge }),
       recommend: false,
