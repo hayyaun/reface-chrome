@@ -16,23 +16,18 @@ const patchFiles = fs
     {} as Record<string, string>,
   );
 
-function dynamicCSSCopyPipelinePlugin(
-  replacements: [string, string][],
-): Plugin {
+function dynamicCSSCopyPlugin(replacements: [string, string][]): Plugin {
   return {
-    name: "dynamic-css-pipeline",
+    name: "dynamic-css-copy",
     buildStart() {
       const cssDir = path.resolve(__dirname, patchesDir);
       const files = fs.readdirSync(cssDir).filter((f) => f.endsWith(".css"));
-
       files.forEach((file) => {
         let content = fs.readFileSync(path.join(cssDir, file), "utf-8");
-
         // Apply replacements in order
         for (const [search, replace] of replacements) {
           content = content.replaceAll(search, replace);
         }
-
         this.emitFile({
           type: "asset",
           fileName: `patches/${file}`,
@@ -45,9 +40,10 @@ function dynamicCSSCopyPipelinePlugin(
 
 export default defineConfig({
   plugins: [
-    dynamicCSSCopyPipelinePlugin([
+    dynamicCSSCopyPlugin([
+      [" !important;", ";"],
       ["!important;", ";"],
-      [";", "!important;"],
+      [";", " !important;"],
     ]),
   ],
   build: {
