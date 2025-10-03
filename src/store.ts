@@ -14,6 +14,8 @@ export type Store = {
   setFadeIn: (v: boolean) => void;
   showBadge: boolean;
   setShowBadge: (v: boolean) => void;
+  reload: boolean;
+  setReload: (v: boolean) => void;
   recommend: boolean;
   setRecommend: (v: boolean) => void;
   ads: boolean;
@@ -47,6 +49,8 @@ export const useStore = create(
       setFadeIn: (fadeIn) => set({ fadeIn }),
       showBadge: true,
       setShowBadge: (showBadge) => set({ showBadge }),
+      reload: true,
+      setReload: (reload) => set({ reload }),
       recommend: false,
       setRecommend: (recommend) => set({ recommend }),
       ads: false,

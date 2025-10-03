@@ -6,6 +6,8 @@ export default function Settings() {
   const setFadeIn = useStore((s) => s.setFadeIn);
   const showBadge = useStore((s) => s.showBadge);
   const setShowBadge = useStore((s) => s.setShowBadge);
+  const reload = useStore((s) => s.reload);
+  const setReload = useStore((s) => s.setReload);
   const recommend = useStore((s) => s.recommend);
   const setRecommend = useStore((s) => s.setRecommend);
   const ads = useStore((s) => s.ads);
@@ -27,6 +29,12 @@ export default function Settings() {
         details="Show websites final look after changes applied"
         enabled={fadeIn}
         onChange={setFadeIn}
+      />
+      <CheckboxItem
+        title="Reload"
+        details="Reload pages after changes applied"
+        enabled={reload}
+        onChange={setReload}
       />
       <p className="my-2 mt-4 p-2 font-bold underline-offset-4">Patches</p>
       <CheckboxItem
