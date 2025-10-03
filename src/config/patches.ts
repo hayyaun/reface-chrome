@@ -21,8 +21,8 @@ const patches: { [key: string]: Patch } = {
     details: "Lovely theme for ArXiv homepage",
     keywords: [categories.theme],
     hostnames: ["arxiv.org"],
-    paths: ["/"],
-    css: "only",
+    css: { "/": "home" },
+    noJS: true,
   },
   // General
   "read-time": {

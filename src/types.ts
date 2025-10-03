@@ -18,12 +18,9 @@ export interface Patch {
   /** List of hostnames where this patch is applicable */
   hostnames: string[];
 
-  /**
-   * List of pathnames where this patch is applicable
-   *
-   * use * for wildcard except the path would be treated as exact */
-  paths?: string[];
+  /** Whether includes js file or not */
+  noJS?: boolean;
 
-  /** css mode */
-  css?: "only" | "add";
+  /** Map paths to css files name postfix - wildcard supported */
+  css?: { [path: string]: string };
 }

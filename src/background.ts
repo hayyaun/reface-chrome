@@ -73,27 +73,24 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     // apply patches
     for (const patchKey of patchKeys) {
       const patch = patches[patchKey];
-      let skip = false;
-      if (patch.paths) {
-        for (const path of patch.paths) {
-          const exact = !path.endsWith("*");
-          if (exact && path !== pathname) skip = true;
-          if (!pathname.startsWith(path)) skip = true;
-        }
-      }
-      if (skip) continue;
-      if (patch.css !== "only") {
+      if (!patch.noJS) {
         chrome.scripting.executeScript({
           target: { tabId },
           files: [`patches/${patchKey}.js`],
         });
       }
       if (patch.css) {
-        chrome.scripting.insertCSS({
-          target: { tabId },
-          files: [`patches/${patchKey}.css`],
-          origin: "USER",
-        });
+        for (const path in patch.css) {
+          const exact = !path.endsWith("*");
+          if (exact && path !== pathname) continue;
+          const actualPath = path.replaceAll("*", "");
+          if (!pathname.startsWith(actualPath)) continue;
+          chrome.scripting.insertCSS({
+            target: { tabId },
+            files: [`patches/${patchKey}-${patch.css[path]}.css`],
+            origin: "USER",
+          });
+        }
       }
     }
   }
