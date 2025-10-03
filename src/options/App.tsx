@@ -16,9 +16,10 @@ export default function App() {
   const deferredQuery = useDeferredValue(query);
   const relevantItems = useMemo(() => {
     const enabledHostnames = _.pickBy(hostnames, (hn) => hn.enabled.length > 0);
-    return Object.keys(enabledOnly ? enabledHostnames : entireHostnames).filter(
-      (k) => k.includes(deferredQuery),
+    const keys = Object.keys(
+      Object.assign({}, enabledOnly ? {} : entireHostnames, enabledHostnames),
     );
+    return _.sortBy(keys).filter((k) => k.includes(deferredQuery));
   }, [deferredQuery, enabledOnly, hostnames]);
   return (
     <>
