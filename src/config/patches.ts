@@ -1,4 +1,4 @@
-import type { Patch } from "../types";
+import type { HostnameConfig, Patch } from "../types";
 import { categories } from "./mapping";
 
 const patches: { [key: string]: Patch } = {
@@ -40,3 +40,9 @@ const patches: { [key: string]: Patch } = {
 };
 
 export default patches;
+
+export const defaultHostnames = Object.fromEntries(
+  [...new Set(Object.values(patches).flatMap((patch) => patch.hostnames))].map(
+    (hn) => [hn || "*", { enabled: [] }],
+  ),
+) as { [hostname: string]: HostnameConfig };

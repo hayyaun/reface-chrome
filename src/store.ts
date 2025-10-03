@@ -3,6 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { chromeStorage } from "./chrome/storage";
 import { devItems } from "./config/dev";
+import { defaultHostnames } from "./config/patches";
 import type { HostnameConfig } from "./types";
 
 export type Store = {
@@ -25,7 +26,7 @@ export type Store = {
 export const useStore = create(
   persist(
     immer<Store>((set) => ({
-      hostnames: import.meta.env.DEV ? devItems : {},
+      hostnames: import.meta.env.DEV ? devItems : defaultHostnames,
       addPatch: (hostname, patchKey) => {
         set((state) => {
           const config = state.hostnames[hostname];
@@ -43,7 +44,7 @@ export const useStore = create(
         });
       },
       // options
-      fadeIn: false,
+      fadeIn: true,
       setFadeIn: (fadeIn) => set({ fadeIn }),
       showBadge: true,
       setShowBadge: (showBadge) => set({ showBadge }),
@@ -60,6 +61,8 @@ export const useStore = create(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         import.meta.env.DEV ? (localStorage as any) : chromeStorage,
       ), // must return sync or async-compatible object
+      version: 1,
+      // TODO migrate(persistedState, version) {},
     },
   ),
 );
