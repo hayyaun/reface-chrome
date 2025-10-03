@@ -17,4 +17,7 @@ export interface Patch {
 
   /** List of URLs where this patch is applicable */
   urls: string[];
+  paths?: string[];
+
+  cssOnly?: boolean;
 }

@@ -5,7 +5,7 @@ header {
 }
 
 main {
-  display: none !important;
+  display: none;
 }
 
 #header {
