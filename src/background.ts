@@ -68,6 +68,7 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
   if (area === "local" && changes.main) {
     await useStore.persist.rehydrate();
     state = useStore.getState();
+    console.log("rehydrate background");
     // update badge for active tab
     if (!state.showBadge) return clearBadge();
     else {
