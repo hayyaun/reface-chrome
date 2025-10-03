@@ -12,10 +12,10 @@ interface Props {
 }
 
 export default function PatchItem({ hostname, patchKey, patch }: Props) {
-  const urls = useStore((s) => s.urls);
+  const hostnames = useStore((s) => s.hostnames);
   const addPatch = useStore((s) => s.addPatch);
   const removePatch = useStore((s) => s.removePatch);
-  const enabled = urls[hostname] && urls[hostname].enabled.includes(patchKey);
+  const enabled = hostnames[hostname] && hostnames[hostname].enabled.includes(patchKey);
   const Icon = icons[patch.keywords[0] ?? categories.all];
   return (
     <div className="flex items-center gap-3 p-2 transition select-none even:bg-white/1 hover:bg-white/5">

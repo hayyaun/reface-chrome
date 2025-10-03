@@ -2,11 +2,11 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { chromeStorage } from "./chrome/storage";
-import { devUrls } from "./config/dev";
-import type { URLConfig } from "./types";
+import { devItems } from "./config/dev";
+import type { HostnameConfig } from "./types";
 
 export type Store = {
-  urls: { [url: string]: URLConfig };
+  hostnames: { [hostname: string]: HostnameConfig };
   addPatch: (hostname: string, patchKey: string) => void;
   removePatch: (hostname: string, patchKey: string) => void;
   // options
@@ -23,21 +23,21 @@ export type Store = {
 export const useStore = create(
   persist(
     immer<Store>((set) => ({
-      urls: import.meta.env.DEV ? devUrls : {},
+      hostnames: import.meta.env.DEV ? devItems : {},
       addPatch: (hostname, patchKey) => {
         set((state) => {
-          const url = state.urls[hostname];
-          if (!url) state.urls[hostname] = { enabled: [] };
-          if (state.urls[hostname].enabled.includes(patchKey)) return;
-          state.urls[hostname].enabled.push(patchKey);
+          const config = state.hostnames[hostname];
+          if (!config) state.hostnames[hostname] = { enabled: [] };
+          if (state.hostnames[hostname].enabled.includes(patchKey)) return;
+          state.hostnames[hostname].enabled.push(patchKey);
         });
       },
       removePatch: (hostname, patchKey) => {
         set((state) => {
-          const url = state.urls[hostname];
-          if (!url) state.urls[hostname] = { enabled: [] };
-          const index = state.urls[hostname].enabled.indexOf(patchKey);
-          if (index !== -1) state.urls[hostname].enabled.splice(index, 1);
+          const config = state.hostnames[hostname];
+          if (!config) state.hostnames[hostname] = { enabled: [] };
+          const index = state.hostnames[hostname].enabled.indexOf(patchKey);
+          if (index !== -1) state.hostnames[hostname].enabled.splice(index, 1);
         });
       },
       // options

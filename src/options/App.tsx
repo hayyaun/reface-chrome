@@ -7,13 +7,13 @@ import Settings from "../components/Settings";
 import { useStore } from "../store";
 
 export default function App() {
-  const urls = useStore((s) => s.urls);
+  const hostnames = useStore((s) => s.hostnames);
   const [selected, setSelected] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const relevantItems = useMemo(
-    () => Object.keys(urls).filter((k) => k.includes(deferredQuery)),
-    [deferredQuery, urls],
+    () => Object.keys(hostnames).filter((k) => k.includes(deferredQuery)),
+    [deferredQuery, hostnames],
   );
   return (
     <>
@@ -36,12 +36,12 @@ export default function App() {
               active={selected === null}
               onClick={() => setSelected(null)}
             />
-            {relevantItems.map((url, i) => (
+            {relevantItems.map((hostname, i) => (
               <ListItem
                 key={i}
-                title={url}
-                active={selected === url}
-                onClick={() => setSelected(url)}
+                title={hostname}
+                active={selected === hostname}
+                onClick={() => setSelected(hostname)}
               />
             ))}
           </div>

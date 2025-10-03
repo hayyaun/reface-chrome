@@ -1,4 +1,4 @@
-export interface URLConfig {
+export interface HostnameConfig {
   enabled: string[];
 }
 
@@ -15,9 +15,15 @@ export interface Patch {
   /** Keywords for categorizing or searching for this patch */
   keywords: string[];
 
-  /** List of URLs where this patch is applicable */
-  urls: string[];
+  /** List of hostnames where this patch is applicable */
+  hostnames: string[];
+
+  /**
+   * List of pathnames where this patch is applicable
+   *
+   * use * for wildcard except the path would be treated as exact */
   paths?: string[];
 
-  cssOnly?: boolean;
+  /** css mode */
+  css?: "only" | "add";
 }

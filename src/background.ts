@@ -1,3 +1,4 @@
+import patches from "./config/patches";
 import { useStore, type Store } from "./store";
 
 let state: Store = useStore.getInitialState();
@@ -27,7 +28,7 @@ function updateBadgeForTab(tab: chrome.tabs.Tab) {
   if (!state.showBadge) return clearBadge(tab.id);
   if (!tab.url) return;
   const hostname = new URL(tab.url).hostname;
-  const patchKeys = state.urls[hostname]?.enabled ?? [];
+  const patchKeys = state.hostnames[hostname]?.enabled ?? [];
   // update badge
   if (!patchKeys.length) return;
   updateBadge(patchKeys.length, tab.id);
@@ -61,25 +62,37 @@ chrome.storage.onChanged.addListener((changes, area) => {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   updateBadgeForTab(tab);
   if (changeInfo.status !== "complete" || !tab.url) return;
-  const urls = state.urls;
-  if (!urls) return;
+  const hostnames = state.hostnames;
+  if (!hostnames) return;
   const hostname = new URL(tab.url).hostname;
-  for (const url of Object.keys(urls)) {
-    if (!url || hostname !== url || !urls[url]) continue;
-    const patchKeys = urls[url].enabled;
+  const pathname = new URL(tab.url).pathname;
+  for (const key of Object.keys(hostnames)) {
+    if (!key || hostname !== key) continue;
+    const patchKeys = hostnames[key].enabled;
     console.debug("Patch for " + hostname, patchKeys);
     // apply patches
     for (const patchKey of patchKeys) {
-      if (patchKey.includes("-css")) {
-        chrome.scripting.insertCSS({
-          target: { tabId },
-          files: [`patches/${patchKey.replace("-css", ".css")}`],
-          origin: "USER",
-        });
-      } else {
+      const patch = patches[patchKey];
+      let skip = false;
+      if (patch.paths) {
+        for (const path of patch.paths) {
+          const exact = !path.endsWith("*");
+          if (exact && path !== pathname) skip = true;
+          if (!pathname.startsWith(path)) skip = true;
+        }
+      }
+      if (skip) continue;
+      if (patch.css !== "only") {
         chrome.scripting.executeScript({
           target: { tabId },
           files: [`patches/${patchKey}.js`],
+        });
+      }
+      if (patch.css) {
+        chrome.scripting.insertCSS({
+          target: { tabId },
+          files: [`patches/${patchKey}.css`],
+          origin: "USER",
         });
       }
     }

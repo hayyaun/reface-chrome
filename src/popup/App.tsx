@@ -5,7 +5,7 @@ import PatchList from "../components/PatchList";
 import { useStore } from "../store";
 
 export default function App() {
-  const urls = useStore((s) => s.urls);
+  const hostnames = useStore((s) => s.hostnames);
   const [hostname, setHostname] = useState("reface");
 
   useEffect(() => {
@@ -19,8 +19,8 @@ export default function App() {
   }, []);
 
   const active = useMemo(
-    () => Object.keys(urls).find((url) => hostname.includes(url)),
-    [hostname, urls],
+    () => Object.keys(hostnames).find((item) => hostname.includes(item)),
+    [hostname, hostnames],
   );
 
   return (

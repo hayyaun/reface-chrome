@@ -1,6 +1,6 @@
-import type { URLConfig } from "../types";
+import type { HostnameConfig } from "../types";
 
-export const devUrls: { [url: string]: URLConfig } = {
+export const devItems: { [key: string]: HostnameConfig } = {
   "google.com": { enabled: [] },
   "wikipedia.org": { enabled: ["wikipedia-cool", "read-time"] },
   "en.wikipedia.org": { enabled: ["wikipedia-cool", "read-time"] },

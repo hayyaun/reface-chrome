@@ -18,7 +18,9 @@ export default function PatchList({ hostname }: Props) {
     () =>
       Object.keys(patches).filter((k) => {
         const patch = patches[k];
-        if (!patch.urls.some((url) => hostname.includes(url))) return false;
+        if (!patch.hostnames.some((item) => hostname.includes(item))) {
+          return false;
+        }
         if (selected === categories.all) return true;
         return patch.keywords.some((kw) => selected === kw);
       }),
