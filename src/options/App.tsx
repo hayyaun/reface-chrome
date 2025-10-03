@@ -1,24 +1,29 @@
 import clsx from "clsx";
+import _ from "lodash";
 import { useDeferredValue, useMemo, useState, type ReactNode } from "react";
-import { RiSettingsFill } from "react-icons/ri";
+import { RiFilterFill, RiFilterOffFill, RiSettingsFill } from "react-icons/ri";
 import Footer from "../components/Footer";
 import PatchList from "../components/PatchList";
 import Settings from "../components/Settings";
+import { hostnames as entireHostnames } from "../config/patches";
 import { useStore } from "../store";
 
 export default function App() {
   const hostnames = useStore((s) => s.hostnames);
   const [selected, setSelected] = useState<string | null>(null);
+  const [enabledOnly, setEnabledOnly] = useState(false);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
-  const relevantItems = useMemo(
-    () => Object.keys(hostnames).filter((k) => k.includes(deferredQuery)),
-    [deferredQuery, hostnames],
-  );
+  const relevantItems = useMemo(() => {
+    const enabledHostnames = _.pickBy(hostnames, (hn) => hn.enabled.length > 0);
+    return Object.keys(enabledOnly ? enabledHostnames : entireHostnames).filter(
+      (k) => k.includes(deferredQuery),
+    );
+  }, [deferredQuery, enabledOnly, hostnames]);
   return (
     <>
       <header className="flex items-center justify-between gap-2 bg-white/5 p-2 text-xs">
-        Settings
+        <span>Settings</span>
       </header>
       <main className="relative flex min-h-0 flex-1 items-stretch">
         <aside
@@ -45,13 +50,25 @@ export default function App() {
               />
             ))}
           </div>
-          <div aria-label="Searchbox" className="p-2">
+          <div aria-label="Searchbox" className="flex items-center gap-1 p-2">
             <input
-              className="w-full rounded-full bg-white/5 p-1.5 px-4"
+              className="flex-1 rounded-full bg-white/5 p-1.5 px-4"
               placeholder="Search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
+            <div
+              aria-label="Filter"
+              title="Show enabled only"
+              className="cursor-pointer rounded-sm p-1 transition"
+              onClick={() => setEnabledOnly(!enabledOnly)}
+            >
+              {enabledOnly ? (
+                <RiFilterFill className="size-4 text-green-400" />
+              ) : (
+                <RiFilterOffFill className="size-4 text-white" />
+              )}
+            </div>
           </div>
         </aside>
         <section aria-label="Content" className="flex flex-1 flex-col">

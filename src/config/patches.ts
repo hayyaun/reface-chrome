@@ -41,7 +41,7 @@ const patches: { [key: string]: Patch } = {
 
 export default patches;
 
-export const defaultHostnames = Object.fromEntries(
+export const hostnames = Object.fromEntries(
   [...new Set(Object.values(patches).flatMap((patch) => patch.hostnames))].map(
     (hn) => [hn || "*", { enabled: [] }],
   ),
