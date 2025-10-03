@@ -34,6 +34,26 @@ function updateBadgeForTab(tab: chrome.tabs.Tab) {
   updateBadge(patchKeys.length, tab.id);
 }
 
+// Fade-in
+
+function beforeFadeIn(tabId: number) {
+  if (state.fadeIn) {
+    chrome.scripting.insertCSS({
+      target: { tabId },
+      css: `body { opacity: 0; transition: opacity 0.5s ease; }`,
+    });
+  }
+}
+
+function afterFadeIn(tabId: number) {
+  if (state.fadeIn) {
+    chrome.scripting.insertCSS({
+      target: { tabId },
+      css: `body { opacity: 1 !important; transition: opacity 0.5s ease; }`,
+    });
+  }
+}
+
 // Storage
 
 // Load storage on startup
@@ -60,22 +80,19 @@ chrome.storage.onChanged.addListener((changes, area) => {
 // Tabs
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  updateBadgeForTab(tab);
-  if (state.fadeIn) {
-    chrome.scripting.insertCSS({
-      target: { tabId },
-      css: `body { opacity: 0; transition: opacity 0.5s ease; }`,
-    });
-  }
-  if (changeInfo.status !== "complete" || !tab.url) return;
-  const hostnames = state.hostnames;
-  if (!hostnames) return;
+  if (!tab.url) return;
+  if (!state.hostnames) return;
   const hostname = new URL(tab.url).hostname;
   const pathname = new URL(tab.url).pathname;
-  for (const key of Object.keys(hostnames)) {
+  // on start
+  updateBadgeForTab(tab);
+  // match hostname
+  for (const key in state.hostnames) {
     if (!key || hostname !== key) continue;
-    const patchKeys = hostnames[key].enabled;
-    console.debug("Patch for " + hostname, patchKeys);
+    const patchKeys = state.hostnames[key].enabled;
+    if (patchKeys.length) beforeFadeIn(tabId);
+    if (changeInfo.status !== "complete") continue;
+    console.debug(hostname, patchKeys);
     // apply patches
     for (const patchKey of patchKeys) {
       const patch = patches[patchKey];
@@ -98,15 +115,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           });
         }
       }
+      if (patchKeys.length) afterFadeIn(tabId);
     }
   }
+  // on finish
   setBadgeStateActive();
-  if (state.fadeIn) {
-    chrome.scripting.insertCSS({
-      target: { tabId },
-      css: `body { opacity: 1 !important; transition: opacity 0.5s ease; }`,
-    });
-  }
 });
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
