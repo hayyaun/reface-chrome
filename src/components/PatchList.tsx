@@ -55,7 +55,7 @@ export default function PatchList({ hostname }: Props) {
         <a
           target="_blank"
           href={`${strings.github}/issues/new?${supportParams}`}
-          className="rounded-lg p-2 text-center text-blue-400 transition hover:bg-blue-400/10 hover:text-blue-300"
+          className="rounded-lg p-2 text-center text-blue-400/75 transition hover:bg-blue-400/10 hover:text-blue-300"
         >
           Request add-on
         </a>
