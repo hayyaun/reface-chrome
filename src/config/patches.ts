@@ -35,7 +35,7 @@ const patches: { [key: string]: Patch } = {
     name: "Show FPS",
     details: "Indicate fps for all websites",
     keywords: [categories.feature],
-    hostnames: [""],
+    hostnames: [""], // everywhere
   },
 };
 

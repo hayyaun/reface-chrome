@@ -43,17 +43,6 @@ export default function PatchList({ hostname }: Props) {
           />
         ))}
       </div>
-      {!relevantPatchKeys.length && (
-        <div className="flex flex-1 flex-col items-center justify-center gap-1">
-          Nothing to show...
-          <a
-            target="_blank"
-            href={`${strings.github}/issues/new?${supportParams}`}
-          >
-            Request support
-          </a>
-        </div>
-      )}
       {relevantPatchKeys.map((patchKey) => (
         <PatchItem
           key={patchKey}
@@ -62,6 +51,15 @@ export default function PatchList({ hostname }: Props) {
           patch={patches[patchKey]}
         />
       ))}
+      <div className="mt-1 flex cursor-pointer flex-col items-stretch justify-center gap-1 p-2 select-none">
+        <a
+          target="_blank"
+          href={`${strings.github}/issues/new?${supportParams}`}
+          className="rounded-lg p-4 text-center text-blue-400 transition hover:bg-blue-400/10 hover:text-blue-300"
+        >
+          Request add-on
+        </a>
+      </div>
     </section>
   );
 }
