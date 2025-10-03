@@ -57,15 +57,17 @@ function afterFadeIn(tabId: number) {
 // Storage
 
 // Load storage on startup
-chrome.storage.local.get("main", (data) => {
+chrome.storage.local.get("main", async (data) => {
   if (!data.main) return;
-  state = JSON.parse(data.main).state;
+  await useStore.persist.rehydrate();
+  state = useStore.getState();
 });
 
 // Listen for storage changes from popup or elsewhere
-chrome.storage.onChanged.addListener((changes, area) => {
+chrome.storage.onChanged.addListener(async (changes, area) => {
   if (area === "local" && changes.main) {
-    state = JSON.parse(changes.main.newValue).state;
+    await useStore.persist.rehydrate();
+    state = useStore.getState();
     // update badge for active tab
     if (!state.showBadge) return clearBadge();
     else {
