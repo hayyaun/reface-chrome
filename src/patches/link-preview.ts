@@ -42,9 +42,12 @@ function animate() {
 requestAnimationFrame(animate);
 
 document.body.addEventListener("pointermove", (ev) => {
-  // root
+  const el = document.elementFromPoint(ev.clientX, ev.clientY);
+  if (el === root) return;
+
   positionTo.x = ev.clientX;
   positionTo.y = ev.clientY;
+
   const translate = [];
   if (ev.clientX > window.innerWidth / 2) {
     translate.push("translateX(-100%)");
