@@ -3,6 +3,7 @@ import PatchItem from "../components/PatchItem";
 import { categories } from "../config/mapping";
 import patches from "../config/patches";
 import strings from "../config/strings";
+import { match } from "../utils/match";
 import Chips from "./Chips";
 
 interface Props {
@@ -12,13 +13,11 @@ interface Props {
 export default function PatchList({ hostname }: Props) {
   const [selected, setSelected] = useState(categories.all);
 
-  console.log(patches);
-
   const relevantPatchKeys = useMemo(
     () =>
       Object.keys(patches).filter((k) => {
         const patch = patches[k];
-        if (!patch.hostnames.some((item) => hostname.includes(item))) {
+        if (!patch.hostnames.some((rule) => match(hostname, rule))) {
           return false;
         }
         if (selected === categories.all) return true;

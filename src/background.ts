@@ -1,5 +1,6 @@
 import patches from "./config/patches";
 import { useStore, type Store } from "./store";
+import { match } from "./utils/match";
 
 let state: Store = useStore.getInitialState();
 
@@ -106,14 +107,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         });
       }
       if (patch.css) {
-        for (const path in patch.css) {
-          const exact = !path.endsWith("*");
-          if (exact && path !== pathname) continue;
-          const actualPath = path.replaceAll("*", "");
-          if (!pathname.startsWith(actualPath)) continue;
+        for (const pathRule in patch.css) {
+          if (!match(pathname, pathRule)) continue;
           chrome.scripting.insertCSS({
             target: { tabId },
-            files: [`patches/${patchKey}-${patch.css[path]}.css`],
+            files: [`patches/${patchKey}-${patch.css[pathRule]}.css`],
           });
         }
       }

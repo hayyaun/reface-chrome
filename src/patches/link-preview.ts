@@ -20,7 +20,7 @@ function hide() {
 }
 
 const position = { x: 0, y: 0 };
-const positionTo = { x: 0, y: 0 };
+const cursor = { x: 0, y: 0 };
 
 let visible = false;
 let hoverTimer: NodeJS.Timeout;
@@ -30,10 +30,10 @@ function lerp(a: number, b: number, t: number) {
 }
 
 function animate() {
-  position.x = lerp(position.x, positionTo.x, 0.08);
-  position.y = lerp(position.y, positionTo.y, 0.04);
-  root.style.left = position.x + "px";
-  root.style.top = position.y + "px";
+  position.x = lerp(position.x, cursor.x, 0.08);
+  position.y = lerp(position.y, cursor.y, 0.04);
+  root.style.setProperty("left", position.x + "px");
+  root.style.setProperty("top", position.y + "px");
   if (visible) show();
   else hide();
   requestAnimationFrame(animate);
@@ -47,8 +47,8 @@ document.body.addEventListener("pointermove", (ev) => {
   if (el?.classList.contains("rc-link-preview")) return;
   if (el?.classList.contains("close-btn")) return;
 
-  positionTo.x = ev.clientX;
-  positionTo.y = ev.clientY;
+  cursor.x = ev.clientX;
+  cursor.y = ev.clientY;
 
   const translate = [];
   if (ev.clientX > window.innerWidth / 2) {
@@ -57,28 +57,25 @@ document.body.addEventListener("pointermove", (ev) => {
   if (ev.clientY > window.innerHeight / 2) {
     translate.push("translateY(-100%)");
   }
-  root.style.transform = translate.join(" ");
+  root.style.setProperty("transform", translate.join(" "));
 });
 
 // Links
 
 const links = document.querySelectorAll("a");
 
-links.forEach((link) => {
+links.forEach(async (link) => {
   link.addEventListener("pointerenter", () => {
     let loaded = false;
-    // timer
-    hoverTimer = setTimeout(() => {
-      if (loaded) visible = true;
-    }, 1500);
     // iframe
     iframe.src = link.href;
     iframe.onload = () => {
       loaded = true;
     };
-    iframe.onerror = () => {
-      // visible = false;
-    };
+    // timer
+    hoverTimer = setTimeout(() => {
+      if (loaded) visible = true;
+    }, 1500);
     // close button
     closeBtn.onclick = () => {
       visible = false;

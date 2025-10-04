@@ -15,10 +15,15 @@ export interface Patch {
   /** Keywords for categorizing or searching for this patch */
   keywords: string[];
 
-  /** List of hostnames where this patch is applicable */
+  /** List of hostname-rules where this patch is applicable
+   *
+   * Wildcard supported
+   * @example *wikipedia.org
+   * google.*
+   */
   hostnames: string[];
 
-  /** Whether includes js file or not */
+  /** Ignore script execution */
   noJS?: boolean;
 
   /** Map paths to css files name postfix - wildcard supported */
