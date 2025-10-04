@@ -1,27 +1,6 @@
 let last = performance.now();
 let frames = 0;
 
-const styles = `
-  .fps-indicator {
-    position: fixed;
-    z-index: 999;
-    bottom: 20px;
-    left: 20px;
-    padding: 16px 32px;
-    background-color: #000;
-    border: 1px solid #fff2;
-    border-radius: 8px;
-    color: #fff;
-    opacity: 0.5;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all ease 0.5s;
-  }
-  .fps-indicator:hover {
-    opacity: 1;
-  }
-`;
-
 function showUI(fps: number) {
   let text = document.querySelector("span.fps-indicator-root");
   if (!text) {
@@ -32,10 +11,7 @@ function showUI(fps: number) {
     root.onclick = () => {
       root.style.display = "none";
     };
-    const style = document.createElement("style");
-    style.textContent = styles;
     // add to dom
-    document.head.appendChild(style);
     document.body.appendChild(root);
     root.appendChild(text);
   }

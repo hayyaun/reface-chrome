@@ -1,7 +1,8 @@
 import terser from "@rollup/plugin-terser";
 import fs from "fs";
 import path from "path";
-import { defineConfig, Plugin } from "vite";
+import { defineConfig } from "vite";
+import { dynamicCSSCopyPlugin } from "./plugins/css";
 
 const patchesDir = "src/patches";
 const patchFiles = fs
@@ -16,36 +17,8 @@ const patchFiles = fs
     {} as Record<string, string>,
   );
 
-function dynamicCSSCopyPlugin(replacements: [string, string][]): Plugin {
-  return {
-    name: "dynamic-css-copy",
-    buildStart() {
-      const cssDir = path.resolve(__dirname, patchesDir);
-      const files = fs.readdirSync(cssDir).filter((f) => f.endsWith(".css"));
-      files.forEach((file) => {
-        let content = fs.readFileSync(path.join(cssDir, file), "utf-8");
-        // Apply replacements in order
-        for (const [search, replace] of replacements) {
-          content = content.replaceAll(search, replace);
-        }
-        this.emitFile({
-          type: "asset",
-          fileName: `patches/${file}`,
-          source: content,
-        });
-      });
-    },
-  };
-}
-
 export default defineConfig({
-  plugins: [
-    dynamicCSSCopyPlugin([
-      [" !important;", ";"],
-      ["!important;", ";"],
-      [";", " !important;"],
-    ]),
-  ],
+  plugins: [dynamicCSSCopyPlugin([], "patches")],
   build: {
     outDir: "dist",
     emptyOutDir: false,

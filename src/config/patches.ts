@@ -36,6 +36,14 @@ const patches: { [key: string]: Patch } = {
     details: "Indicate fps for all websites",
     keywords: [categories.feature],
     hostnames: [""], // everywhere
+    css: { "/*": "main" },
+  },
+  "link-preview": {
+    name: "Link Preview",
+    details: "Previews links before opening them",
+    keywords: [categories.feature],
+    hostnames: [""],
+    css: { "/*": "main" },
   },
 };
 
