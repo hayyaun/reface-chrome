@@ -6,14 +6,14 @@ const patches: { [key: string]: Patch } = {
   "wikipedia-focus": {
     name: "Wikipedia Focus",
     details: "Removes irrelavant notices and popups from Wikipedia",
-    keywords: [categories.ads, "wikipedia", "cool"],
-    hostnames: ["wikipedia.org"],
+    keywords: [categories.ads, "wikipedia", "focus"],
+    hostnames: ["*wikipedia.org"],
   },
   "wikipedia-borderless": {
     name: "Wikipedia Borderless",
     details: "Remove annoying borders from figures and tables",
     keywords: [categories.theme],
-    hostnames: ["wikipedia.org"],
+    hostnames: ["*wikipedia.org"],
   },
   // ArXiv.org
   "arxiv-lovely": {
@@ -29,20 +29,20 @@ const patches: { [key: string]: Patch } = {
     name: "Reading Time",
     details: "Adds minutes read time to Articles",
     keywords: [categories.feature, "time", "read", "wikipedia"],
-    hostnames: ["wikipedia.org"],
+    hostnames: ["*wikipedia.org"], // TODO add more support
   },
   "show-fps": {
     name: "Show FPS",
     details: "Indicate fps for all websites",
     keywords: [categories.feature],
-    hostnames: [""], // everywhere
+    hostnames: ["*"],
     css: { "/*": "main" },
   },
   "link-preview": {
     name: "Link Preview",
     details: "Previews links before opening them",
     keywords: [categories.feature],
-    hostnames: [""],
+    hostnames: ["*"],
     css: { "/*": "main" },
   },
 };

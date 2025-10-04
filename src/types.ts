@@ -26,6 +26,6 @@ export interface Patch {
   /** Ignore script execution */
   noJS?: boolean;
 
-  /** Map paths to css files name postfix - wildcard supported */
+  /** Map path-rules to css files name postfix - wildcard supported */
   css?: { [path: string]: string };
 }
