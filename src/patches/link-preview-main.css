@@ -44,4 +44,5 @@
   justify-content: center;
   line-height: 14px;
   font-family: cursive;
+  z-index: 999;
 }
