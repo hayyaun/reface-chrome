@@ -43,7 +43,9 @@ requestAnimationFrame(animate);
 
 document.body.addEventListener("pointermove", (ev) => {
   const el = document.elementFromPoint(ev.clientX, ev.clientY);
-  if (el === root) return;
+  if (el?.tagName.toLowerCase() === "iframe") return;
+  if (el?.classList.contains("rc-link-preview")) return;
+  if (el?.classList.contains("close-btn")) return;
 
   positionTo.x = ev.clientX;
   positionTo.y = ev.clientY;
