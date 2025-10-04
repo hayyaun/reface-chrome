@@ -114,7 +114,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           chrome.scripting.insertCSS({
             target: { tabId },
             files: [`patches/${patchKey}-${patch.css[path]}.css`],
-            origin: "USER",
           });
         }
       }

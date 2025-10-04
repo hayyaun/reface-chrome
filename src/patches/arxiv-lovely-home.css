@@ -31,7 +31,7 @@ main {
   display: none;
 }
 
-#header .search-block form input[name="query"] {
+.search-block form input[name="query"] {
   background-color: #00000012;
   border-radius: 99px 0 0 99px;
   box-sizing: border-box;
@@ -43,24 +43,43 @@ main {
   border: none;
 }
 
-#header .search-block form select[name="searchtype"] {
+.search-block form select {
   background-color: #00000012;
   height: 48px;
   padding: 0 1.5rem;
+  cursor: pointer;
   box-shadow: none;
   outline: none;
   border: none;
 }
+.search-block form select::after {
+  border: 2px solid #0005;
+  right: 0.85em;
+  content: none !important;
+}
 
-#header .search-block form button {
+.search-block form button {
   height: 47px;
   border-radius: 0 99px 99px 0;
   padding: 0 2rem;
   font-size: 1rem;
 }
 
-#header .search-block form a {
-  color: #000;
+.search-block form a {
+  color: #0004;
+  transition: color 0.5s ease;
+}
+
+.search-block form a:hover {
+  color: #0008;
+  text-decoration: none;
+}
+
+.search-block form .help {
+  color: #0002;
+  text-align: left;
+  margin-top: 1rem;
+  padding-left: 1.5rem;
 }
 
 footer {
