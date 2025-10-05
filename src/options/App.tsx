@@ -11,7 +11,7 @@ import { useStore } from "../store";
 export default function App() {
   const hostnames = useStore((s) => s.hostnames);
   const [selected, setSelected] = useState<string | null>(null);
-  const [enabledOnly, setEnabledOnly] = useState(false);
+  const [enabledOnly, setEnabledOnly] = useState(true);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const relevantItems = useMemo(() => {
