@@ -85,11 +85,10 @@ function clearBadge(tabId?: number) {
   chrome.action.setBadgeText({ text: "", tabId });
 }
 
-function updateBadgeForTab(tab: chrome.tabs.Tab) {
+function updateBadgeForTab(tab: chrome.tabs.Tab, count: number) {
   if (!state.showBadge) return clearBadge(tab.id);
-  const toApply = findApplicablePatches(tab);
-  if (!toApply.length) return;
-  updateBadge(toApply.length, tab.id);
+  if (!count) return;
+  updateBadge(count, tab.id);
 }
 
 // Fade-in
@@ -132,7 +131,8 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
     else {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (!tabs.length || !tabs[0]) return;
-        updateBadgeForTab(tabs[0]);
+        const applicable = findApplicablePatches(tabs[0]);
+        updateBadgeForTab(tabs[0], applicable.length);
       });
     }
   }
@@ -140,18 +140,15 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
 
 // Tabs
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  console.debug("update", tabId, tab, changeInfo);
-  if (!tab.url) return;
+chrome.webNavigation.onCompleted.addListener(async (details) => {
+  if (details.frameId !== 0) return;
   if (!state.hostnames) return;
-  // process tab
+  const tabId = details.tabId;
+  const tab = await chrome.tabs.get(tabId);
+  console.debug("update", tabId, tab, details);
+  if (!tab.url) return;
   const toApply = findApplicablePatches(tab);
-  if (!toApply.length) return; // only apply fade-in when there's a thing to apply
-  if (changeInfo.status === "loading") {
-    updateBadgeForTab(tab);
-    beforeFadeIn(tabId);
-  }
-  if (changeInfo.status !== "complete") return;
+  if (!toApply.length) return;
   const pathname = new URL(tab.url).pathname;
   console.debug("apply", tabId, toApply);
   for (const patchKey of toApply) {
@@ -162,22 +159,28 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   setBadgeStateActive();
 });
 
+chrome.webNavigation.onCommitted.addListener(async (details) => {
+  if (details.frameId !== 0) return;
+  console.debug("loading", details.tabId); // load or reload
+  clearPatches(details.tabId);
+  const tab = await chrome.tabs.get(details.tabId);
+  const applicable = findApplicablePatches(tab);
+  // only apply fade-in when there's a thing to apply
+  if (!applicable.length) return;
+  updateBadgeForTab(tab, applicable.length);
+  beforeFadeIn(details.tabId);
+});
+
 chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
   console.debug("remove", tabId, removeInfo);
   clearPatches(tabId);
 });
 
-chrome.webNavigation.onCommitted.addListener((details) => {
-  if (details.frameId !== 0) return;
-  console.debug("loading", details.tabId); // load or reload
-  clearPatches(details.tabId);
-});
-
-chrome.tabs.onActivated.addListener((activeInfo) => {
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
   // activeInfo.tabId and activeInfo.windowId
-  chrome.tabs.get(activeInfo.tabId, (tab) => {
-    updateBadgeForTab(tab);
-  });
+  const tab = await chrome.tabs.get(activeInfo.tabId);
+  const applicable = findApplicablePatches(tab);
+  updateBadgeForTab(tab, applicable.length);
 });
 
 // Runtime
