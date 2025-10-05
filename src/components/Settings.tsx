@@ -41,7 +41,7 @@ export default function Settings() {
       <p className="my-2 mt-4 p-2 font-bold underline-offset-4">Patches</p>
       <CheckboxItem
         title="Recommendation"
-        details="Shows recommendation popup of the most popular patches for every website"
+        details="Shows recommendation popup for the most popular patches"
         enabled={recommend}
         onChange={setRecommend}
       />
