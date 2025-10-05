@@ -6,7 +6,7 @@ let state: Store = useStore.getInitialState();
 
 // Patch
 
-function matchApplicablePatches(tab: chrome.tabs.Tab) {
+function findApplicablePatches(tab: chrome.tabs.Tab) {
   if (!tab.url) return [];
   const hostname = new URL(tab.url).hostname;
   const toApply: string[] = [];
@@ -28,7 +28,6 @@ function matchApplicablePatches(tab: chrome.tabs.Tab) {
     if (!key || hostname !== key) continue;
     const patchKeys = state.hostnames[key].enabled;
     if (!patchKeys.length) continue;
-    console.debug(hostname, patchKeys);
     const freshPatchKeys = patchKeys.filter(
       (patchKey) => !state.global.includes(patchKey),
     );
@@ -37,7 +36,12 @@ function matchApplicablePatches(tab: chrome.tabs.Tab) {
   return toApply;
 }
 
+const applied: { [id: number]: string[] } = {};
+
 function applyPatch(patchKey: string, tabId: number, pathname: string) {
+  if (applied[tabId]?.includes(patchKey)) return;
+  if (!applied[tabId]) applied[tabId] = [];
+  applied[tabId].push(patchKey);
   const patch = patches[patchKey];
   if (!patch.noJS) {
     chrome.scripting.executeScript({
@@ -79,7 +83,7 @@ function clearBadge(tabId?: number) {
 
 function updateBadgeForTab(tab: chrome.tabs.Tab) {
   if (!state.showBadge) return clearBadge(tab.id);
-  const toApply = matchApplicablePatches(tab);
+  const toApply = findApplicablePatches(tab);
   if (!toApply.length) return;
   updateBadge(toApply.length, tab.id);
 }
@@ -133,23 +137,31 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
 // Tabs
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  console.debug("update", tabId, tab, changeInfo);
   if (!tab.url) return;
   if (!state.hostnames) return;
   // process tab
-  const toApply = matchApplicablePatches(tab);
+  const toApply = findApplicablePatches(tab);
   if (!toApply.length) return; // only apply fade-in when there's a thing to apply
   if (changeInfo.status === "loading") {
+    if (applied[tabId]) delete applied[tabId];
     updateBadgeForTab(tab);
     beforeFadeIn(tabId);
   }
   if (changeInfo.status !== "complete") return;
   const pathname = new URL(tab.url).pathname;
+  console.debug("apply", tabId, toApply);
   for (const patchKey of toApply) {
     applyPatch(patchKey, tabId, pathname);
   }
   // on finish
   afterFadeIn(tabId);
   setBadgeStateActive();
+});
+
+chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
+  console.debug("remove", tabId, removeInfo);
+  if (applied[tabId]) delete applied[tabId];
 });
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
