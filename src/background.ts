@@ -9,19 +9,14 @@ let state: Store = useStore.getInitialState();
 function findApplicablePatches(tab: chrome.tabs.Tab) {
   if (!tab.url) return [];
   const hostname = new URL(tab.url).hostname;
-  const toApply: string[] = [];
+  const applicable: string[] = [];
   // match globals
   for (const patchKey of state.global) {
     const patch = patches[patchKey];
     if (!patch) continue;
-    let skip = true;
-    for (const rule of patch.hostnames) {
-      if (!match(hostname, rule)) continue;
-      skip = false;
-      break;
-    }
-    if (skip) continue;
-    toApply.push(patchKey);
+    const valid = patch.hostnames.some((rule) => match(hostname, rule));
+    if (!valid) continue;
+    applicable.push(patchKey);
   }
   // match local
   for (const key in state.hostnames) {
@@ -31,9 +26,9 @@ function findApplicablePatches(tab: chrome.tabs.Tab) {
     const freshPatchKeys = patchKeys.filter(
       (patchKey) => !state.global.includes(patchKey),
     );
-    toApply.push(...freshPatchKeys);
+    applicable.push(...freshPatchKeys);
   }
-  return toApply;
+  return applicable;
 }
 
 const applied: { [id: number]: string[] } = {};
