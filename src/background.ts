@@ -60,6 +60,10 @@ function applyPatch(patchKey: string, tabId: number, pathname: string) {
   }
 }
 
+function clearPatches(tabId: number) {
+  if (applied[tabId]) delete applied[tabId];
+}
+
 // Badge
 
 function resetBadgeState() {
@@ -144,7 +148,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   const toApply = findApplicablePatches(tab);
   if (!toApply.length) return; // only apply fade-in when there's a thing to apply
   if (changeInfo.status === "loading") {
-    if (applied[tabId]) delete applied[tabId];
     updateBadgeForTab(tab);
     beforeFadeIn(tabId);
   }
@@ -161,7 +164,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
   console.debug("remove", tabId, removeInfo);
-  if (applied[tabId]) delete applied[tabId];
+  clearPatches(tabId);
+});
+
+chrome.webNavigation.onCommitted.addListener((details) => {
+  if (details.frameId !== 0) return;
+  console.debug("loading", details.tabId); // load or reload
+  clearPatches(details.tabId);
 });
 
 chrome.tabs.onActivated.addListener((activeInfo) => {
