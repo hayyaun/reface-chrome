@@ -43,12 +43,7 @@ export default function PatchList({ hostname }: Props) {
         ))}
       </div>
       {relevantPatchKeys.map((patchKey) => (
-        <PatchItem
-          key={patchKey}
-          hostname={hostname}
-          patchKey={patchKey}
-          patch={patches[patchKey]}
-        />
+        <PatchItem key={patchKey} hostname={hostname} patchKey={patchKey} />
       ))}
       <div className="mt-1 flex cursor-pointer flex-col items-stretch justify-center gap-1 p-2 select-none">
         <a

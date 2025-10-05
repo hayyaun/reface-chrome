@@ -28,4 +28,7 @@ export interface Patch {
 
   /** Map path-rules to css files name postfix - wildcard supported */
   css?: { [path: string]: string };
+
+  /** Patch can be applied globally */
+  global?: boolean;
 }

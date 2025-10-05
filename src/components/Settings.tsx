@@ -1,13 +1,15 @@
 import { useStore } from "../store";
 import CheckboxItem from "./CheckboxItem";
+import PatchItem from "./PatchItem";
 
 export default function Settings() {
+  const global = useStore((s) => s.global);
   const fadeIn = useStore((s) => s.fadeIn);
   const setFadeIn = useStore((s) => s.setFadeIn);
   const showBadge = useStore((s) => s.showBadge);
   const setShowBadge = useStore((s) => s.setShowBadge);
-  const reload = useStore((s) => s.reload);
-  const setReload = useStore((s) => s.setReload);
+  const autoReload = useStore((s) => s.autoReload);
+  const setAutoReload = useStore((s) => s.setAutoReload);
   const recommend = useStore((s) => s.recommend);
   const setRecommend = useStore((s) => s.setRecommend);
   const ads = useStore((s) => s.ads);
@@ -16,7 +18,7 @@ export default function Settings() {
   const setDark = useStore((s) => s.setDark);
 
   return (
-    <section className="flex flex-1 flex-col">
+    <section className="flex flex-1 flex-col overflow-y-auto">
       <p className="my-2 p-2 font-bold underline-offset-4">General</p>
       <CheckboxItem
         title="Show Badge"
@@ -31,10 +33,10 @@ export default function Settings() {
         onChange={setFadeIn}
       />
       <CheckboxItem
-        title="Reload"
-        details="Reload pages after changes applied"
-        enabled={reload}
-        onChange={setReload}
+        title="Auto Reload"
+        details="Reload pages after changes applied automatically"
+        enabled={autoReload}
+        onChange={setAutoReload}
       />
       <p className="my-2 mt-4 p-2 font-bold underline-offset-4">Patches</p>
       <CheckboxItem
@@ -51,10 +53,21 @@ export default function Settings() {
       />
       <CheckboxItem
         title="Dark-mode"
-        details="Enables best dark theme from available website themes"
+        details="Enables best dark theme from available themes"
         enabled={dark}
         onChange={setDark}
       />
+      {!!global.length && (
+        <div className="my-2 mt-4 p-2">
+          <p className="font-bold underline-offset-4">Global</p>
+          <p className="text-tiny mt-1 opacity-50">
+            Patches that applied globally
+          </p>
+        </div>
+      )}
+      {global.map((patchKey) => (
+        <PatchItem key={patchKey} patchKey={patchKey} />
+      ))}
     </section>
   );
 }

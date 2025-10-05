@@ -14,14 +14,17 @@ export type Store = {
   setFadeIn: (v: boolean) => void;
   showBadge: boolean;
   setShowBadge: (v: boolean) => void;
-  reload: boolean;
-  setReload: (v: boolean) => void;
+  autoReload: boolean;
+  setAutoReload: (v: boolean) => void;
   recommend: boolean;
   setRecommend: (v: boolean) => void;
   ads: boolean;
   setAds: (v: boolean) => void;
   dark: boolean;
   setDark: (v: boolean) => void;
+  global: string[];
+  addGlobal: (key: string) => void;
+  removeGlobal: (key: string) => void;
 };
 
 export const useStore = create(
@@ -49,14 +52,26 @@ export const useStore = create(
       setFadeIn: (fadeIn) => set({ fadeIn }),
       showBadge: true,
       setShowBadge: (showBadge) => set({ showBadge }),
-      reload: true,
-      setReload: (reload) => set({ reload }),
+      autoReload: true,
+      setAutoReload: (autoReload) => set({ autoReload }),
       recommend: false,
       setRecommend: (recommend) => set({ recommend }),
       ads: false,
       setAds: (ads) => set({ ads }),
       dark: false,
       setDark: (dark) => set({ dark }),
+      global: [],
+      addGlobal: (key) => {
+        set((state) => {
+          if (state.global.includes(key)) return;
+          state.global.push(key);
+        });
+      },
+      removeGlobal: (key) => {
+        set((state) => {
+          state.global = state.global.filter((k) => k !== key);
+        });
+      },
     })),
     {
       name: "main",

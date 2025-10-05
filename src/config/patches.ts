@@ -30,6 +30,7 @@ const patches: { [key: string]: Patch } = {
     details: "Adds minutes read time to Articles",
     keywords: [categories.feature, "time", "read", "wikipedia"],
     hostnames: ["*wikipedia.org"], // TODO add more support
+    global: true,
   },
   "show-fps": {
     name: "Show FPS",
@@ -37,6 +38,7 @@ const patches: { [key: string]: Patch } = {
     keywords: [categories.feature],
     hostnames: ["*"],
     css: { "/*": "main" },
+    global: true,
   },
   "link-preview": {
     name: "Link Preview",
@@ -44,6 +46,7 @@ const patches: { [key: string]: Patch } = {
     keywords: [categories.feature],
     hostnames: ["*"],
     css: { "/*": "main" },
+    global: true,
   },
 };
 
