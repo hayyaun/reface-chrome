@@ -63,7 +63,7 @@
 
 @layer components {
   #root-popup {
-    @apply relative mx-auto flex min-h-80 w-full max-w-80 flex-col text-xs min-lg:border min-lg:border-white/5;
+    @apply relative mx-auto flex min-h-80 w-full max-w-80 flex-col text-xs select-none min-lg:border min-lg:border-white/5;
   }
   #root-options {
     @apply relative mx-auto my-auto flex h-160 max-h-[100vh] w-full max-w-160 flex-col text-xs min-lg:border min-lg:border-white/5;

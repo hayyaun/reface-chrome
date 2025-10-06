@@ -1,8 +1,13 @@
 import patches from "./config/patches";
-import { useStore, type Store } from "./store";
+import { STORE_KEY, useStore, type Store } from "./store";
 import { match } from "./utils/match";
 
+// State
+
+/** App store shared between popup, options, and background */
 let state: Store = useStore.getInitialState();
+/** Map of applied patches per tabId */
+const applied: { [id: number]: string[] } = {};
 
 // Patch
 
@@ -23,15 +28,13 @@ function findApplicablePatches(tab: chrome.tabs.Tab) {
     if (!key || hostname !== key) continue;
     const patchKeys = state.hostnames[key].enabled;
     if (!patchKeys.length) continue;
-    const freshPatchKeys = patchKeys.filter(
+    const newPatchKeys = patchKeys.filter(
       (patchKey) => !state.global.includes(patchKey),
     );
-    applicable.push(...freshPatchKeys);
+    applicable.push(...newPatchKeys);
   }
   return applicable;
 }
-
-const applied: { [id: number]: string[] } = {};
 
 function applyPatch(patchKey: string, tabId: number, pathname: string) {
   if (applied[tabId]?.includes(patchKey)) return;
@@ -109,18 +112,18 @@ function afterFadeIn(tabId: number) {
 // Storage
 
 // Load storage on startup
-chrome.storage.local.get("main", async (data) => {
-  if (!data.main) return;
+chrome.storage.local.get(STORE_KEY, async (data) => {
+  if (!data[STORE_KEY]) return;
   await useStore.persist.rehydrate();
   state = useStore.getState();
 });
 
 // Listen for storage changes from popup or elsewhere
 chrome.storage.onChanged.addListener(async (changes, area) => {
-  if (area === "local" && changes.main) {
+  if (area === "local" && changes[STORE_KEY]) {
     await useStore.persist.rehydrate();
     state = useStore.getState();
-    console.log("rehydrate background");
+    console.debug("rehydrate background");
     // update badge for active tab
     if (!state.showBadge) return clearBadge();
     else {

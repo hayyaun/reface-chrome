@@ -84,3 +84,5 @@ export const useStore = create(
     },
   ),
 );
+
+export const STORE_KEY = useStore.persist.getOptions().name!;
