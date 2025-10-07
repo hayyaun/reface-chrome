@@ -35,7 +35,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
   return (
     <div className="flex items-center gap-3 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       {Icon && (
-        <div className="rounded-lg bg-white/10 p-1.75">
+        <div className="shrink-0 rounded-lg bg-white/10 p-1.75">
           {!patch.logo ? (
             <Icon className="size-5" style={{ color: patch.color }} />
           ) : (
