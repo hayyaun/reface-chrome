@@ -30,7 +30,7 @@ export default function App() {
   return (
     <>
       <header className="flex items-center justify-between gap-2 bg-white/5 p-2 text-xs">
-        <p>{activeTabHostname}</p>
+        <p>{activeTabHostname || "localhost (not functional)"}</p>
         {!!active && (
           <div className="px-1">
             <RiCheckboxCircleFill className="size-4 text-green-400" />

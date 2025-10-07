@@ -27,13 +27,11 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
   const removePatch = useStore((s) => s.removePatch);
   const autoReload = useStore((s) => s.autoReload);
   const hostnames = useStore((s) => s.hostnames);
-
   const enabledGlobally = global.includes(patchKey);
   const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
   const excluded =
     !!hostname && hostnames[hostname]?.excluded.includes(patchKey);
   const Icon = icons[patch.keywords[0] ?? categories.all];
-
   return (
     <div className="flex items-center gap-3 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       {Icon && (
@@ -63,7 +61,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           onClick={() => {
             if (!enabledGlobally) addGlobal(patchKey, hostname);
             else removeGlobal(patchKey, hostname);
-            if (autoReload) setTimeout(reloadActiveTab, 1000);
+            if (autoReload) setTimeout(reloadActiveTab, 150);
           }}
         >
           {!enabledGlobally ? (
@@ -90,7 +88,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
               if (enabled) removePatch(hostname, patchKey);
               else addPatch(hostname, patchKey);
             }
-            if (autoReload) setTimeout(reloadActiveTab, 1000);
+            if (autoReload) setTimeout(reloadActiveTab, 150);
           }}
         >
           {(enabledGlobally ? !excluded : enabled) ? (

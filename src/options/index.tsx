@@ -18,3 +18,12 @@ if (import.meta.env.PROD) {
     }
   });
 }
+
+if (import.meta.env.DEV) {
+  window.addEventListener("storage", async (ev) => {
+    if (ev.key === STORE_KEY) {
+      await useStore.persist.rehydrate();
+      console.debug("rehydrate options");
+    }
+  });
+}
