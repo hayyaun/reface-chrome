@@ -36,7 +36,19 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
     <div className="flex items-center gap-3 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       {Icon && (
         <div className="rounded-lg bg-white/10 p-1.75">
-          {<Icon className="size-5" />}
+          {!patch.logo ? (
+            <Icon className="size-5" style={{ color: patch.color }} />
+          ) : (
+            <img
+              alt={patch.name}
+              src={
+                import.meta.env.PROD
+                  ? chrome.runtime.getURL(patch.logo)
+                  : patch.logo
+              }
+              className="size-5 object-contain text-white"
+            />
+          )}
         </div>
       )}
       <div className="flex flex-col gap-1">

@@ -32,4 +32,10 @@ export interface Patch {
 
   /** Patch can be applied globally */
   global?: boolean;
+
+  /** Logo file location */
+  logo?: string;
+
+  /** Default color for add-on */
+  color?: string;
 }

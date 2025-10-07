@@ -8,12 +8,14 @@ const patches: { [key: string]: Patch } = {
     details: "Removes irrelavant notices and popups from Wikipedia",
     keywords: [categories.ads, "wikipedia", "focus"],
     hostnames: ["*wikipedia.org"],
+    logo: "images/wikipedia-focus.svg",
   },
   "wikipedia-borderless": {
     name: "Wikipedia Borderless",
     details: "Remove annoying borders from figures and tables",
     keywords: [categories.theme],
     hostnames: ["*wikipedia.org"],
+    color: "#b5ff70",
   },
   // ArXiv.org
   "arxiv-lovely": {
@@ -23,14 +25,16 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["arxiv.org", "www.arxiv.org"],
     css: { "/": "home", "/search/*": "search" },
     noJS: true,
+    color: "#ff87a5",
   },
   // General
   "read-time": {
     name: "Reading Time",
     details: "Adds minutes read time to Articles",
     keywords: [categories.feature, "time", "read", "wikipedia"],
-    hostnames: ["*wikipedia.org"], // TODO add more support
+    hostnames: ["*wikipedia.org"],
     global: true,
+    logo: "images/read-time.svg",
   },
   "show-fps": {
     name: "Show FPS",
@@ -39,6 +43,7 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     css: { "/*": "main" },
     global: true,
+    logo: "images/show-fps.svg",
   },
   "link-preview": {
     name: "Link Preview",
@@ -47,6 +52,7 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     css: { "/*": "main" },
     global: true,
+    logo: "images/link-preview.svg",
   },
 };
 
