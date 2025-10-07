@@ -22,7 +22,7 @@ export default function App() {
     () =>
       Object.keys(hostnames).find(
         (item) =>
-          activeTabHostname.includes(item) && !!hostnames[item].enabled.length,
+          activeTabHostname.includes(item) && !!hostnames[item]!.enabled.length,
       ),
     [activeTabHostname, hostnames],
   );

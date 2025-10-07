@@ -54,6 +54,6 @@ export default patches;
 
 export const hostnames = Object.fromEntries(
   [...new Set(Object.values(patches).flatMap((patch) => patch.hostnames))].map(
-    (hn) => [hn || "*", { enabled: [] }],
+    (hn) => [hn || "*", { enabled: [], excluded: [] }],
   ),
 ) as { [hostname: string]: HostnameConfig };

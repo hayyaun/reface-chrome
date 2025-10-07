@@ -1,5 +1,6 @@
 export interface HostnameConfig {
   enabled: string[];
+  excluded: string[];
 }
 
 /**

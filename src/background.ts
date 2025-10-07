@@ -15,25 +15,29 @@ function findApplicablePatches(tab: chrome.tabs.Tab) {
   if (!tab.url) return [];
   const hostname = new URL(tab.url).hostname;
   const applicable: string[] = [];
-  // match globals
-  for (const patchKey of state.global) {
-    const patch = patches[patchKey];
+  // match global
+  for (const key of state.global) {
+    const patch = patches[key];
     if (!patch) continue;
     const valid = patch.hostnames.some((rule) => match(hostname, rule));
     if (!valid) continue;
-    applicable.push(patchKey);
+    const excluded = state.hostnames[hostname]?.excluded.includes(key);
+    if (excluded) continue;
+    applicable.push(key);
   }
   // match local
-  for (const key in state.hostnames) {
-    if (!key || hostname !== key) continue;
-    const patchKeys = state.hostnames[key].enabled;
+  for (const hn in state.hostnames) {
+    if (!hn || hostname !== hn) continue;
+    const patchKeys = state.hostnames[hn]!.enabled;
     if (!patchKeys.length) continue;
-    const newPatchKeys = patchKeys.filter(
-      (patchKey) => !state.global.includes(patchKey),
-    );
-    applicable.push(...newPatchKeys);
+    const valid = patchKeys.filter((key) => {
+      const patch = patches[key];
+      if (!patch) return false; // not found
+      return !state.global.includes(key); // not local
+    });
+    applicable.push(...valid);
   }
-  return applicable;
+  return [...new Set(applicable)]; // unique
 }
 
 function applyPatch(patchKey: string, tabId: number, pathname: string) {

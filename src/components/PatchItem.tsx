@@ -21,13 +21,19 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
   const global = useStore((s) => s.global);
   const addGlobal = useStore((s) => s.addGlobal);
   const removeGlobal = useStore((s) => s.removeGlobal);
-  const autoReload = useStore((s) => s.autoReload);
-  const hostnames = useStore((s) => s.hostnames);
+  const excludePatch = useStore((s) => s.excludePatch);
+  const includePatch = useStore((s) => s.includePatch);
   const addPatch = useStore((s) => s.addPatch);
   const removePatch = useStore((s) => s.removePatch);
-  const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
+  const autoReload = useStore((s) => s.autoReload);
+  const hostnames = useStore((s) => s.hostnames);
+
   const enabledGlobally = global.includes(patchKey);
+  const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
+  const excluded =
+    !!hostname && hostnames[hostname]?.excluded.includes(patchKey);
   const Icon = icons[patch.keywords[0] ?? categories.all];
+
   return (
     <div className="flex items-center gap-3 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       {Icon && (
@@ -47,7 +53,6 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       <div className="flex-1" />
       {patch.global && (
         <div
-          aria-label="Enabled Globally"
           title="Apply Globally"
           className={clsx(
             "cursor-pointer rounded-sm p-1 transition",
@@ -56,8 +61,8 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
               : "bg-red-400/10 hover:bg-red-400/25",
           )}
           onClick={() => {
-            if (!enabledGlobally) addGlobal(patchKey);
-            else removeGlobal(patchKey);
+            if (!enabledGlobally) addGlobal(patchKey, hostname);
+            else removeGlobal(patchKey, hostname);
             if (autoReload) setTimeout(reloadActiveTab, 1000);
           }}
         >
@@ -68,25 +73,30 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           )}
         </div>
       )}
-      {typeof hostname !== "undefined" && !enabledGlobally && (
+      {typeof hostname !== "undefined" && (
         <div
-          aria-label="Enabled Locally"
+          title={enabledGlobally ? "Exclude Globally" : "Enabled Locally"}
           className={clsx(
             "cursor-pointer rounded-sm p-1 transition",
-            !enabled
-              ? "bg-green-400/10 hover:bg-green-400/25"
-              : "bg-red-400/10 hover:bg-red-400/25",
+            (enabledGlobally ? !excluded : enabled)
+              ? "bg-red-400/10 hover:bg-red-400/25"
+              : "bg-green-400/10 hover:bg-green-400/25",
           )}
           onClick={() => {
-            if (!enabled) addPatch(hostname, patchKey);
-            else removePatch(hostname, patchKey);
+            if (enabledGlobally) {
+              if (!excluded) excludePatch(hostname, patchKey);
+              else includePatch(hostname, patchKey);
+            } else {
+              if (enabled) removePatch(hostname, patchKey);
+              else addPatch(hostname, patchKey);
+            }
             if (autoReload) setTimeout(reloadActiveTab, 1000);
           }}
         >
-          {!enabled ? (
-            <RiAddFill className="size-4 text-green-400" />
-          ) : (
+          {(enabledGlobally ? !excluded : enabled) ? (
             <RiDeleteBinFill className="size-4 text-red-400" />
+          ) : (
+            <RiAddFill className="size-4 text-green-400" />
           )}
         </div>
       )}

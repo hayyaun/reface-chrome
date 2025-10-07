@@ -6,9 +6,15 @@ import { devItems } from "./config/dev";
 import type { HostnameConfig } from "./types";
 
 export type Store = {
-  hostnames: { [hostname: string]: HostnameConfig };
+  global: string[];
+  addGlobal: (patchKey: string, hostname?: string) => void;
+  removeGlobal: (patchKey: string, hostname?: string) => void;
+  hostnames: { [hostname: string]: HostnameConfig | undefined };
+  _addHostname: (hostname: string) => void;
   addPatch: (hostname: string, patchKey: string) => void;
   removePatch: (hostname: string, patchKey: string) => void;
+  excludePatch: (hostname: string, patchKey: string) => void;
+  includePatch: (hostname: string, patchKey: string) => void;
   // options
   fadeIn: boolean;
   setFadeIn: (v: boolean) => void;
@@ -22,30 +28,65 @@ export type Store = {
   setAds: (v: boolean) => void;
   dark: boolean;
   setDark: (v: boolean) => void;
-  global: string[];
-  addGlobal: (key: string) => void;
-  removeGlobal: (key: string) => void;
 };
 
 export const useStore = create(
   persist(
     immer<Store>((set) => ({
-      hostnames: import.meta.env.DEV ? devItems : {},
-      addPatch: (hostname, patchKey) => {
+      global: [],
+      addGlobal: (key, hostname) => {
         set((state) => {
-          const config = state.hostnames[hostname];
-          if (!config) state.hostnames[hostname] = { enabled: [] };
-          if (state.hostnames[hostname].enabled.includes(patchKey)) return;
-          state.hostnames[hostname].enabled.push(patchKey);
+          if (state.global.includes(key)) return;
+          state.global.push(key);
+        });
+        // if current tab specified - include again
+        if (hostname) useStore.getState().includePatch(hostname, key);
+      },
+      removeGlobal: (key, hostname) => {
+        set((state) => {
+          state.global = state.global.filter((k) => k !== key);
+        });
+        // if current tab specified - remove patch
+        if (hostname) useStore.getState().removePatch(hostname, key);
+      },
+      hostnames: import.meta.env.DEV ? devItems : {},
+      _addHostname: (hostname) => {
+        set((state) => {
+          if (!state.hostnames[hostname]) {
+            state.hostnames[hostname] = { enabled: [], excluded: [] };
+          }
         });
       },
-      removePatch: (hostname, patchKey) => {
+      addPatch: (hostname, key) => {
+        useStore.getState()._addHostname(hostname);
         set((state) => {
-          const config = state.hostnames[hostname];
-          if (!config) state.hostnames[hostname] = { enabled: [] };
-          const index = state.hostnames[hostname].enabled.indexOf(patchKey);
-          if (index !== -1) state.hostnames[hostname].enabled.splice(index, 1);
+          if (state.hostnames[hostname]!.enabled.includes(key)) return;
+          state.hostnames[hostname]!.enabled.push(key);
         });
+      },
+      removePatch: (hostname, key) => {
+        useStore.getState()._addHostname(hostname);
+        set((state) => {
+          const index = state.hostnames[hostname]!.enabled.indexOf(key);
+          if (index !== -1) state.hostnames[hostname]!.enabled.splice(index, 1);
+        });
+      },
+      excludePatch: (hostname, key) => {
+        useStore.getState()._addHostname(hostname);
+        set((state) => {
+          if (state.hostnames[hostname]!.excluded.includes(key)) return;
+          state.hostnames[hostname]!.excluded.push(key);
+        });
+        useStore.getState().removePatch(hostname, key);
+      },
+      includePatch: (hostname, key) => {
+        useStore.getState()._addHostname(hostname);
+        set((state) => {
+          const index = state.hostnames[hostname]!.excluded.indexOf(key);
+          if (index !== -1)
+            state.hostnames[hostname]!.excluded.splice(index, 1);
+        });
+        useStore.getState().addPatch(hostname, key);
       },
       // options
       fadeIn: true,
@@ -60,18 +101,6 @@ export const useStore = create(
       setAds: (ads) => set({ ads }),
       dark: false,
       setDark: (dark) => set({ dark }),
-      global: [],
-      addGlobal: (key) => {
-        set((state) => {
-          if (state.global.includes(key)) return;
-          state.global.push(key);
-        });
-      },
-      removeGlobal: (key) => {
-        set((state) => {
-          state.global = state.global.filter((k) => k !== key);
-        });
-      },
     })),
     {
       name: "main",
