@@ -6,11 +6,13 @@ import { devItems } from "./config/dev";
 import type { HostnameConfig } from "./types";
 
 export type Store = {
+  // patches
   global: string[];
   addGlobal: (patchKey: string, hostname?: string) => void;
   removeGlobal: (patchKey: string, hostname?: string) => void;
   hostnames: { [hostname: string]: HostnameConfig | undefined };
-  _addHostname: (hostname: string) => void;
+  _initHostname: (hostname: string) => void;
+  _deleteHostname: (hostname: string) => void;
   addPatch: (hostname: string, patchKey: string) => void;
   removePatch: (hostname: string, patchKey: string) => void;
   excludePatch: (hostname: string, patchKey: string) => void;
@@ -50,29 +52,40 @@ export const useStore = create(
         if (hostname) useStore.getState().removePatch(hostname, key);
       },
       hostnames: import.meta.env.DEV ? devItems : {},
-      _addHostname: (hostname) => {
+      _initHostname: (hostname) => {
+        set((state) => {
+          if (state.hostnames[hostname]) return;
+          state.hostnames[hostname] = { enabled: [], excluded: [] };
+        });
+      },
+      _deleteHostname: (hostname) => {
+        // Keeps the storage clean
         set((state) => {
           if (!state.hostnames[hostname]) {
-            state.hostnames[hostname] = { enabled: [], excluded: [] };
+            return delete state.hostnames[hostname];
           }
+          if (state.hostnames[hostname].enabled.length) return;
+          if (state.hostnames[hostname].excluded.length) return;
+          delete state.hostnames[hostname];
         });
       },
       addPatch: (hostname, key) => {
-        useStore.getState()._addHostname(hostname);
+        useStore.getState()._initHostname(hostname);
         set((state) => {
           if (state.hostnames[hostname]!.enabled.includes(key)) return;
           state.hostnames[hostname]!.enabled.push(key);
         });
       },
       removePatch: (hostname, key) => {
-        useStore.getState()._addHostname(hostname);
+        useStore.getState()._initHostname(hostname);
         set((state) => {
           const index = state.hostnames[hostname]!.enabled.indexOf(key);
           if (index !== -1) state.hostnames[hostname]!.enabled.splice(index, 1);
         });
+        useStore.getState()._deleteHostname(hostname);
       },
       excludePatch: (hostname, key) => {
-        useStore.getState()._addHostname(hostname);
+        useStore.getState()._initHostname(hostname);
         set((state) => {
           if (state.hostnames[hostname]!.excluded.includes(key)) return;
           state.hostnames[hostname]!.excluded.push(key);
@@ -80,7 +93,7 @@ export const useStore = create(
         useStore.getState().removePatch(hostname, key);
       },
       includePatch: (hostname, key) => {
-        useStore.getState()._addHostname(hostname);
+        useStore.getState()._initHostname(hostname);
         set((state) => {
           const index = state.hostnames[hostname]!.excluded.indexOf(key);
           if (index !== -1)
