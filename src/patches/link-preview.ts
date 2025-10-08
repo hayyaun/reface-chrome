@@ -8,7 +8,7 @@ const IFRAME_SIZE = [480, 320];
 
 const iframe = document.createElement("iframe");
 const closeBtn = document.createElement("span");
-closeBtn.classList.add("close-btn");
+closeBtn.classList.add("rc-link-preview-close-btn");
 closeBtn.textContent = "x";
 const root = document.createElement("div");
 root.classList.add("rc-link-preview");

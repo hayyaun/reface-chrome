@@ -30,7 +30,7 @@
   display: none; /* Chrome, Safari */
 }
 
-.rc-link-preview .close-btn {
+.rc-link-preview .rc-link-preview-close-btn {
   position: absolute;
   top: 8px;
   left: 8px;

@@ -78,6 +78,7 @@ const patches: { [key: string]: Patch } = {
     details: "Display github statistics for each repo link",
     keywords: [categories.feature],
     hostnames: ["*"],
+    css: { "/*": "main" },
     global: true,
     logo: RiGithubLine,
     color: "#80b7ff",
