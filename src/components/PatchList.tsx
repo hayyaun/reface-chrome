@@ -34,7 +34,7 @@ export default function PatchList({ hostname }: Props) {
 
   return (
     <section className="flex flex-1 flex-col overflow-y-auto">
-      <div className="hide-scrollbar my-1 mb-3 flex gap-2 overflow-x-scroll p-2">
+      <div className="hide-scrollbar mb-0.5 flex gap-2 overflow-x-scroll p-3">
         {Object.keys(categories).map((k, i) => (
           <Chips
             key={i}

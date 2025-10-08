@@ -37,7 +37,7 @@ export default function ConfigModal({ patchKey, close }: Props) {
         out ? "animate-slide-out" : "animate-slide-in",
       )}
     >
-      <div aria-label="Header" className="flex items-center gap-2 p-4 pr-2">
+      <div aria-label="Header" className="flex gap-2 p-4 pr-2">
         <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75">
           <RiSettings2Line className="size-5" />
         </div>
