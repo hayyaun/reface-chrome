@@ -16,7 +16,7 @@ export default function SettingItem<T>({
   onChange,
 }: Props<T>) {
   return (
-    <div className="odd-color flex items-center justify-between gap-2 p-2 pl-4 transition select-none">
+    <div className="odd-color flex flex-wrap items-center justify-between gap-2 p-2 pl-4 transition select-none">
       <Label name={title} details={details} />
       {typeof value === "boolean" ? (
         <div
@@ -35,7 +35,15 @@ export default function SettingItem<T>({
         </div>
       ) : null}
       {/* TODO number */}
-      {/* TODO string */}
+      {typeof value === "string" && (
+        <input
+          aria-label="Text Input"
+          className="w-full rounded-md bg-white/5 p-1.5 px-2"
+          placeholder={title}
+          value={value}
+          onChange={(ev) => onChange(ev.target.value as T)}
+        />
+      )}
     </div>
   );
 }

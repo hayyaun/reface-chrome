@@ -136,7 +136,7 @@ export const useStore = create(
         import.meta.env.DEV ? (localStorage as any) : chromeStorage,
       ), // must return sync or async-compatible object
       version: 1,
-      // TODO migrate(persistedState, version) {},
+      // migrate(persistedState, version) {},
     },
   ),
 );
