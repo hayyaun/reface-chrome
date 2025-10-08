@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useStore } from "../store";
-import CheckboxItem from "./CheckboxItem";
+import ConfigModal from "./ConfigModal";
 import PatchItem from "./PatchItem";
+import SettingItem from "./SettingItem";
 
 export default function Settings() {
   const global = useStore((s) => s.global);
@@ -16,45 +18,44 @@ export default function Settings() {
   const setAds = useStore((s) => s.setAds);
   const dark = useStore((s) => s.dark);
   const setDark = useStore((s) => s.setDark);
-
+  const [configModal, setConfigModal] = useState<string | null>(null);
   return (
     <section className="flex flex-1 flex-col overflow-y-auto">
-      <p className="my-2 p-2 font-bold underline-offset-4">General</p>
-      <CheckboxItem
+      <p className="p-4 font-bold underline-offset-4">General</p>
+      <SettingItem
         title="Show Badge"
         details="Show the number of enabled patches for active tab"
-        enabled={showBadge}
+        value={showBadge}
         onChange={setShowBadge}
       />
-      <CheckboxItem
+      <SettingItem
         title="Fade In"
         details="Show websites final look after changes applied"
-        enabled={fadeIn}
+        value={fadeIn}
         onChange={setFadeIn}
       />
-      <CheckboxItem
+      <SettingItem
         title="Auto Reload"
         details="Reload pages after changes applied automatically"
-        enabled={autoReload}
+        value={autoReload}
         onChange={setAutoReload}
       />
-      <p className="my-2 mt-4 p-2 font-bold underline-offset-4">Patches</p>
-      <CheckboxItem
+      <SettingItem
         title="Recommendation"
         details="Shows recommendation popup for the most popular patches"
-        enabled={recommend}
+        value={recommend}
         onChange={setRecommend}
       />
-      <CheckboxItem
+      <SettingItem
         title="Remove all ads"
         details="Enables all ad-removal patches for available websites"
-        enabled={ads}
+        value={ads}
         onChange={setAds}
       />
-      <CheckboxItem
+      <SettingItem
         title="Dark-mode"
         details="Enables best dark theme from available themes"
-        enabled={dark}
+        value={dark}
         onChange={setDark}
       />
       {!!global.length && (
@@ -66,8 +67,18 @@ export default function Settings() {
         </div>
       )}
       {global.map((patchKey) => (
-        <PatchItem key={patchKey} patchKey={patchKey} />
+        <PatchItem
+          key={patchKey}
+          patchKey={patchKey}
+          openConfig={() => setConfigModal(patchKey)}
+        />
       ))}
+      {configModal && (
+        <ConfigModal
+          patchKey={configModal}
+          close={() => setConfigModal(null)}
+        />
+      )}
     </section>
   );
 }

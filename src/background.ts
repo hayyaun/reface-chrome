@@ -1,7 +1,7 @@
 import patches from "./config/patches";
 import { STORE_KEY, useStore, type Store } from "./store";
-import type { PatchConfigData } from "./types";
 import { match } from "./utils/match";
+import { extractDefaultConfigData } from "./utils/patch";
 
 // State
 
@@ -49,10 +49,7 @@ function applyPatch(patchKey: string, tabId: number, pathname: string) {
   // Config
   if (patches[patchKey].config) {
     // extract defaults
-    let data = Object.keys(patches[patchKey].config).reduce((acc, key) => {
-      acc[key] = patches[patchKey].config![key].defaultValue;
-      return acc;
-    }, {} as PatchConfigData);
+    let data = extractDefaultConfigData(patchKey);
     // override
     if (state.config[patchKey]) {
       data = state.config[patchKey];

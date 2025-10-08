@@ -5,18 +5,25 @@ import {
   RiCheckDoubleFill,
   RiCloseFill,
   RiDeleteBinFill,
+  RiSettings2Line,
 } from "react-icons/ri";
 import { reloadActiveTab } from "../chrome/utils";
 import { categories, icons } from "../config/mapping";
 import patches from "../config/patches";
 import { useStore } from "../store";
+import Label from "./Label";
 
 interface Props {
   hostname?: string;
   patchKey: string;
+  openConfig: () => void;
 }
 
-export default memo(function PatchItem({ hostname, patchKey }: Props) {
+export default memo(function PatchItem({
+  hostname,
+  patchKey,
+  openConfig,
+}: Props) {
   const patch = patches[patchKey];
   const global = useStore((s) => s.global);
   const addGlobal = useStore((s) => s.addGlobal);
@@ -33,9 +40,9 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
     !!hostname && hostnames[hostname]?.excluded.includes(patchKey);
   const Icon = icons[patch.keywords[0] ?? categories.all];
   return (
-    <div className="flex items-center gap-3 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
+    <div className="relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       {Icon && (
-        <div className="shrink-0 rounded-lg bg-white/10 p-1.75">
+        <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75">
           {!patch.logo ? (
             <Icon className="size-5" style={{ color: patch.color }} />
           ) : (
@@ -46,21 +53,22 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
                   ? chrome.runtime.getURL(patch.logo)
                   : patch.logo
               }
-              className="size-5 object-contain text-white"
+              className="size-5 object-contain"
             />
           )}
         </div>
       )}
-      <div className="flex flex-col gap-1">
-        <span>{patch.name}</span>
-        <span
-          title={patch.details.length > 40 ? patch.details : undefined}
-          className="text-tiny line-clamp-1 opacity-45"
+      <Label name={patch.name} details={patch.details} />
+      <div aria-label="Spacer" className="flex-1 basis-2" />
+      {patch.config && (
+        <div
+          title="Apply Globally"
+          className="cursor-pointer rounded-sm bg-white/10 p-1 transition hover:bg-white/25"
+          onClick={openConfig}
         >
-          {patch.details}
-        </span>
-      </div>
-      <div className="flex-1" />
+          <RiSettings2Line className="size-4" />
+        </div>
+      )}
       {patch.global && (
         <div
           title="Apply Globally"

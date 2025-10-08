@@ -75,9 +75,12 @@ export default function App() {
             </div>
           </div>
         </aside>
-        <section aria-label="Content" className="flex flex-1 flex-col">
+        <section
+          aria-label="Content"
+          className="relative flex flex-1 flex-col overflow-hidden"
+        >
           {!selected ? <Settings /> : <PatchList hostname={selected} />}
-          <Footer />
+          <Footer options />
         </section>
       </main>
     </>

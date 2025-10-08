@@ -1,20 +1,20 @@
-export interface HostnameConfig {
-  enabled: string[];
-  excluded: string[];
-}
-
-export type PatchConfigValue = string | number | boolean | undefined;
+export type ConfigValue = string | number | boolean | undefined;
 
 export interface PatchConfig {
   [key: string]: {
     name: string;
     details: string;
-    defaultValue: PatchConfigValue;
+    defaultValue: ConfigValue;
   };
 }
 
 export interface PatchConfigData {
-  [key: string]: PatchConfigValue;
+  [key: string]: ConfigValue;
+}
+
+export interface HostnameConfig {
+  enabled: string[];
+  excluded: string[];
 }
 
 /**

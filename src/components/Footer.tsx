@@ -1,7 +1,11 @@
 import { RiGithubFill, RiSettingsFill } from "react-icons/ri";
 import strings from "../config/strings";
 
-export default function Footer() {
+interface Props {
+  options: boolean;
+}
+
+export default function Footer({ options }: Props) {
   const openOptions = () => {
     if (import.meta.env.DEV) return;
     chrome.runtime.openOptionsPage();
@@ -15,9 +19,11 @@ export default function Footer() {
         </a>
         <span className="text-tiny opacity-25">{"Contribute on Github"}</span>
       </div>
-      <div className="cursor-pointer p-1" onClick={openOptions}>
-        <RiSettingsFill className="size-4 cursor-pointer" />
-      </div>
+      {!options && (
+        <div className="cursor-pointer p-1" onClick={openOptions}>
+          <RiSettingsFill className="size-4 cursor-pointer" />
+        </div>
+      )}
     </footer>
   );
 }

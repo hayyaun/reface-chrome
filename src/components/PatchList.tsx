@@ -5,6 +5,7 @@ import patches from "../config/patches";
 import strings from "../config/strings";
 import { match } from "../utils/match";
 import Chips from "./Chips";
+import ConfigModal from "./ConfigModal";
 
 interface Props {
   hostname: string;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function PatchList({ hostname }: Props) {
   const [selected, setSelected] = useState(categories.all);
+  const [configModal, setConfigModal] = useState<string | null>(null);
 
   const relevantPatchKeys = useMemo(
     () =>
@@ -43,17 +45,28 @@ export default function PatchList({ hostname }: Props) {
         ))}
       </div>
       {relevantPatchKeys.map((patchKey) => (
-        <PatchItem key={patchKey} hostname={hostname} patchKey={patchKey} />
+        <PatchItem
+          key={patchKey}
+          hostname={hostname}
+          patchKey={patchKey}
+          openConfig={() => setConfigModal(patchKey)}
+        />
       ))}
-      <div className="mt-1 flex cursor-pointer flex-col items-stretch justify-center gap-1 p-2 select-none">
+      <div className="mt-1 flex flex-col items-stretch justify-center gap-1 p-2">
         <a
           target="_blank"
           href={`${strings.github}/issues/new?${supportParams}`}
-          className="rounded-lg p-2 text-center text-blue-400/75 transition hover:bg-blue-400/10 hover:text-blue-300"
+          className="cursor-pointer rounded-lg p-2 text-center text-blue-400/75 transition hover:bg-blue-400/10 hover:text-blue-300"
         >
           Request add-on
         </a>
       </div>
+      {configModal && (
+        <ConfigModal
+          patchKey={configModal}
+          close={() => setConfigModal(null)}
+        />
+      )}
     </section>
   );
 }
