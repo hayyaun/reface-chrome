@@ -49,13 +49,10 @@ function applyPatch(patchKey: string, tabId: number, pathname: string) {
   // Config
   if (patches[patchKey].config) {
     // extract defaults
-    let data: PatchConfigData = Object.keys(patches[patchKey].config).reduce(
-      (acc, key) => {
-        acc[key] = patches[patchKey].config?.[key].defaultValue;
-        return acc;
-      },
-      {} as PatchConfigData,
-    );
+    let data = Object.keys(patches[patchKey].config).reduce((acc, key) => {
+      acc[key] = patches[patchKey].config![key].defaultValue;
+      return acc;
+    }, {} as PatchConfigData);
     // override
     if (state.config[patchKey]) {
       data = state.config[patchKey];
@@ -63,10 +60,10 @@ function applyPatch(patchKey: string, tabId: number, pathname: string) {
     chrome.scripting.executeScript({
       target: { tabId },
       func: ({ patchKey, data }) => {
+        window.__rc_config = window.__rc_config || {};
         window.__rc_config[patchKey] = data;
       },
       args: [{ patchKey, data }],
-      world: "MAIN", // NOTICE try isolated to
     });
   }
   // JS

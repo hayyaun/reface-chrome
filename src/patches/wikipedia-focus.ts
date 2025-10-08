@@ -2,8 +2,6 @@
 
 const config = window.__rc_config["wikipedia-focus"];
 
-console.log("config",config)
-
 if (config["remove-donation"] as boolean) {
   document
     .querySelector<HTMLDivElement>("#siteNotice, #pt-sitesupport-2")
