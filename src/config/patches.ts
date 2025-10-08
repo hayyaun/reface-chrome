@@ -1,3 +1,10 @@
+import {
+  RiBookOpenFill,
+  RiExternalLinkFill,
+  RiFocusLine,
+  RiGithubLine,
+  RiSpeedUpFill,
+} from "react-icons/ri";
 import type { HostnameConfig, Patch } from "../types";
 import { categories } from "./mapping";
 
@@ -8,7 +15,8 @@ const patches: { [key: string]: Patch } = {
     details: "Removes irrelavant notices and popups from Wikipedia",
     keywords: [categories.ads, "wikipedia", "focus"],
     hostnames: ["*wikipedia.org"],
-    logo: "images/wikipedia-focus.svg",
+    logo: RiFocusLine,
+    color: "#ffdb70",
     config: {
       "remove-donation": {
         name: "Remove donation",
@@ -41,7 +49,8 @@ const patches: { [key: string]: Patch } = {
     keywords: [categories.feature, "time", "read", "wikipedia"],
     hostnames: ["*wikipedia.org"],
     global: true,
-    logo: "images/read-time.svg",
+    logo: RiBookOpenFill,
+    color: "#82d7ff",
   },
   "show-fps": {
     name: "Show FPS",
@@ -50,7 +59,8 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     css: { "/*": "main" },
     global: true,
-    logo: "images/show-fps.svg",
+    logo: RiSpeedUpFill,
+    color: "#ff9675",
   },
   "link-preview": {
     name: "Link Preview",
@@ -59,7 +69,34 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     css: { "/*": "main" },
     global: true,
-    logo: "images/link-preview.svg",
+    logo: RiExternalLinkFill,
+    color: "#b999ff",
+  },
+  "github-stats": {
+    name: "Github Stats",
+    details: "Display github statistics for each repo link",
+    keywords: [categories.feature],
+    hostnames: ["*"],
+    global: true,
+    logo: RiGithubLine,
+    color: "#b3c9e6",
+    config: {
+      token: {
+        name: "Github Access Token",
+        details: "Access token ensures that you won't hit rate-limit.",
+        defaultValue: "",
+      },
+      stars: {
+        name: "Show Stars",
+        details: "Display the number of stars for the link to the repo",
+        defaultValue: true,
+      },
+      forks: {
+        name: "Show Forks",
+        details: "Display the number of forks for the link to the repo",
+        defaultValue: false,
+      },
+    },
   },
 };
 

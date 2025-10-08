@@ -1,3 +1,5 @@
+import type { IconType } from "react-icons";
+
 export type ConfigValue = string | number | boolean | undefined;
 
 export interface PatchConfig {
@@ -45,7 +47,7 @@ export interface Patch {
   global?: boolean;
 
   /** Logo file location */
-  logo?: string;
+  logo?: IconType | string;
 
   /** Default color for add-on */
   color?: string;

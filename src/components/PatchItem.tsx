@@ -38,12 +38,16 @@ export default memo(function PatchItem({
   const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
   const excluded =
     !!hostname && hostnames[hostname]?.excluded.includes(patchKey);
-  const Icon = icons[patch.keywords[0] ?? categories.all];
+  const Icon = !patch.logo
+    ? icons[patch.keywords[0] ?? categories.all]
+    : typeof patch.logo !== "string"
+      ? patch.logo
+      : null;
   return (
     <div className="relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       {Icon && (
         <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75">
-          {!patch.logo ? (
+          {typeof patch.logo !== "string" ? (
             <Icon className="size-5" style={{ color: patch.color }} />
           ) : (
             <img
