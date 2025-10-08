@@ -1,5 +1,6 @@
 import patches from "./config/patches";
 import { STORE_KEY, useStore, type Store } from "./store";
+import type { PatchConfigData } from "./types";
 import { match } from "./utils/match";
 
 // State
@@ -45,12 +46,37 @@ function applyPatch(patchKey: string, tabId: number, pathname: string) {
   if (!applied[tabId]) applied[tabId] = [];
   applied[tabId].push(patchKey);
   const patch = patches[patchKey];
+  // Config
+  if (patches[patchKey].config) {
+    // extract defaults
+    let data: PatchConfigData = Object.keys(patches[patchKey].config).reduce(
+      (acc, key) => {
+        acc[key] = patches[patchKey].config?.[key].defaultValue;
+        return acc;
+      },
+      {} as PatchConfigData,
+    );
+    // override
+    if (state.config[patchKey]) {
+      data = state.config[patchKey];
+    }
+    chrome.scripting.executeScript({
+      target: { tabId },
+      func: ({ patchKey, data }) => {
+        window.__rc_config[patchKey] = data;
+      },
+      args: [{ patchKey, data }],
+      world: "MAIN", // NOTICE try isolated to
+    });
+  }
+  // JS
   if (!patch.noJS) {
     chrome.scripting.executeScript({
       target: { tabId },
       files: [`patches/${patchKey}.js`],
     });
   }
+  // CSS
   if (patch.css) {
     for (const pathRule in patch.css) {
       if (!match(pathname, pathRule)) continue;

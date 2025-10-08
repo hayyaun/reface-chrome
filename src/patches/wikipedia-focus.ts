@@ -1,10 +1,16 @@
 // Remove support and site notice
-document
-  .querySelector<HTMLDivElement>("#siteNotice, #pt-sitesupport-2")
-  ?.style.setProperty("display", "none");
+
+const config = window.__rc_config["wikipedia-focus"];
+
+console.log("config",config)
+
+if (config["remove-donation"] as boolean) {
+  document
+    .querySelector<HTMLDivElement>("#siteNotice, #pt-sitesupport-2")
+    ?.style.setProperty("display", "none");
+}
 
 // Remove vote banner
-const target = document.body;
 
 const observer = new MutationObserver((mutations) => {
   mutations.forEach(() => {
@@ -14,4 +20,8 @@ const observer = new MutationObserver((mutations) => {
   });
 });
 
-observer.observe(target, { childList: true, subtree: true, attributes: false });
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
+  attributes: false,
+});

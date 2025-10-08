@@ -9,6 +9,13 @@ const patches: { [key: string]: Patch } = {
     keywords: [categories.ads, "wikipedia", "focus"],
     hostnames: ["*wikipedia.org"],
     logo: "images/wikipedia-focus.svg",
+    config: {
+      "remove-donation": {
+        name: "Remove donation",
+        details: "Hides all donation popups and buttons",
+        defaultValue: true,
+      },
+    },
   },
   "wikipedia-borderless": {
     name: "Wikipedia Borderless",

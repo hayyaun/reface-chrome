@@ -3,6 +3,20 @@ export interface HostnameConfig {
   excluded: string[];
 }
 
+export type PatchConfigValue = string | number | boolean | undefined;
+
+export interface PatchConfig {
+  [key: string]: {
+    name: string;
+    details: string;
+    defaultValue: PatchConfigValue;
+  };
+}
+
+export interface PatchConfigData {
+  [key: string]: PatchConfigValue;
+}
+
 /**
  * Represents a patch or patch that can be applied to a web page or system.
  */
@@ -17,10 +31,7 @@ export interface Patch {
   keywords: string[];
 
   /** List of hostname-rules where this patch is applicable
-   *
-   * Wildcard supported
-   * @example *wikipedia.org
-   * google.*
+   * @summary Wildcard supported
    */
   hostnames: string[];
 
@@ -38,4 +49,9 @@ export interface Patch {
 
   /** Default color for add-on */
   color?: string;
+
+  /** Config value globally set by user
+   * @summary You can access it from `window.__rc_config["patch-name"]["config-key"]`
+   */
+  config?: PatchConfig;
 }

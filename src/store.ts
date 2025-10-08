@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { chromeStorage } from "./chrome/storage";
 import { devItems } from "./config/dev";
-import type { HostnameConfig } from "./types";
+import type { HostnameConfig, PatchConfigData } from "./types";
 
 export type Store = {
   // patches
@@ -17,6 +17,9 @@ export type Store = {
   removePatch: (hostname: string, patchKey: string) => void;
   excludePatch: (hostname: string, patchKey: string) => void;
   includePatch: (hostname: string, patchKey: string) => void;
+  config: { [patchKey: string]: PatchConfigData | undefined };
+  updateConfig: (patchKey: string, data: PatchConfigData) => void;
+  resetConfig: (patchKey: string) => void;
   // options
   fadeIn: boolean;
   setFadeIn: (v: boolean) => void;
@@ -100,6 +103,17 @@ export const useStore = create(
             state.hostnames[hostname]!.excluded.splice(index, 1);
         });
         useStore.getState().addPatch(hostname, key);
+      },
+      config: {},
+      updateConfig: (patchKey, data) => {
+        set((state) => {
+          state.config[patchKey] = data;
+        });
+      },
+      resetConfig: (patchKey) => {
+        set((state) => {
+          if (state.config[patchKey]) delete state.config[patchKey];
+        });
       },
       // options
       fadeIn: true,
