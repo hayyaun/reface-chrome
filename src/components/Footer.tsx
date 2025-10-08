@@ -2,7 +2,7 @@ import { RiGithubFill, RiSettingsFill } from "react-icons/ri";
 import strings from "../config/strings";
 
 interface Props {
-  options: boolean;
+  options?: boolean;
 }
 
 export default function Footer({ options }: Props) {
