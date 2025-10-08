@@ -34,7 +34,7 @@ export default function PatchList({ hostname }: Props) {
 
   return (
     <section className="flex flex-1 flex-col overflow-y-auto">
-      <div className="hide-scrollbar my-1 flex gap-2 overflow-x-scroll p-2">
+      <div className="hide-scrollbar my-1 mb-3 flex gap-2 overflow-x-scroll p-2">
         {Object.keys(categories).map((k, i) => (
           <Chips
             key={i}
@@ -52,7 +52,7 @@ export default function PatchList({ hostname }: Props) {
           openConfig={() => setConfigModal(patchKey)}
         />
       ))}
-      <div className="mt-1 flex flex-col items-stretch justify-center gap-1 p-2">
+      <div className="mt-3 flex flex-col items-stretch justify-center gap-1 p-2">
         <a
           target="_blank"
           href={`${strings.github}/issues/new?${supportParams}`}

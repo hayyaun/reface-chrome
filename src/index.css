@@ -4,14 +4,28 @@
   --text-tiny: 0.625rem;
   --color-background: #242424;
   --color-foreground: #ffffff;
-  --animate-fade-in: fade-in 0.25s ease forwards;
+  --animate-slide-in: slide-in 0.25s ease both;
+  --animate-slide-out: slide-out 0.25s ease both;
 
-  @keyframes fade-in {
+  @keyframes slide-in {
     0% {
       transform: translateX(100%);
+      opacit: 0;
     }
     100% {
       transform: translateX(0%);
+      opacit: 1;
+    }
+  }
+
+  @keyframes slide-out {
+    0% {
+      transform: translateX(0%);
+      opacit: 1;
+    }
+    100% {
+      transform: translateX(100%);
+      opacit: 0;
     }
   }
 }
@@ -79,10 +93,6 @@
   }
   #root-options {
     @apply relative mx-auto my-auto flex h-160 max-h-[100vh] w-full max-w-160 flex-col text-xs min-lg:border min-lg:border-white/5;
-  }
-
-  .modal {
-    @apply animate-fade-in bg-background absolute inset-0 z-50 size-full;
   }
 }
 

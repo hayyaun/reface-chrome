@@ -75,8 +75,8 @@ export default memo(function PatchItem({
           className={clsx(
             "cursor-pointer rounded-sm p-1 transition",
             !enabledGlobally
-              ? "bg-green-400/10 hover:bg-green-400/25"
-              : "bg-red-400/10 hover:bg-red-400/25",
+              ? "bg-green-300/10 hover:bg-green-400/25"
+              : "bg-red-300/10 hover:bg-red-400/25",
           )}
           onClick={() => {
             if (!enabledGlobally) addGlobal(patchKey, hostname);
@@ -97,8 +97,8 @@ export default memo(function PatchItem({
           className={clsx(
             "cursor-pointer rounded-sm p-1 transition",
             (enabledGlobally ? !excluded : enabled)
-              ? "bg-red-400/10 hover:bg-red-400/25"
-              : "bg-green-400/10 hover:bg-green-400/25",
+              ? "bg-red-300/10 hover:bg-red-400/25"
+              : "bg-green-300/10 hover:bg-green-400/25",
           )}
           onClick={() => {
             if (enabledGlobally) {
