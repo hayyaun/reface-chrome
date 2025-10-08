@@ -65,7 +65,6 @@ export default function ConfigModal({ patchKey, close }: Props) {
           />
         ))}
       </div>
-      <div aria-label="Spacer" className="flex-1" />
       <div className="flex gap-2 p-2">
         <button
           className="flex-1 rounded-lg bg-purple-600 p-2 text-center text-white transition hover:bg-purple-700 active:bg-purple-800"

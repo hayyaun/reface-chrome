@@ -23,6 +23,9 @@ export interface HostnameConfig {
  * Represents a patch or patch that can be applied to a web page or system.
  */
 export interface Patch {
+  /** Name of the author or inspired by */
+  author?: string;
+
   /** A short, descriptive name for the patch */
   name: string;
 

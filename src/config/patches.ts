@@ -73,13 +73,14 @@ const patches: { [key: string]: Patch } = {
     color: "#b999ff",
   },
   "github-stats": {
+    author: "Arman Salehi",
     name: "Github Stats",
     details: "Display github statistics for each repo link",
     keywords: [categories.feature],
     hostnames: ["*"],
     global: true,
     logo: RiGithubLine,
-    color: "#b3c9e6",
+    color: "#80b7ff",
     config: {
       token: {
         name: "Github Access Token",
@@ -87,13 +88,18 @@ const patches: { [key: string]: Patch } = {
         defaultValue: "",
       },
       stars: {
-        name: "Show Stars",
+        name: "Stars Count",
         details: "Display the number of stars for the link to the repo",
         defaultValue: true,
       },
       forks: {
-        name: "Show Forks",
+        name: "Forks Count",
         details: "Display the number of forks for the link to the repo",
+        defaultValue: false,
+      },
+      watchers: {
+        name: "Watchers Count",
+        details: "Display the number of watchers for the link to the repo",
         defaultValue: false,
       },
       threshold: {
