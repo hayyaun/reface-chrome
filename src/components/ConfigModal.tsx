@@ -30,7 +30,6 @@ export default function ConfigModal({ patchKey, close }: Props) {
   const onClose = () => {
     setOut(true);
     setTimeout(close, 500);
-    if (autoReload) setTimeout(reloadActiveTab, 150);
   };
   return (
     <section
@@ -47,7 +46,7 @@ export default function ConfigModal({ patchKey, close }: Props) {
         <Label name={patch.name + " config"} details={patch.details} />
         <div className="flex-1" />
         <RiCloseLine
-          className="size-6 cursor-pointer text-red-100 transition hover:-rotate-90 hover:text-red-400"
+          className="size-6 cursor-pointer text-red-400 transition hover:-rotate-90 hover:text-red-600"
           onClick={onClose}
         />
       </div>
@@ -72,11 +71,9 @@ export default function ConfigModal({ patchKey, close }: Props) {
         <button
           className="flex-1 rounded-lg bg-purple-600 p-2 text-center text-white transition hover:bg-purple-700 active:bg-purple-800"
           onClick={() => {
-            if (_.isEqual(data, defaultData)) {
-              reset(patchKey);
-            } else {
-              update(patchKey, data);
-            }
+            if (_.isEqual(data, defaultData)) reset(patchKey);
+            else update(patchKey, data);
+            if (autoReload) setTimeout(reloadActiveTab, 150);
             onClose();
           }}
         >
