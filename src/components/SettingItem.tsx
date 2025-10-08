@@ -34,7 +34,16 @@ export default function SettingItem<T>({
           )}
         </div>
       ) : null}
-      {/* TODO number */}
+      {typeof value === "number" && (
+        <input
+          aria-label="Number Input"
+          className="w-24 rounded-md bg-white/5 p-1.5 px-2"
+          type="number"
+          placeholder={title}
+          value={value}
+          onChange={(ev) => onChange(Number(ev.target.value) as T)}
+        />
+      )}
       {typeof value === "string" && (
         <input
           aria-label="Text Input"

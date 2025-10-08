@@ -96,6 +96,11 @@ const patches: { [key: string]: Patch } = {
         details: "Display the number of forks for the link to the repo",
         defaultValue: false,
       },
+      threshold: {
+        name: "Threshold",
+        details: "Highlight stats if stars are more than a certain number",
+        defaultValue: 1_000,
+      },
     },
   },
 };
