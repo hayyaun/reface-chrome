@@ -79,7 +79,7 @@ export default memo(function PatchItem({
       )}
       {patch.config && (
         <div
-          title="Apply Globally"
+          title="Global Config"
           className="tiny-btn bg-white/3 hover:bg-white/10"
           onClick={openConfig}
         >
@@ -88,7 +88,7 @@ export default memo(function PatchItem({
       )}
       {patch.global && (
         <div
-          title="Apply Globally"
+          title={!enabledGlobally ? "Enable Globally" : "Disable Globally"}
           className={clsx(
             "tiny-btn",
             !enabledGlobally
@@ -110,7 +110,15 @@ export default memo(function PatchItem({
       )}
       {typeof hostname !== "undefined" && (
         <div
-          title={enabledGlobally ? "Exclude Globally" : "Enabled Locally"}
+          title={
+            enabledGlobally
+              ? !excluded
+                ? "Exclude"
+                : "Include"
+              : enabled
+                ? "Remove"
+                : "Apply"
+          }
           className={clsx(
             "tiny-btn",
             (enabledGlobally ? !excluded : enabled)
