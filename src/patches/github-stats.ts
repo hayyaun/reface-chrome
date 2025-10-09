@@ -43,6 +43,7 @@ links.forEach(async (link) => {
   if (config.forks) await addItem("forks");
   if (config.watchers) await addItem("watchers");
   // append
+  if (!items.length) return;
   link.appendChild(stats);
   stats.textContent = `(${items.join("/")})`;
 });
