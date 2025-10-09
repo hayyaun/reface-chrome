@@ -1,14 +1,15 @@
 import patches from "./config/patches";
-import { STORE_KEY, useStore, type Store } from "./store";
+import { PREFS_KEY, usePrefs } from "./prefs";
+import { STORE_KEY, useStore } from "./store";
 import { match } from "./utils/match";
 import { extractDefaultConfigData } from "./utils/patch";
 
 // State
 
-/** App store shared between popup, options, and background */
-let state: Store = useStore.getInitialState();
-/** Map of applied patches per tabId */
-const applied: { [id: number]: string[] } = {};
+let state = useStore.getInitialState();
+let prefs = usePrefs.getInitialState();
+
+const applied: { [tabId: number]: string[] } = {};
 
 // Patch
 
@@ -108,15 +109,24 @@ function clearBadge(tabId?: number) {
 }
 
 function updateBadgeForTab(tab: chrome.tabs.Tab, count: number) {
-  if (!state.showBadge) return clearBadge(tab.id);
+  if (!prefs.showBadge) return clearBadge(tab.id);
   if (!count) return;
   updateBadge(count, tab.id);
+}
+
+function updateBadgeForActiveTab() {
+  if (!prefs.showBadge) return clearBadge();
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (!tabs.length || !tabs[0]) return;
+    const applicable = findApplicablePatches(tabs[0]);
+    updateBadgeForTab(tabs[0], applicable.length);
+  });
 }
 
 // Fade-in
 
 function beforeFadeIn(tabId: number) {
-  if (state.fadeIn) {
+  if (prefs.fadeIn) {
     chrome.scripting.insertCSS({
       target: { tabId },
       css: `body { opacity: 0; transition: opacity 0.5s ease; }`,
@@ -125,7 +135,7 @@ function beforeFadeIn(tabId: number) {
 }
 
 function afterFadeIn(tabId: number) {
-  if (state.fadeIn) {
+  if (prefs.fadeIn) {
     chrome.scripting.insertCSS({
       target: { tabId },
       css: `body { opacity: 1 !important; transition: opacity 0.5s ease; }`,
@@ -135,28 +145,31 @@ function afterFadeIn(tabId: number) {
 
 // Storage
 
-// Load storage on startup
+// on load
 chrome.storage.local.get(STORE_KEY, async (data) => {
   if (!data[STORE_KEY]) return;
   await useStore.persist.rehydrate();
   state = useStore.getState();
 });
+chrome.storage.local.get(PREFS_KEY, async (data) => {
+  if (!data[PREFS_KEY]) return;
+  await usePrefs.persist.rehydrate();
+  prefs = usePrefs.getState();
+});
 
-// Listen for storage changes from popup or elsewhere
+// on update
 chrome.storage.onChanged.addListener(async (changes, area) => {
   if (area === "local" && changes[STORE_KEY]) {
     await useStore.persist.rehydrate();
     state = useStore.getState();
     console.debug("rehydrate background");
-    // update badge for active tab
-    if (!state.showBadge) return clearBadge();
-    else {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (!tabs.length || !tabs[0]) return;
-        const applicable = findApplicablePatches(tabs[0]);
-        updateBadgeForTab(tabs[0], applicable.length);
-      });
-    }
+    updateBadgeForActiveTab();
+  }
+  if (area === "sync" && changes[PREFS_KEY]) {
+    await usePrefs.persist.rehydrate();
+    prefs = usePrefs.getState();
+    console.debug("rehydrate background prefs");
+    updateBadgeForActiveTab();
   }
 });
 

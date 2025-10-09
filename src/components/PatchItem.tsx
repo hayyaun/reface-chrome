@@ -10,6 +10,7 @@ import {
 import { reloadActiveTab } from "../chrome/utils";
 import { categories, icons } from "../config/mapping";
 import patches from "../config/patches";
+import { usePrefs } from "../prefs";
 import { useStore } from "../store";
 import Label from "./Label";
 
@@ -32,8 +33,8 @@ export default memo(function PatchItem({
   const includePatch = useStore((s) => s.includePatch);
   const addPatch = useStore((s) => s.addPatch);
   const removePatch = useStore((s) => s.removePatch);
-  const autoReload = useStore((s) => s.autoReload);
   const hostnames = useStore((s) => s.hostnames);
+  const autoReload = usePrefs((s) => s.autoReload);
   const enabledGlobally = global.includes(patchKey);
   const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
   const excluded =

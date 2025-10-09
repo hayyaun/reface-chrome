@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "../index.css";
-import { STORE_KEY, useStore } from "../store.ts";
+import { watchStorage } from "../utils/storage.ts";
 import App from "./App.tsx";
 
 createRoot(document.getElementById("root-popup")!).render(
@@ -10,20 +10,4 @@ createRoot(document.getElementById("root-popup")!).render(
   </StrictMode>,
 );
 
-if (import.meta.env.PROD) {
-  chrome.storage.onChanged.addListener(async (changes, area) => {
-    if (area === "local" && changes[STORE_KEY]) {
-      await useStore.persist.rehydrate();
-      console.debug("rehydrate popup");
-    }
-  });
-}
-
-if (import.meta.env.DEV) {
-  window.addEventListener("storage", async (ev) => {
-    if (ev.key === STORE_KEY) {
-      await useStore.persist.rehydrate();
-      console.debug("rehydrate popup");
-    }
-  });
-}
+watchStorage("popup");

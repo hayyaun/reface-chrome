@@ -1,27 +1,27 @@
 import { useState } from "react";
+import { usePrefs } from "../prefs";
 import { useStore } from "../store";
 import Backup from "./Backup";
+import ClearData from "./ClearData";
 import ConfigModal from "./ConfigModal";
 import PatchItem from "./PatchItem";
 import SettingItem from "./SettingItem";
-import ClearData from "./ClearData";
 
 export default function Settings() {
   const global = useStore((s) => s.global);
-  const fadeIn = useStore((s) => s.fadeIn);
-  const setFadeIn = useStore((s) => s.setFadeIn);
-  const showBadge = useStore((s) => s.showBadge);
-  const setShowBadge = useStore((s) => s.setShowBadge);
-  const autoReload = useStore((s) => s.autoReload);
-  const setAutoReload = useStore((s) => s.setAutoReload);
-  const recommend = useStore((s) => s.recommend);
-  const setRecommend = useStore((s) => s.setRecommend);
-  const ads = useStore((s) => s.ads);
-  const setAds = useStore((s) => s.setAds);
-  const dark = useStore((s) => s.dark);
-  const setDark = useStore((s) => s.setDark);
-  const sync = useStore((s) => s.sync);
-  const setSync = useStore((s) => s.setSync);
+  const fadeIn = usePrefs((s) => s.fadeIn);
+  const setFadeIn = usePrefs((s) => s.setFadeIn);
+  const showBadge = usePrefs((s) => s.showBadge);
+  const setShowBadge = usePrefs((s) => s.setShowBadge);
+  const autoReload = usePrefs((s) => s.autoReload);
+  const setAutoReload = usePrefs((s) => s.setAutoReload);
+  const recommend = usePrefs((s) => s.recommend);
+  const setRecommend = usePrefs((s) => s.setRecommend);
+  const ads = usePrefs((s) => s.ads);
+  const setAds = usePrefs((s) => s.setAds);
+  const dark = usePrefs((s) => s.dark);
+  const setDark = usePrefs((s) => s.setDark);
+  const sync = usePrefs((s) => s.sync);
   const [configModal, setConfigModal] = useState<string | null>(null);
   return (
     <section className="flex flex-1 flex-col overflow-y-auto pb-12">
@@ -49,10 +49,10 @@ export default function Settings() {
       <p className="p-4 opacity-50">Data</p>
       <ul>
         <SettingItem
-          title="Sync data"
-          details="Automatically sync changes across devices"
+          title="Sync"
+          details="Automatically sync preferences across devices"
           value={sync}
-          onChange={setSync}
+          onChange={() => {}}
         />
         <Backup />
         <ClearData />

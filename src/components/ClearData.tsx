@@ -20,7 +20,7 @@ export default function ClearData() {
     <li className="odd-color flex items-center justify-between gap-4 p-2 py-1 pl-4 transition select-none">
       <Label
         name="Clear Data"
-        details="Clears all data stored on this device or across all devices."
+        details="Clears all data stored on this device."
         limit={400}
         lines={null}
       />

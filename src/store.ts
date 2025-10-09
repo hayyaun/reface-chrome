@@ -1,12 +1,11 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { chromeStorage } from "./chrome/storage";
+import { chromeLocalStorage } from "./chrome/storage";
 import { devItems } from "./config/dev";
 import type { HostnameConfig, PatchConfigData } from "./types";
 
 export type Store = {
-  // patches
   global: string[];
   addGlobal: (patchKey: string, hostname?: string) => void;
   removeGlobal: (patchKey: string, hostname?: string) => void;
@@ -20,21 +19,6 @@ export type Store = {
   config: { [patchKey: string]: PatchConfigData | undefined };
   updateConfig: (patchKey: string, data: PatchConfigData) => void;
   resetConfig: (patchKey: string) => void;
-  // options
-  fadeIn: boolean;
-  setFadeIn: (v: boolean) => void;
-  showBadge: boolean;
-  setShowBadge: (v: boolean) => void;
-  autoReload: boolean;
-  setAutoReload: (v: boolean) => void;
-  recommend: boolean;
-  setRecommend: (v: boolean) => void;
-  ads: boolean;
-  setAds: (v: boolean) => void;
-  dark: boolean;
-  setDark: (v: boolean) => void;
-  sync: boolean;
-  setSync: (v: boolean) => void;
 };
 
 export const useStore = create(
@@ -117,27 +101,12 @@ export const useStore = create(
           if (state.config[patchKey]) delete state.config[patchKey];
         });
       },
-      // options
-      fadeIn: true,
-      setFadeIn: (fadeIn) => set({ fadeIn }),
-      showBadge: true,
-      setShowBadge: (showBadge) => set({ showBadge }),
-      autoReload: true,
-      setAutoReload: (autoReload) => set({ autoReload }),
-      recommend: false,
-      setRecommend: (recommend) => set({ recommend }),
-      ads: false,
-      setAds: (ads) => set({ ads }),
-      dark: false,
-      setDark: (dark) => set({ dark }),
-      sync: true,
-      setSync: (sync) => set({ sync }),
     })),
     {
       name: "main",
       storage: createJSONStorage(() =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        import.meta.env.DEV ? (localStorage as any) : chromeStorage,
+        import.meta.env.DEV ? (localStorage as any) : chromeLocalStorage,
       ), // must return sync or async-compatible object
       version: 1,
       // migrate(persistedState, version) {},
