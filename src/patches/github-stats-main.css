@@ -1,0 +1,9 @@
+.rc-github-stats-box {
+  display: inline;
+  color: yellow;
+  margin-left: 0.25em;
+}
+
+.rc-github-stats-threshold {
+  color: orange;
+}
