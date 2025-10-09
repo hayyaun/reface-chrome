@@ -31,11 +31,18 @@ export default function ConfigModal({ patchKey, close }: Props) {
     setOut(true);
     setTimeout(close, 500);
   };
+  const onReset = () => set(defaultData);
+  const onSave = () => {
+    if (_.isEqual(data, defaultData)) reset(patchKey);
+    else update(patchKey, data);
+    if (autoReload) setTimeout(reloadActiveTab, 150);
+    onClose();
+  };
   return (
     <section
       className={clsx(
-        "flex flex-1 flex-col gap-2",
-        "bg-background absolute inset-0 z-50 size-full",
+        "flex flex-1 flex-col gap-2", // container
+        "bg-background absolute inset-0 z-50 size-full", //  modal
         out ? "animate-slide-out" : "animate-slide-in",
       )}
     >
@@ -67,25 +74,18 @@ export default function ConfigModal({ patchKey, close }: Props) {
           />
         ))}
       </div>
-      <div className="flex gap-2 p-2">
-        <button
-          className="flex-1 rounded-lg bg-purple-600 p-2 text-center text-white transition hover:bg-purple-700 active:bg-purple-800"
-          onClick={() => {
-            if (_.isEqual(data, defaultData)) reset(patchKey);
-            else update(patchKey, data);
-            if (autoReload) setTimeout(reloadActiveTab, 150);
-            onClose();
-          }}
-        >
-          Save changes
-        </button>
+      <div aria-label="Buttons" className="flex gap-2 p-2">
         <button
           className="shrink-0 rounded-lg bg-white/5 p-1.75 hover:bg-white/10"
-          onClick={() => {
-            set(defaultData);
-          }}
+          onClick={onReset}
         >
           <RiResetLeftLine className="size-5 transition hover:-rotate-12 active:-rotate-45" />
+        </button>
+        <button
+          className="flex-1 rounded-lg bg-purple-600 p-2 text-center text-white transition hover:bg-purple-700 active:bg-purple-800"
+          onClick={onSave}
+        >
+          Save changes
         </button>
       </div>
     </section>

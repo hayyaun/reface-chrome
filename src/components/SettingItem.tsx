@@ -2,12 +2,12 @@ import clsx from "clsx";
 import { RiCheckboxBlankLine, RiCheckboxFill } from "react-icons/ri";
 import Label from "./Label";
 
-interface Props<T> {
+type Props<T> = {
   title: string;
   details: string;
   value: T;
   onChange: (v: T) => void;
-}
+};
 
 export default function SettingItem<T>({
   title,
@@ -16,7 +16,7 @@ export default function SettingItem<T>({
   onChange,
 }: Props<T>) {
   return (
-    <div className="odd-color flex flex-wrap items-center justify-between gap-2 p-2 pl-4 transition select-none">
+    <li className="odd-color flex flex-wrap items-center justify-between gap-2 p-2 pl-4 transition select-none">
       <Label name={title} details={details} />
       {typeof value === "boolean" ? (
         <div
@@ -53,6 +53,6 @@ export default function SettingItem<T>({
           onChange={(ev) => onChange(ev.target.value as T)}
         />
       )}
-    </div>
+    </li>
   );
 }

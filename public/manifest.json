@@ -26,7 +26,14 @@
     "service_worker": "background.js",
     "type": "module"
   },
-  "permissions": ["scripting", "tabs", "storage", "activeTab", "webNavigation"],
+  "permissions": [
+    "webNavigation",
+    "activeTab",
+    "tabs",
+    "storage",
+    "scripting",
+    "downloads"
+  ],
   "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {

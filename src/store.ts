@@ -33,6 +33,8 @@ export type Store = {
   setAds: (v: boolean) => void;
   dark: boolean;
   setDark: (v: boolean) => void;
+  sync: boolean;
+  setSync: (v: boolean) => void;
 };
 
 export const useStore = create(
@@ -128,6 +130,8 @@ export const useStore = create(
       setAds: (ads) => set({ ads }),
       dark: false,
       setDark: (dark) => set({ dark }),
+      sync: true,
+      setSync: (sync) => set({ sync }),
     })),
     {
       name: "main",
