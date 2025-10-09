@@ -1,7 +1,8 @@
 .rc-github-stats-box {
-  display: inline;
+  display: inline-block;
   color: yellow;
   margin-left: 0.25em;
+  text-decoration: none !important;
 }
 
 .rc-github-stats-threshold {

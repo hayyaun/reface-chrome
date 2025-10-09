@@ -1,8 +1,17 @@
 const config = window.__rc_config["github-stats"];
 
-const links = document.querySelectorAll("a");
+const reserved = ["topics", "users", "orgs", "collections", "contact"];
+const excludes = [
+  "#code-tab",
+  ".AppHeader-context-item",
+  '[data-pjax="#repo-content-pjax-container"]',
+  '[href="#readme-ov-file"]',
+  '[href="#"]',
+];
 
-const reserved = ["topics", "users", "orgs", "collections"];
+const links = document.querySelectorAll<HTMLAnchorElement>(
+  "a" + excludes.map((q) => `:not(${q})`).join(""),
+);
 
 links.forEach(async (link) => {
   if (!link.hostname.includes("github.com")) return;
