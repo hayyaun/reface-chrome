@@ -5,8 +5,6 @@ const excludes = [
   "#code-tab",
   ".AppHeader-context-item",
   '[data-pjax="#repo-content-pjax-container"]',
-  '[href="#readme-ov-file"]',
-  '[href="#"]',
 ];
 
 const links = document.querySelectorAll<HTMLAnchorElement>(
@@ -14,7 +12,10 @@ const links = document.querySelectorAll<HTMLAnchorElement>(
 );
 
 links.forEach(async (link) => {
-  if (!link.hostname.includes("github.com")) return;
+  const rawHref = link.getAttribute("href");
+  if (!rawHref) return;
+  const url = new URL(rawHref);
+  if (!url.hostname.includes("github.com")) return;
   const args = link.pathname.split("/");
   if (args.length !== 3) return;
   if (reserved.includes(args[1])) return;
