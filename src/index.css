@@ -94,6 +94,10 @@
   #root-options {
     @apply relative mx-auto my-auto flex h-160 w-full max-w-160 flex-col text-xs min-lg:border min-lg:border-white/5;
   }
+
+  .tiny-btn {
+    @apply box-border cursor-pointer rounded-sm border border-white/3 p-1 transition hover:border-white/5;
+  }
 }
 
 @layer utilities {

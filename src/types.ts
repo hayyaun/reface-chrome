@@ -66,7 +66,4 @@ export interface Patch {
    * @summary You can access it from `window.__rc_config["patch-name"]["config-key"]`
    */
   config?: PatchConfig;
-
-  /** donation link */
-  donation?: string;
 }

@@ -70,7 +70,7 @@ export default memo(function PatchItem({
       {patch.author?.donation && (
         <a
           title="Buy me a coffee"
-          className="cursor-pointer rounded-sm bg-yellow-300/10 p-1 transition hover:bg-yellow-400/25"
+          className="tiny-btn bg-yellow-300/3 hover:bg-yellow-400/10"
           target="_blank"
           href={patch.author.donation}
         >
@@ -80,7 +80,7 @@ export default memo(function PatchItem({
       {patch.config && (
         <div
           title="Apply Globally"
-          className="cursor-pointer rounded-sm bg-white/10 p-1 transition hover:bg-white/25"
+          className="tiny-btn bg-white/3 hover:bg-white/10"
           onClick={openConfig}
         >
           <RiSettings2Line className="size-4" />
@@ -90,10 +90,10 @@ export default memo(function PatchItem({
         <div
           title="Apply Globally"
           className={clsx(
-            "cursor-pointer rounded-sm p-1 transition",
+            "tiny-btn",
             !enabledGlobally
-              ? "bg-green-300/10 hover:bg-green-400/25"
-              : "bg-red-300/10 hover:bg-red-400/25",
+              ? "bg-green-300/3 hover:bg-green-400/10"
+              : "bg-red-300/3 hover:bg-red-400/10",
           )}
           onClick={() => {
             if (!enabledGlobally) addGlobal(patchKey, hostname);
@@ -112,10 +112,10 @@ export default memo(function PatchItem({
         <div
           title={enabledGlobally ? "Exclude Globally" : "Enabled Locally"}
           className={clsx(
-            "cursor-pointer rounded-sm p-1 transition",
+            "tiny-btn",
             (enabledGlobally ? !excluded : enabled)
-              ? "bg-red-300/10 hover:bg-red-400/25"
-              : "bg-green-300/10 hover:bg-green-400/25",
+              ? "bg-red-300/3 hover:bg-red-400/10"
+              : "bg-green-300/3 hover:bg-green-400/10",
           )}
           onClick={() => {
             if (enabledGlobally) {
