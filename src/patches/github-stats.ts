@@ -15,9 +15,9 @@ links.forEach(async (link) => {
     );
     const data = (await res.json()) as { value: string };
     let value = parseFloat(data.value);
+    if (Number.isNaN(value)) return;
     if (data.value.includes("k")) value *= 1_000;
     else if (data.value.includes("m")) value *= 1_000_000;
-    if (Number.isNaN(value)) return;
     items.push(data.value);
     if (key === "stars" && value > (config.threshold as number)) {
       stats.classList.add("rc-github-stats-threshold");
