@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { memo } from "react";
+import { CiCoffeeCup } from "react-icons/ci";
 import {
   RiAddFill,
   RiCheckDoubleFill,
@@ -65,6 +66,17 @@ export default memo(function PatchItem({
       )}
       <Label name={patch.name} details={patch.details} />
       <div aria-label="Spacer" className="flex-1 basis-2" />
+      {/* Buttons */}
+      {patch.author?.donation && (
+        <a
+          title="Buy me a coffee"
+          className="cursor-pointer rounded-sm bg-yellow-300/10 p-1 transition hover:bg-yellow-400/25"
+          target="_blank"
+          href={patch.author.donation}
+        >
+          <CiCoffeeCup className="size-4 text-yellow-400" />
+        </a>
+      )}
       {patch.config && (
         <div
           title="Apply Globally"

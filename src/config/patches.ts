@@ -6,6 +6,7 @@ import {
   RiSpeedUpFill,
 } from "react-icons/ri";
 import type { HostnameConfig, Patch } from "../types";
+import authors from "./authors";
 import { categories } from "./mapping";
 
 const patches: { [key: string]: Patch } = {
@@ -34,6 +35,7 @@ const patches: { [key: string]: Patch } = {
   },
   // ArXiv.org
   "arxiv-lovely": {
+    author: authors[0],
     name: "ArXiv Lovely Theme",
     details: "Lovely theme for ArXiv homepage",
     keywords: [categories.theme],
@@ -73,7 +75,7 @@ const patches: { [key: string]: Patch } = {
     color: "#b999ff",
   },
   "github-stats": {
-    author: "Arman Salehi",
+    author: authors[1],
     name: "Github Stats",
     details: "Display github statistics for each repo link",
     keywords: [categories.feature],

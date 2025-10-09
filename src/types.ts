@@ -19,12 +19,19 @@ export interface HostnameConfig {
   excluded: string[];
 }
 
+export interface Author {
+  name: string;
+  github: string;
+  donation?: string;
+  email?: string;
+}
+
 /**
  * Represents a patch or patch that can be applied to a web page or system.
  */
 export interface Patch {
   /** Name of the author or inspired by */
-  author?: string;
+  author?: Author;
 
   /** A short, descriptive name for the patch */
   name: string;
@@ -59,4 +66,7 @@ export interface Patch {
    * @summary You can access it from `window.__rc_config["patch-name"]["config-key"]`
    */
   config?: PatchConfig;
+
+  /** donation link */
+  donation?: string;
 }

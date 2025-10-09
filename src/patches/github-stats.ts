@@ -22,17 +22,21 @@ links.forEach(async (link) => {
   stats.classList.add("rc-github-stats-box");
   const items: string[] = [];
   async function addItem(key: string) {
-    const res = await fetch(
-      `https://img.shields.io/github/${key}/${args[1]}/${args[2]}.json`,
-    );
-    const data = (await res.json()) as { value: string };
-    let value = parseFloat(data.value);
-    if (Number.isNaN(value)) return;
-    if (data.value.includes("k")) value *= 1_000;
-    else if (data.value.includes("m")) value *= 1_000_000;
-    items.push(data.value);
-    if (key === "stars" && value > (config.threshold as number)) {
-      stats.classList.add("rc-github-stats-threshold");
+    try {
+      const res = await fetch(
+        `https://img.shields.io/github/${key}/${args[1]}/${args[2]}.json`,
+      );
+      const data = (await res.json()) as { value: string };
+      let value = parseFloat(data.value);
+      if (Number.isNaN(value)) return;
+      if (data.value.includes("k")) value *= 1_000;
+      else if (data.value.includes("m")) value *= 1_000_000;
+      items.push(data.value);
+      if (key === "stars" && value > (config.threshold as number)) {
+        stats.classList.add("rc-github-stats-threshold");
+      }
+    } catch {
+      console.debug("Rate limit exceeded!");
     }
   }
   if (config.stars) await addItem("stars");
