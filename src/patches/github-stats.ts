@@ -2,10 +2,13 @@ const config = window.__rc_config["github-stats"];
 
 const links = document.querySelectorAll("a");
 
+const reserved = ["topics", "users", "orgs", "collections"];
+
 links.forEach(async (link) => {
   if (!link.hostname.includes("github.com")) return;
   const args = link.pathname.split("/");
   if (args.length !== 3) return;
+  if (reserved.includes(args[1])) return;
   const stats = document.createElement("span");
   stats.classList.add("rc-github-stats-box");
   const items: string[] = [];
