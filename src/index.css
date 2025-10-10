@@ -92,7 +92,7 @@
   }
 
   .tiny-btn {
-    @apply box-border cursor-pointer rounded-sm border border-white/3 p-1 transition hover:border-white/5;
+    @apply box-border cursor-pointer rounded-sm border border-white/2 p-1 transition hover:border-white/5;
   }
 }
 
