@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
 export type ConfigValue = string | number | boolean | undefined;
@@ -66,4 +67,16 @@ export interface Patch {
    * @summary You can access it from `window.__rc_config["patch-name"]["config-key"]`
    */
   config?: PatchConfig;
+
+  /** Popup menu modal page
+   * @see config for retrieving params and variables
+   */
+  component?: ReactNode;
+}
+
+export interface Message {
+  data: unknown;
+  from: "background" | "content" | "popup" | "options";
+  to: Message["from"];
+  type: "data" | "updateBadge";
 }

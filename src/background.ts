@@ -1,183 +1,17 @@
-import patches from "./config/patches";
-import { PREFS_KEY, usePrefs } from "./prefs";
-import { STORE_KEY, useStore } from "./store";
-import { match } from "./utils/match";
-import { extractDefaultConfigData } from "./utils/patch";
-
-// State
-
-let state = useStore.getInitialState();
-let prefs = usePrefs.getInitialState();
-
-const applied: { [tabId: number]: string[] } = {};
-
-// Patch
-
-function findApplicablePatches(tab: chrome.tabs.Tab) {
-  if (!tab.url) return [];
-  const hostname = new URL(tab.url).hostname;
-  const applicable: string[] = [];
-  // match global
-  for (const key of state.global) {
-    const patch = patches[key];
-    if (!patch) continue;
-    const valid = patch.hostnames.some((rule) => match(hostname, rule));
-    if (!valid) continue;
-    const excluded = state.hostnames[hostname]?.excluded.includes(key);
-    if (excluded) continue;
-    applicable.push(key);
-  }
-  // match local
-  for (const hn in state.hostnames) {
-    if (!hn || hostname !== hn) continue;
-    const patchKeys = state.hostnames[hn]!.enabled;
-    if (!patchKeys.length) continue;
-    const valid = patchKeys.filter((key) => {
-      const patch = patches[key];
-      if (!patch) return false; // not found
-      return !state.global.includes(key); // not local
-    });
-    applicable.push(...valid);
-  }
-  return [...new Set(applicable)]; // unique
-}
-
-function applyPatch(patchKey: string, tabId: number, pathname: string) {
-  if (applied[tabId]?.includes(patchKey)) return;
-  if (!applied[tabId]) applied[tabId] = [];
-  applied[tabId].push(patchKey);
-  const patch = patches[patchKey];
-  // Config
-  if (patches[patchKey].config) {
-    // extract defaults
-    let data = extractDefaultConfigData(patchKey);
-    // override
-    if (state.config[patchKey]) {
-      data = state.config[patchKey];
-    }
-    chrome.scripting.executeScript({
-      target: { tabId },
-      func: ({ patchKey, data }) => {
-        window.__rc_config = window.__rc_config || {};
-        window.__rc_config[patchKey] = data;
-      },
-      args: [{ patchKey, data }],
-    });
-  }
-  // JS
-  if (!patch.noJS) {
-    chrome.scripting.executeScript({
-      target: { tabId },
-      files: [`patches/${patchKey}.js`],
-    });
-  }
-  // CSS
-  if (patch.css) {
-    for (const pathRule in patch.css) {
-      if (!match(pathname, pathRule)) continue;
-      chrome.scripting.insertCSS({
-        target: { tabId },
-        files: [`patches/${patchKey}-${patch.css[pathRule]}.css`],
-      });
-    }
-  }
-}
-
-function clearPatches(tabId: number) {
-  if (applied[tabId]) delete applied[tabId];
-}
-
-// Badge
-
-function resetBadgeState() {
-  chrome.action.setBadgeBackgroundColor({ color: "#000000" });
-  chrome.action.setBadgeTextColor({ color: "#ffffff" });
-}
-
-function setBadgeStateActive() {
-  chrome.action.setBadgeBackgroundColor({ color: "#000000" });
-  chrome.action.setBadgeTextColor({ color: "#5eff99" });
-}
-
-function updateBadge(count: number, tabId?: number) {
-  resetBadgeState();
-  chrome.action.setBadgeText({ text: count.toString(), tabId });
-}
-
-function clearBadge(tabId?: number) {
-  chrome.action.setBadgeText({ text: "", tabId });
-}
-
-function updateBadgeForTab(tab: chrome.tabs.Tab, count: number) {
-  if (!prefs.showBadge) return clearBadge(tab.id);
-  if (!count) return;
-  updateBadge(count, tab.id);
-}
-
-function updateBadgeForActiveTab() {
-  if (!prefs.showBadge) return clearBadge();
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (!tabs.length || !tabs[0]) return;
-    const applicable = findApplicablePatches(tabs[0]);
-    updateBadgeForTab(tabs[0], applicable.length);
-  });
-}
-
-// Fade-in
-
-function beforeFadeIn(tabId: number) {
-  if (prefs.fadeIn) {
-    chrome.scripting.insertCSS({
-      target: { tabId },
-      css: `body { opacity: 0; transition: opacity 0.5s ease; }`,
-    });
-  }
-}
-
-function afterFadeIn(tabId: number) {
-  if (prefs.fadeIn) {
-    chrome.scripting.insertCSS({
-      target: { tabId },
-      css: `body { opacity: 1 !important; transition: opacity 0.5s ease; }`,
-    });
-  }
-}
-
-// Storage
-
-// on load
-chrome.storage.local.get(STORE_KEY, async (data) => {
-  if (!data[STORE_KEY]) return;
-  await useStore.persist.rehydrate();
-  state = useStore.getState();
-});
-chrome.storage.local.get(PREFS_KEY, async (data) => {
-  if (!data[PREFS_KEY]) return;
-  await usePrefs.persist.rehydrate();
-  prefs = usePrefs.getState();
-});
-
-// on update
-chrome.storage.onChanged.addListener(async (changes, area) => {
-  if (area === "local" && changes[STORE_KEY]) {
-    await useStore.persist.rehydrate();
-    state = useStore.getState();
-    console.debug("rehydrate background");
-    updateBadgeForActiveTab();
-  }
-  if (area === "sync" && changes[PREFS_KEY]) {
-    await usePrefs.persist.rehydrate();
-    prefs = usePrefs.getState();
-    console.debug("rehydrate background prefs");
-    updateBadgeForActiveTab();
-  }
-});
+import { setBadgeStateActive, updateBadgeForTab } from "./service/badge";
+import { afterFadeIn, beforeFadeIn } from "./service/effects";
+import {
+  applyPatch,
+  clearPatches,
+  findApplicablePatches,
+} from "./service/patch";
+import { state } from "./service/state";
 
 // Tabs
 
 chrome.webNavigation.onCompleted.addListener(async (details) => {
   if (details.frameId !== 0) return;
-  if (!state.hostnames) return;
+  if (!state.store.hostnames) return;
   const tabId = details.tabId;
   const tab = await chrome.tabs.get(tabId);
   console.debug("update", tabId, tab, details);
@@ -216,12 +50,4 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   const tab = await chrome.tabs.get(activeInfo.tabId);
   const applicable = findApplicablePatches(tab);
   updateBadgeForTab(tab, applicable.length);
-});
-
-// Runtime
-
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.type === "updateBadge") {
-    updateBadge(msg.count);
-  }
 });

@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run build-service",
+    "build": "tsc -b && vite build && npm run build-service && npm run bundle",
     "build-service": "vite build --config vite.config.service.ts",
     "lint": "eslint .",
     "preview": "vite preview",
-    "bundle": "npm run build && crx pack ./dist --zip-output ./dist/extension.zip"
+    "bundle": "crx pack ./dist --zip-output ./dist/extension.zip"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
