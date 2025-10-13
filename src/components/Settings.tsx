@@ -82,9 +82,6 @@ export default function Settings() {
           onChange={setDark}
         />
       </ul>
-      {global.map((patchKey) => (
-        <PatchItem key={patchKey} patchKey={patchKey} />
-      ))}
       {!!global.length && (
         <div className="my-2 mt-4 p-2">
           <p className="opacity-50">Global</p>
@@ -93,6 +90,9 @@ export default function Settings() {
           </p>
         </div>
       )}
+      {global.map((patchKey) => (
+        <PatchItem key={patchKey} patchKey={patchKey} />
+      ))}
       <Modals />
     </section>
   );
