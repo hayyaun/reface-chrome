@@ -30,7 +30,7 @@ export default function Samantha() {
       if (msg.action !== "openai_answer") return;
       setMessages((s) => [
         ...s,
-        { content: msg.data as string, role: "assistant" },
+        { role: "assistant", content: msg.data as string },
       ]);
       setLoading(false);
     }

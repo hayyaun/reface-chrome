@@ -53,6 +53,8 @@ export async function ask(
         tool_choice: "auto",
       });
 
+      console.debug("Response", { messages, response });
+
       const responseMessage = response.choices[0].message;
 
       // If no tool call, just output the response
@@ -72,30 +74,31 @@ export async function ask(
         },
       });
 
-      // Handle tool calls (could be multiple, but handling one for simplicity)
-      const toolCall = responseMessage.tool_calls[0];
-
-      let toolResult;
-
-      if (toolCall.type === "function") {
-        const toolName = toolCall.function.name;
-        const toolArgs = JSON.parse(toolCall.function.arguments);
-        if (toolName === "getRawHTML") {
-          toolResult = await getRawHTML();
-        } else if (toolName === "searchDOM") {
-          toolResult = await searchDOM(toolArgs);
-        } else {
-          toolResult = "Functionality not defined!";
-        }
-      }
-
-      // Append the model's response and the tool result to messages
       messages.push(responseMessage);
-      messages.push({
-        role: "tool",
-        tool_call_id: toolCall.id,
-        content: JSON.stringify(toolResult),
-      });
+
+      // Handle tool calls
+      const toolCalls = responseMessage.tool_calls;
+
+      for (const toolCall of toolCalls) {
+        let toolResult;
+        if (toolCall.type === "function") {
+          const toolName = toolCall.function.name;
+          const toolArgs = JSON.parse(toolCall.function.arguments);
+          if (toolName === "getRawHTML") {
+            toolResult = await getRawHTML();
+          } else if (toolName === "searchDOM") {
+            toolResult = await searchDOM(toolArgs);
+          } else {
+            toolResult = "Functionality not defined!";
+          }
+        }
+        // Append the model's response and the tool result to messages
+        messages.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: JSON.stringify(toolResult || "Received nothing"),
+        });
+      }
     }
 
     // Final API request with updated messages
@@ -107,6 +110,7 @@ export async function ask(
     return secondResponse.choices[0].message.content || "Nothing to say!";
   } catch (err) {
     console.debug({ err });
-    return "Something went wrong!\n" + err;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return "Something went wrong!\n" + (err as any).error.message;
   }
 }
