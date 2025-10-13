@@ -86,5 +86,5 @@ export interface Message {
   data: unknown;
   from: "background" | "content" | "popup" | "options";
   to: Message["from"];
-  action: "updateBadge";
+  action: "updateBadge" | "openai_ask" | "openai_answer";
 }

@@ -20,11 +20,19 @@ const patches: { [key: string]: Patch } = {
     keywords: [categories.mix, "ai"],
     hostnames: ["*"],
     global: true,
+    noJS: true,
     logo: RiRobot2Fill,
     profile: {
       icon: RiMessageFill,
       title: "Chat",
       Component: Samantha,
+    },
+    config: {
+      apiKey: {
+        name: "API Key",
+        defaultValue: "",
+        details: "Your OpenAI api key",
+      },
     },
   },
   "read-time": {

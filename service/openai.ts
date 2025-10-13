@@ -1,62 +1,46 @@
 import { OpenAI } from "openai";
-import type { ChatCompletionCreateParamsBase } from "openai/resources/chat/completions.mjs";
+import {
+  executeScriptOnCurrentTab,
+  getCurrentTabHTML,
+  tools,
+} from "./openai-tools";
 
-const model: ChatCompletionCreateParamsBase["model"] = "gpt-4o-mini";
-const openai = new OpenAI({ apiKey: "" }); // FIXME
+const config: Omit<
+  OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming,
+  "messages"
+> = {
+  model: "gpt-4o-mini",
+  temperature: 0.1,
+};
 
-// Example function (replace with your own)
-function getWeather(location: string) {
-  // In a real app, this could call an external API or database
-  return {
-    location,
-    temperature: "72°F",
-    condition: "Sunny",
-    humidity: "45%",
-  };
-}
-
-async function main() {
-  // Define the tools (functions) available to the model
-  const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
-    {
-      type: "function",
-      function: {
-        name: "getWeather",
-        description: "Get the current weather for a location",
-        parameters: {
-          type: "object",
-          properties: {
-            location: {
-              type: "string",
-              description: "The city and state, e.g., San Francisco, CA",
-            },
-          },
-          required: ["location"],
-        },
-      },
-    },
-  ];
+export async function ask(message: string, apiKey?: string): Promise<string> {
+  if (!apiKey) return "Please add an API key in config";
+  const openai = new OpenAI({ apiKey });
+  if (!openai) return "Wrong API key provided, please change in config";
 
   // Initial messages
   const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-    { role: "system", content: "You are a helpful assistant." },
-    { role: "user", content: "What's the weather like in New York?" }, // Replace with your query
+    {
+      role: "system",
+      content:
+        "Try answering questions related to the defined tools, nothing more.",
+    },
+    { role: "user", content: message },
   ];
 
   // First API request
   const response = await openai.chat.completions.create({
-    model,
+    ...config,
     messages,
     tools,
-    tool_choice: "auto",
+    tool_choice: "required", // TODO can be enhanced
   });
 
   const responseMessage = response.choices[0].message;
 
   // If no tool call, just output the response
   if (!responseMessage.tool_calls) {
-    console.log(responseMessage.content);
-    return;
+    return responseMessage.content || "Nothing to do!";
   }
 
   // Handle tool calls (could be multiple, but handling one for simplicity)
@@ -67,10 +51,12 @@ async function main() {
   if (toolCall.type === "function") {
     const toolName = toolCall.function.name;
     const toolArgs = JSON.parse(toolCall.function.arguments);
-    if (toolName === "getWeather") {
-      toolResult = getWeather(toolArgs.location);
+    if (toolName === "getCurrentTabHTML") {
+      toolResult = await getCurrentTabHTML();
+    } else if (toolName === "executeScriptOnCurrentTab") {
+      toolResult = await executeScriptOnCurrentTab(toolArgs);
     } else {
-      throw new Error(`Unknown tool: ${toolName}`);
+      toolResult = "Functionality not defined!";
     }
   }
 
@@ -84,11 +70,9 @@ async function main() {
 
   // Second API request with updated messages
   const secondResponse = await openai.chat.completions.create({
-    model,
+    ...config,
     messages,
   });
 
-  console.log(secondResponse.choices[0].message.content);
+  return secondResponse.choices[0].message.content || "Nothing to say!";
 }
-
-main().catch(console.error);

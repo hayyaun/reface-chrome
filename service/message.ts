@@ -1,22 +1,44 @@
 import type { Message } from "../src/types";
 import { updateBadge } from "./badge";
+import { ask } from "./openai";
+import { state } from "./state";
 
-chrome.runtime.onMessage.addListener((msg: Message) => {
+chrome.runtime.onMessage.addListener(async (msg: Message) => {
   switch (msg.to) {
-    case "popup": // forward
+    // forwarded
+    case "popup": {
       chrome.runtime.sendMessage(msg);
       break;
-    case "content": // forward
+    }
+    // forwarded
+    case "content": {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id!, msg);
       });
       break;
-    case "background": // action
+    }
+    // take actions
+    case "background": {
       switch (msg.action) {
-        case "updateBadge":
+        case "updateBadge": {
           updateBadge(msg.data as number);
           break;
+        }
+        case "openai_ask": {
+          const apiKey = state.service.config["samantha"]?.["apiKey"] as
+            | string
+            | undefined;
+          const answer = await ask(msg.data as string, apiKey);
+          // Respond back to popup
+          chrome.runtime.sendMessage<Message>({
+            from: "background",
+            to: "popup",
+            action: "openai_answer",
+            data: answer,
+          });
+        }
       }
       break;
+    }
   }
 });
