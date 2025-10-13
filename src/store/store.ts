@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { chromeLocalStorage } from "./chrome/storage";
-import { devItems } from "./config/dev";
-import type { HostnameConfig, PatchConfigData } from "./types";
+import { chromeLocalStorage } from "../chrome/storage";
+import { devItems } from "../config/dev";
+import type { HostnameConfig, PatchConfigData } from "../types";
 
 export interface Store {
   global: string[];
@@ -115,17 +115,3 @@ export const useStore = create(
 );
 
 export const STORE_KEY = useStore.persist.getOptions().name!;
-
-interface UI {
-  configModal: string | null; // patchKey
-  setConfigModal: (patchKey: string | null) => void;
-  profileModal: string | null; // patchKey
-  setProfileModal: (patchKey: string | null) => void;
-}
-
-export const useUI = create<UI>((set) => ({
-  configModal: null,
-  setConfigModal: (configModal) => set({ configModal }),
-  profileModal: null,
-  setProfileModal: (profileModal) => set({ profileModal }),
-}));

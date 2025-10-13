@@ -11,8 +11,7 @@ import {
 import { reloadActiveTab } from "../chrome/utils";
 import { categories, icons } from "../config/mapping";
 import patches from "../config/patches";
-import { usePrefs } from "../prefs";
-import { useStore } from "../store";
+import { usePrefs, useStore } from "../store";
 import Label from "./Label";
 
 interface Props {

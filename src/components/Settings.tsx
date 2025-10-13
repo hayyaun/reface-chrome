@@ -1,5 +1,4 @@
-import { usePrefs } from "../prefs";
-import { useStore } from "../store";
+import { usePrefs, useStore } from "../store";
 import Backup from "./Backup";
 import ClearData from "./ClearData";
 import Modals from "./Modals";

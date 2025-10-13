@@ -1,5 +1,4 @@
-import { PREFS_KEY, usePrefs } from "../prefs.ts";
-import { STORE_KEY, useStore } from "../store.ts";
+import { PREFS_KEY, STORE_KEY, usePrefs, useStore } from "../store";
 
 export function watchStorage(scope: string) {
   if (import.meta.env.PROD) {

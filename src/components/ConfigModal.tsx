@@ -4,8 +4,7 @@ import { useMemo, useState } from "react";
 import { RiResetLeftLine } from "react-icons/ri";
 import { reloadActiveTab } from "../chrome/utils";
 import patches from "../config/patches";
-import { usePrefs } from "../prefs";
-import { useStore } from "../store";
+import { usePrefs, useStore } from "../store";
 import { extractDefaultConfigData } from "../utils/patch";
 import SettingItem from "./SettingItem";
 
