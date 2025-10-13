@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEventHandler } from "react";
 import { RiSendPlaneFill } from "react-icons/ri";
 import Chips from "../components/Chips";
 import type { Message } from "../types";
@@ -34,7 +34,8 @@ export default function Samantha() {
     };
   }, []);
 
-  const ask = async () => {
+  const ask: FormEventHandler = async (ev) => {
+    ev.preventDefault();
     if (import.meta.env.DEV) return;
     setLoading(true);
     await chrome.runtime.sendMessage<Message>({
@@ -54,7 +55,7 @@ export default function Samantha() {
           <div
             key={i}
             className={clsx(
-              "max-w-4/5 rounded-md p-3 leading-[150%]",
+              "max-w-4/5 rounded-md p-3 px-4 leading-[150%] whitespace-pre-line select-text",
               sender === "bot"
                 ? "self-start bg-red-200/5"
                 : "self-end bg-blue-200/5",
@@ -66,7 +67,7 @@ export default function Samantha() {
         {loading && (
           <div
             className={clsx(
-              "max-w-4/5 rounded-md p-3 leading-[150%]",
+              "max-w-4/5 rounded-md p-3 px-4 leading-[150%]",
               "self-start bg-red-200/5",
             )}
           >
@@ -87,7 +88,7 @@ export default function Samantha() {
           </div>
         )}
       </div>
-      <div className="flex shrink-0 grow-0 gap-2 p-4">
+      <form className="flex shrink-0 grow-0 gap-2 p-4" onSubmit={ask}>
         <input
           aria-label="Text Input"
           className="flex-1 rounded-md bg-white/5 p-1.5 px-2"
@@ -97,11 +98,11 @@ export default function Samantha() {
         />
         <button
           className="btn-primary group shrink-0 rounded-lg p-1.5"
-          onClick={ask}
+          type="submit"
         >
           <RiSendPlaneFill className="size-5 transition group-hover:scale-105 group-active:scale-95" />
         </button>
-      </div>
+      </form>
     </div>
   );
 }

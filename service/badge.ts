@@ -13,6 +13,7 @@ export function setBadgeStateActive() {
 
 export function updateBadge(count: number, tabId?: number) {
   resetBadgeState();
+  if (tabId && tabId < 0) return;
   chrome.action.setBadgeText({ text: count.toString(), tabId });
 }
 

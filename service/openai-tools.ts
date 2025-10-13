@@ -14,14 +14,14 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
     function: {
       name: "executeScriptOnCurrentTab",
       description:
-        "Execute script of your own based on what user asked for on the current tab. (use getCurrentTabHTML function if you are looking for elements)",
+        "Execute script of your own based on what user asked for on the current tab. (use getCurrentTabHTML function if you are looking for an element)",
       parameters: {
         type: "object",
         properties: {
           script: {
             type: "string",
             description:
-              "The script which is going to be hydrated through eval() function on the current tab and executed.",
+              "The script which is going to be run through eval() on the current tab.",
           },
         },
         required: ["script"],
@@ -66,5 +66,5 @@ export async function executeScriptOnCurrentTab({
   });
 
   const result = results[0].result;
-  return result ?? "Execution succefully but without any results";
+  return result ?? "Execution succefully!";
 }
