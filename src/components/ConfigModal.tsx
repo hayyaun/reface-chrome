@@ -52,15 +52,12 @@ export default function ConfigModal({ patchKey, close }: Props) {
       </div>
       <div aria-label="Buttons" className="flex gap-2 p-2">
         <button
-          className="shrink-0 rounded-lg bg-white/5 p-1.75 hover:bg-white/10"
+          className="group shrink-0 rounded-lg bg-white/5 p-1.75 hover:bg-white/10"
           onClick={onReset}
         >
-          <RiResetLeftLine className="size-5 transition hover:-rotate-12 active:-rotate-45" />
+          <RiResetLeftLine className="size-5 transition group-hover:-rotate-12 group-active:-rotate-45" />
         </button>
-        <button
-          className="flex-1 rounded-lg bg-purple-600 p-2 text-center text-white transition hover:bg-purple-700 active:bg-purple-800"
-          onClick={onSave}
-        >
+        <button className="btn-primary flex-1 rounded-lg p-2" onClick={onSave}>
           Save changes
         </button>
       </div>

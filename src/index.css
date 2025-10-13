@@ -108,4 +108,8 @@
   .odd-color:nth-of-type(odd) {
     @apply bg-white/2 hover:bg-white/5;
   }
+
+  .btn-primary {
+    @apply bg-purple-600 text-center text-white transition hover:bg-purple-700 active:bg-purple-800;
+  }
 }
