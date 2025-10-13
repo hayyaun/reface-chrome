@@ -4,13 +4,14 @@ import { Plugin } from "vite";
 
 export function dynamicDirCopyPlugin(
   dir: string,
+  dist: string,
   exts: string[],
   replacements?: [string, string][],
 ): Plugin {
   return {
     name: "dynamic-dur-copy",
     buildStart() {
-      const cssDir = path.resolve(process.cwd(), `src/${dir}`);
+      const cssDir = path.resolve(process.cwd(), dir);
       const files = fs
         .readdirSync(cssDir)
         .filter((f) => exts.some((ext) => f.endsWith(ext)));
@@ -24,7 +25,7 @@ export function dynamicDirCopyPlugin(
         }
         this.emitFile({
           type: "asset",
-          fileName: `${dir}/${file}`,
+          fileName: `${dist}/${file}`,
           source: content,
         });
       });

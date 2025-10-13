@@ -1,11 +1,11 @@
-import { setBadgeStateActive, updateBadgeForTab } from "./service/badge";
-import { afterFadeIn, beforeFadeIn } from "./service/effects";
+import { setBadgeStateActive, updateBadgeForTab } from "./badge";
+import { afterFadeIn, beforeFadeIn } from "./effects";
 import {
   applyPatch,
   clearPatches,
   findApplicablePatches,
-} from "./service/patch";
-import { state } from "./service/state";
+} from "./patch";
+import { state } from "./state";
 
 // Tabs
 

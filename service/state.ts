@@ -1,5 +1,5 @@
-import { PREFS_KEY, usePrefs } from "../prefs";
-import { STORE_KEY, useStore } from "../store";
+import { PREFS_KEY, usePrefs } from "../src/prefs";
+import { STORE_KEY, useStore } from "../src/store";
 import { updateBadgeForActiveTab } from "./badge";
 
 // State

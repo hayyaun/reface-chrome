@@ -4,7 +4,7 @@ import path from "path";
 import { defineConfig } from "vite";
 import { dynamicDirCopyPlugin } from "./plugins/dynamic-dir-copy";
 
-const patchesDir = "src/patches";
+const patchesDir = "service/patches";
 const patchFiles = fs
   .readdirSync(patchesDir)
   .filter((f) => f.endsWith(".ts"))
@@ -18,7 +18,7 @@ const patchFiles = fs
   );
 
 export default defineConfig({
-  plugins: [dynamicDirCopyPlugin("patches", [".css"])],
+  plugins: [dynamicDirCopyPlugin("service/patches", "patches", [".css"])],
   build: {
     outDir: "dist",
     emptyOutDir: false,
@@ -26,7 +26,7 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       input: {
-        background: "src/background.ts",
+        background: "service/index.ts",
         ...patchFiles,
       },
       output: {

@@ -1,4 +1,4 @@
-import type { Message } from "../types";
+import type { Message } from "../src/types";
 import { updateBadge } from "./badge";
 
 chrome.runtime.onMessage.addListener((msg: Message) => {
