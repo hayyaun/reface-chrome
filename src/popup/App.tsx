@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { RiCheckboxCircleFill } from "react-icons/ri";
 import Footer from "../components/Footer";
 import PatchList from "../components/PatchList";
-import { useStore } from "../store";
+import { useService } from "../store";
 
 export default function App() {
-  const hostnames = useStore((s) => s.hostnames);
+  const hostnames = useService((s) => s.hostnames);
   const [activeTabHostname, set] = useState("");
 
   useEffect(() => {

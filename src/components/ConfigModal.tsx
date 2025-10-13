@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { RiResetLeftLine } from "react-icons/ri";
 import { reloadActiveTab } from "../chrome/utils";
 import patches from "../config/patches";
-import { usePrefs, useStore } from "../store";
+import { usePrefs, useService } from "../store";
 import { extractDefaultConfigData } from "../utils/patch";
 import SettingItem from "./SettingItem";
 
@@ -15,9 +15,9 @@ interface Props {
 
 export default function ConfigModal({ patchKey, close }: Props) {
   const autoReload = usePrefs((s) => s.autoReload);
-  const config = useStore((s) => s.config);
-  const update = useStore((s) => s.updateConfig);
-  const reset = useStore((s) => s.resetConfig);
+  const config = useService((s) => s.config);
+  const update = useService((s) => s.updateConfig);
+  const reset = useService((s) => s.resetConfig);
   const defaultData = useMemo(
     () => extractDefaultConfigData(patchKey), // fallback
     [patchKey],

@@ -6,10 +6,10 @@ import Footer from "../components/Footer";
 import PatchList from "../components/PatchList";
 import Settings from "../components/Settings";
 import { hostnames as entireHostnames } from "../config/patches";
-import { useStore } from "../store";
+import { useService } from "../store";
 
 export default function App() {
-  const hostnames = useStore((s) => s.hostnames);
+  const hostnames = useService((s) => s.hostnames);
   const [selected, setSelected] = useState<string | null>(null);
   const [enabledOnly, setEnabledOnly] = useState(true);
   const [query, setQuery] = useState("");

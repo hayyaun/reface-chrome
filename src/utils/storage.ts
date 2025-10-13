@@ -1,10 +1,10 @@
-import { PREFS_KEY, STORE_KEY, usePrefs, useStore } from "../store";
+import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "../store";
 
 export function watchStorage(scope: string) {
   if (import.meta.env.PROD) {
     chrome.storage.onChanged.addListener(async (changes, area) => {
       if (area === "local" && changes[STORE_KEY]) {
-        await useStore.persist.rehydrate();
+        await useService.persist.rehydrate();
         console.debug(`rehydrate ${scope}`);
       } else if (area === "sync" && changes[PREFS_KEY]) {
         await usePrefs.persist.rehydrate();
@@ -14,7 +14,7 @@ export function watchStorage(scope: string) {
   } else if (import.meta.env.DEV) {
     window.addEventListener("storage", async (ev) => {
       if (ev.key === STORE_KEY) {
-        await useStore.persist.rehydrate();
+        await useService.persist.rehydrate();
         console.debug(`rehydrate ${scope}`);
       } else if (ev.key === PREFS_KEY) {
         await usePrefs.persist.rehydrate();

@@ -12,7 +12,11 @@ chrome.runtime.onMessage.addListener((msg: Message) => {
       });
       break;
     case "background": // action
-      if (msg.type === "updateBadge") updateBadge(msg.data as number);
+      switch (msg.action) {
+        case "updateBadge":
+          updateBadge(msg.data as number);
+          break;
+      }
       break;
   }
 });

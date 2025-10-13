@@ -10,24 +10,24 @@ export function findApplicablePatches(tab: chrome.tabs.Tab) {
   const hostname = new URL(tab.url).hostname;
   const applicable: string[] = [];
   // match global
-  for (const key of state.store.global) {
+  for (const key of state.service.global) {
     const patch = patches[key];
     if (!patch) continue;
     const valid = patch.hostnames.some((rule) => match(hostname, rule));
     if (!valid) continue;
-    const excluded = state.store.hostnames[hostname]?.excluded.includes(key);
+    const excluded = state.service.hostnames[hostname]?.excluded.includes(key);
     if (excluded) continue;
     applicable.push(key);
   }
   // match local
-  for (const hn in state.store.hostnames) {
+  for (const hn in state.service.hostnames) {
     if (!hn || hostname !== hn) continue;
-    const patchKeys = state.store.hostnames[hn]!.enabled;
+    const patchKeys = state.service.hostnames[hn]!.enabled;
     if (!patchKeys.length) continue;
     const valid = patchKeys.filter((key) => {
       const patch = patches[key];
       if (!patch) return false; // not found
-      return !state.store.global.includes(key); // not local
+      return !state.service.global.includes(key); // not local
     });
     applicable.push(...valid);
   }
@@ -44,8 +44,8 @@ export function applyPatch(patchKey: string, tabId: number, pathname: string) {
     // extract defaults
     let data = extractDefaultConfigData(patchKey);
     // override - defined by user
-    if (state.store.config[patchKey]) {
-      data = state.store.config[patchKey];
+    if (state.service.config[patchKey]) {
+      data = state.service.config[patchKey];
     }
     chrome.scripting.executeScript({
       target: { tabId },

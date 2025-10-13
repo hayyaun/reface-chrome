@@ -11,7 +11,7 @@ import { state } from "./state";
 
 chrome.webNavigation.onCompleted.addListener(async (details) => {
   if (details.frameId !== 0) return;
-  if (!state.store.hostnames) return;
+  if (!state.service.hostnames) return;
   const tabId = details.tabId;
   const tab = await chrome.tabs.get(tabId);
   console.debug("update", tabId, tab, details);

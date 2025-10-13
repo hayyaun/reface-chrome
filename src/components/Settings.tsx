@@ -1,4 +1,4 @@
-import { usePrefs, useStore } from "../store";
+import { usePrefs, useService } from "../store";
 import Backup from "./Backup";
 import ClearData from "./ClearData";
 import Modals from "./Modals";
@@ -6,8 +6,8 @@ import PatchItem from "./PatchItem";
 import SettingItem from "./SettingItem";
 
 export default function Settings() {
-  const global = useStore((s) => s.global);
-  const remove = useStore((s) => s.removeGlobal);
+  const global = useService((s) => s.global);
+  const remove = useService((s) => s.removeGlobal);
   const fadeIn = usePrefs((s) => s.fadeIn);
   const setFadeIn = usePrefs((s) => s.setFadeIn);
   const showBadge = usePrefs((s) => s.showBadge);

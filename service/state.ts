@@ -1,10 +1,10 @@
-import { PREFS_KEY, STORE_KEY, usePrefs, useStore } from "../src/store";
+import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "../src/store";
 import { updateBadgeForActiveTab } from "./badge";
 
 // State
 
 export const state = {
-  store: useStore.getInitialState(),
+  service: useService.getInitialState(),
   prefs: usePrefs.getInitialState(),
 };
 
@@ -13,8 +13,8 @@ export const state = {
 // on load
 chrome.storage.local.get(STORE_KEY, async (data) => {
   if (!data[STORE_KEY]) return;
-  await useStore.persist.rehydrate();
-  state.store = useStore.getState();
+  await useService.persist.rehydrate();
+  state.service = useService.getState();
 });
 chrome.storage.local.get(PREFS_KEY, async (data) => {
   if (!data[PREFS_KEY]) return;
@@ -25,8 +25,8 @@ chrome.storage.local.get(PREFS_KEY, async (data) => {
 // on update
 chrome.storage.onChanged.addListener(async (changes, area) => {
   if (area === "local" && changes[STORE_KEY]) {
-    await useStore.persist.rehydrate();
-    state.store = useStore.getState();
+    await useService.persist.rehydrate();
+    state.service = useService.getState();
     console.debug("rehydrate background");
     updateBadgeForActiveTab();
   }

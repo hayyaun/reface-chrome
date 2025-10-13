@@ -12,7 +12,7 @@ import { reloadActiveTab } from "../chrome/utils";
 import { categories, icons } from "../config/mapping";
 import patches from "../config/patches";
 import { useUIActions } from "../hooks/ui";
-import { usePrefs, useStore } from "../store";
+import { usePrefs, useService } from "../store";
 import Label from "./Label";
 
 interface Props {
@@ -21,14 +21,14 @@ interface Props {
 }
 
 export default memo(function PatchItem({ hostname, patchKey }: Props) {
-  const global = useStore((s) => s.global);
-  const addGlobal = useStore((s) => s.addGlobal);
-  const removeGlobal = useStore((s) => s.removeGlobal);
-  const excludePatch = useStore((s) => s.excludePatch);
-  const includePatch = useStore((s) => s.includePatch);
-  const addPatch = useStore((s) => s.addPatch);
-  const removePatch = useStore((s) => s.removePatch);
-  const hostnames = useStore((s) => s.hostnames);
+  const global = useService((s) => s.global);
+  const addGlobal = useService((s) => s.addGlobal);
+  const removeGlobal = useService((s) => s.removeGlobal);
+  const excludePatch = useService((s) => s.excludePatch);
+  const includePatch = useService((s) => s.includePatch);
+  const addPatch = useService((s) => s.addPatch);
+  const removePatch = useService((s) => s.removePatch);
+  const hostnames = useService((s) => s.hostnames);
   const autoReload = usePrefs((s) => s.autoReload);
 
   const { openConfig, openProfile } = useUIActions(patchKey);

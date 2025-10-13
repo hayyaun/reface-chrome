@@ -5,7 +5,7 @@ import { chromeLocalStorage } from "../chrome/storage";
 import { devItems } from "../config/dev";
 import type { HostnameConfig, PatchConfigData } from "../types";
 
-export interface Store {
+interface Service {
   global: string[];
   addGlobal: (patchKey: string, hostname?: string) => void;
   removeGlobal: (patchKey: string, hostname?: string) => void;
@@ -21,9 +21,9 @@ export interface Store {
   resetConfig: (patchKey: string) => void;
 }
 
-export const useStore = create(
+export const useService = create(
   persist(
-    immer<Store>((set) => ({
+    immer<Service>((set) => ({
       global: ["samantha"],
       addGlobal: (key, hostname) => {
         set((state) => {
@@ -31,14 +31,14 @@ export const useStore = create(
           state.global.push(key);
         });
         // if current tab specified - include again
-        if (hostname) useStore.getState().includePatch(hostname, key);
+        if (hostname) useService.getState().includePatch(hostname, key);
       },
       removeGlobal: (key, hostname) => {
         set((state) => {
           state.global = state.global.filter((k) => k !== key);
         });
         // if current tab specified - remove patch
-        if (hostname) useStore.getState().removePatch(hostname, key);
+        if (hostname) useService.getState().removePatch(hostname, key);
       },
       hostnames: import.meta.env.DEV ? devItems : {},
       _initHostname: (hostname) => {
@@ -59,36 +59,36 @@ export const useStore = create(
         });
       },
       addPatch: (hostname, key) => {
-        useStore.getState()._initHostname(hostname);
+        useService.getState()._initHostname(hostname);
         set((state) => {
           if (state.hostnames[hostname]!.enabled.includes(key)) return;
           state.hostnames[hostname]!.enabled.push(key);
         });
       },
       removePatch: (hostname, key) => {
-        useStore.getState()._initHostname(hostname);
+        useService.getState()._initHostname(hostname);
         set((state) => {
           const index = state.hostnames[hostname]!.enabled.indexOf(key);
           if (index !== -1) state.hostnames[hostname]!.enabled.splice(index, 1);
         });
-        useStore.getState()._deleteHostname(hostname);
+        useService.getState()._deleteHostname(hostname);
       },
       excludePatch: (hostname, key) => {
-        useStore.getState()._initHostname(hostname);
+        useService.getState()._initHostname(hostname);
         set((state) => {
           if (state.hostnames[hostname]!.excluded.includes(key)) return;
           state.hostnames[hostname]!.excluded.push(key);
         });
-        useStore.getState().removePatch(hostname, key);
+        useService.getState().removePatch(hostname, key);
       },
       includePatch: (hostname, key) => {
-        useStore.getState()._initHostname(hostname);
+        useService.getState()._initHostname(hostname);
         set((state) => {
           const index = state.hostnames[hostname]!.excluded.indexOf(key);
           if (index !== -1)
             state.hostnames[hostname]!.excluded.splice(index, 1);
         });
-        useStore.getState().addPatch(hostname, key);
+        useService.getState().addPatch(hostname, key);
       },
       config: {},
       updateConfig: (patchKey, data) => {
@@ -114,4 +114,4 @@ export const useStore = create(
   ),
 );
 
-export const STORE_KEY = useStore.persist.getOptions().name!;
+export const STORE_KEY = useService.persist.getOptions().name!;
