@@ -55,7 +55,7 @@ export default function Samantha() {
           <div
             key={i}
             className={clsx(
-              "max-w-4/5 rounded-md p-3 px-4 leading-[150%] whitespace-pre-line select-text",
+              "max-w-4/5 rounded-md p-3 px-4 leading-[150%] break-words whitespace-pre-line select-text",
               sender === "bot"
                 ? "self-start bg-red-200/5"
                 : "self-end bg-blue-200/5",

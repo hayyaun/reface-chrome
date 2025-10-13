@@ -1,9 +1,5 @@
 import { OpenAI } from "openai";
-import {
-  executeScriptOnCurrentTab,
-  getCurrentTabHTML,
-  tools,
-} from "./openai-tools";
+import { getCurrentTabHTML, tools } from "./openai-tools";
 
 const config: Omit<
   OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming,
@@ -55,11 +51,9 @@ export async function ask(message: string, apiKey?: string): Promise<string> {
 
     if (toolCall.type === "function") {
       const toolName = toolCall.function.name;
-      const toolArgs = JSON.parse(toolCall.function.arguments);
+      // const toolArgs = JSON.parse(toolCall.function.arguments);
       if (toolName === "getCurrentTabHTML") {
         toolResult = await getCurrentTabHTML();
-      } else if (toolName === "executeScriptOnCurrentTab") {
-        toolResult = await executeScriptOnCurrentTab(toolArgs);
       } else {
         toolResult = "Functionality not defined!";
       }
