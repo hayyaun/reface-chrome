@@ -1,22 +1,21 @@
 import { useMemo, useState } from "react";
-import { RiSettings2Line } from "react-icons/ri";
 import PatchItem from "../components/PatchItem";
 import { categories } from "../config/mapping";
 import patches from "../config/patches";
 import strings from "../config/strings";
+import { useUI } from "../store";
 import { match } from "../utils/match";
 import Chips from "./Chips";
-import ConfigModal from "./ConfigModal";
-import Modal from "./Modal";
+import Modals from "./Modals";
 
 interface Props {
   hostname: string;
 }
 
 export default function PatchList({ hostname }: Props) {
+  const setConfigModal = useUI((s) => s.setConfigModal);
+  const setProfileModal = useUI((s) => s.setProfileModal);
   const [selectedCategory, setSelectedCategory] = useState(categories.all);
-  const [configModal, setConfigModal] = useState<string | null>(null);
-  const [profileModal, setProfileModal] = useState<string | null>(null);
 
   const relevantPatchKeys = useMemo(
     () =>
@@ -34,10 +33,6 @@ export default function PatchList({ hostname }: Props) {
   const supportParams = new URLSearchParams({
     title: `Add support for ${hostname}`,
   });
-
-  const Component = profileModal
-    ? patches[profileModal].profile?.Component
-    : null;
 
   return (
     <section className="flex flex-1 flex-col overflow-y-auto">
@@ -69,26 +64,7 @@ export default function PatchList({ hostname }: Props) {
           Request add-on
         </a>
       </div>
-      {configModal && (
-        <Modal
-          Icon={RiSettings2Line}
-          name={patches[configModal].name + " config"}
-          details={patches[configModal].details}
-          close={() => setConfigModal(null)}
-        >
-          {({ close }) => <ConfigModal patchKey={configModal} close={close} />}
-        </Modal>
-      )}
-      {profileModal && Component && (
-        <Modal
-          Icon={patches[profileModal].profile!.icon}
-          name={patches[profileModal].name + " profile"}
-          details={patches[profileModal].details}
-          close={() => setProfileModal(null)}
-        >
-          {({ close }) => <Component close={close} />}
-        </Modal>
-      )}
+      <Modals />
     </section>
   );
 }

@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { chromeSyncStorage } from "./chrome/storage";
 
-export type Prefs = {
+export interface Prefs {
   fadeIn: boolean;
   setFadeIn: (v: boolean) => void;
   showBadge: boolean;
@@ -18,7 +18,7 @@ export type Prefs = {
   setDark: (v: boolean) => void;
   sync: boolean;
   setSync: (v: boolean) => void;
-};
+}
 
 export const usePrefs = create(
   persist(

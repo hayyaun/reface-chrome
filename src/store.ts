@@ -5,7 +5,7 @@ import { chromeLocalStorage } from "./chrome/storage";
 import { devItems } from "./config/dev";
 import type { HostnameConfig, PatchConfigData } from "./types";
 
-export type Store = {
+export interface Store {
   global: string[];
   addGlobal: (patchKey: string, hostname?: string) => void;
   removeGlobal: (patchKey: string, hostname?: string) => void;
@@ -19,7 +19,7 @@ export type Store = {
   config: { [patchKey: string]: PatchConfigData | undefined };
   updateConfig: (patchKey: string, data: PatchConfigData) => void;
   resetConfig: (patchKey: string) => void;
-};
+}
 
 export const useStore = create(
   persist(
@@ -115,3 +115,17 @@ export const useStore = create(
 );
 
 export const STORE_KEY = useStore.persist.getOptions().name!;
+
+interface UI {
+  configModal: string | null; // patchKey
+  setConfigModal: (patchKey: string | null) => void;
+  profileModal: string | null; // patchKey
+  setProfileModal: (patchKey: string | null) => void;
+}
+
+export const useUI = create<UI>((set) => ({
+  configModal: null,
+  setConfigModal: (configModal) => set({ configModal }),
+  profileModal: null,
+  setProfileModal: (profileModal) => set({ profileModal }),
+}));
