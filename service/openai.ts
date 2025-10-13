@@ -69,13 +69,11 @@ export async function ask(message: string, apiKey?: string): Promise<string> {
 
     // Append the model's response and the tool result to messages
     messages.push(responseMessage);
-    if (toolResult) {
-      messages.push({
-        role: "tool",
-        tool_call_id: toolCall.id,
-        content: JSON.stringify(toolResult),
-      });
-    }
+    messages.push({
+      role: "tool",
+      tool_call_id: toolCall.id,
+      content: JSON.stringify(toolResult),
+    });
 
     // Second API request with updated messages
     const secondResponse = await openai.chat.completions.create({
