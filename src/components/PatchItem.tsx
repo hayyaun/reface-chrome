@@ -19,12 +19,14 @@ interface Props {
   hostname?: string;
   patchKey: string;
   openConfig: () => void;
+  openProfile: () => void;
 }
 
 export default memo(function PatchItem({
   hostname,
   patchKey,
   openConfig,
+  openProfile,
 }: Props) {
   const patch = patches[patchKey];
   const global = useStore((s) => s.global);
@@ -86,7 +88,16 @@ export default memo(function PatchItem({
           <RiSettings2Line className="size-4" />
         </div>
       )}
-      {patch.global && (
+      {!!patch.profile && (
+        <div
+          title={patch.profile.title}
+          className="tiny-btn bg-white/3 hover:bg-white/10"
+          onClick={openProfile}
+        >
+          <patch.profile.icon className="size-4" />
+        </div>
+      )}
+      {patch.global && !patch.profile && (
         <div
           title={!enabledGlobally ? "Enable Globally" : "Disable Globally"}
           className={clsx(
@@ -108,7 +119,7 @@ export default memo(function PatchItem({
           )}
         </div>
       )}
-      {typeof hostname !== "undefined" && (
+      {typeof hostname !== "undefined" && !patch.profile && (
         <div
           title={
             enabledGlobally

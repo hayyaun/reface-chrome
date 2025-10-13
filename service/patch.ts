@@ -43,7 +43,7 @@ export function applyPatch(patchKey: string, tabId: number, pathname: string) {
   if (patches[patchKey].config) {
     // extract defaults
     let data = extractDefaultConfigData(patchKey);
-    // override
+    // override - defined by user
     if (state.store.config[patchKey]) {
       data = state.store.config[patchKey];
     }

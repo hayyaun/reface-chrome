@@ -15,6 +15,10 @@ export interface PatchConfigData {
   [key: string]: ConfigValue;
 }
 
+export interface ModalProps {
+  close: () => void;
+}
+
 export interface HostnameConfig {
   enabled: string[];
   excluded: string[];
@@ -68,10 +72,14 @@ export interface Patch {
    */
   config?: PatchConfig;
 
-  /** Popup menu modal page
+  /** Popup menu profile page
    * @see config for retrieving params and variables
    */
-  component?: ReactNode;
+  profile?: {
+    icon: IconType;
+    title: string;
+    Component: (props: ModalProps) => ReactNode;
+  };
 }
 
 export interface Message {

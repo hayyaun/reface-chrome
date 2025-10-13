@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { produce } from "immer";
 import _ from "lodash";
 import { useMemo, useState } from "react";
@@ -27,26 +26,15 @@ export default function ConfigModal({ patchKey, close }: Props) {
   );
   const [data, set] = useState(() => config[patchKey] || defaultData);
   const patch = patches[patchKey];
-  const [out, setOut] = useState(false);
-  const onClose = () => {
-    setOut(true);
-    setTimeout(close, 500);
-  };
   const onReset = () => set(defaultData);
   const onSave = () => {
     if (_.isEqual(data, defaultData)) reset(patchKey);
     else update(patchKey, data);
     if (autoReload) setTimeout(reloadActiveTab, 150);
-    onClose();
+    close();
   };
   return (
-    <section
-      className={clsx(
-        "flex flex-1 flex-col gap-2", // container
-        "bg-background absolute inset-0 z-50 size-full", //  modal
-        out ? "animate-slide-out" : "animate-slide-in",
-      )}
-    >
+    <>
       <div aria-label="Header" className="flex gap-2 p-4 pr-2">
         <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75">
           <RiSettings2Line className="size-5" />
@@ -55,7 +43,7 @@ export default function ConfigModal({ patchKey, close }: Props) {
         <div className="flex-1" />
         <RiCloseLine
           className="size-6 cursor-pointer text-red-400 transition hover:-rotate-90 hover:text-red-600"
-          onClick={onClose}
+          onClick={close}
         />
       </div>
       <div className="flex flex-1 flex-col overflow-y-auto">
@@ -89,6 +77,6 @@ export default function ConfigModal({ patchKey, close }: Props) {
           Save changes
         </button>
       </div>
-    </section>
+    </>
   );
 }

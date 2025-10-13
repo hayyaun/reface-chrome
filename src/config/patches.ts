@@ -3,48 +3,30 @@ import {
   RiExternalLinkFill,
   RiFocusLine,
   RiGithubLine,
+  RiMessageFill,
+  RiRobot2Fill,
   RiSpeedUpFill,
 } from "react-icons/ri";
+import Samantha from "../profiles/Samantha";
 import type { HostnameConfig, Patch } from "../types";
 import authors from "./authors";
 import { categories } from "./mapping";
 
 const patches: { [key: string]: Patch } = {
-  // Wikipedia.org
-  "wikipedia-focus": {
-    name: "Wikipedia Focus",
-    details: "Removes irrelavant notices and popups from Wikipedia",
-    keywords: [categories.ads, "wikipedia", "focus"],
-    hostnames: ["*wikipedia.org"],
-    logo: RiFocusLine,
-    color: "#ffdb70",
-    config: {
-      "remove-donation": {
-        name: "Remove donation",
-        details: "Hides all donation popups and buttons",
-        defaultValue: true,
-      },
+  // General
+  samantha: {
+    name: "Ask Samantha",
+    details: "...",
+    keywords: [categories.mix, "ai"],
+    hostnames: ["*"],
+    global: true,
+    logo: RiRobot2Fill,
+    profile: {
+      icon: RiMessageFill,
+      title: "Chat",
+      Component: Samantha,
     },
   },
-  "wikipedia-borderless": {
-    name: "Wikipedia Borderless",
-    details: "Remove annoying borders from figures and tables",
-    keywords: [categories.theme],
-    hostnames: ["*wikipedia.org"],
-    color: "#b5ff70",
-  },
-  // ArXiv.org
-  "arxiv-lovely": {
-    author: authors[0],
-    name: "ArXiv Lovely Theme",
-    details: "Lovely theme for ArXiv homepage",
-    keywords: [categories.theme],
-    hostnames: ["arxiv.org", "www.arxiv.org"],
-    css: { "/": "home", "/search/*": "search" },
-    noJS: true,
-    color: "#ff87a5",
-  },
-  // General
   "read-time": {
     name: "Reading Time",
     details: "Adds minutes read time to Articles",
@@ -111,6 +93,40 @@ const patches: { [key: string]: Patch } = {
         defaultValue: 1_000,
       },
     },
+  },
+  // Wikipedia.org
+  "wikipedia-focus": {
+    name: "Wikipedia Focus",
+    details: "Removes irrelavant notices and popups from Wikipedia",
+    keywords: [categories.ads, "wikipedia", "focus"],
+    hostnames: ["*wikipedia.org"],
+    logo: RiFocusLine,
+    color: "#ffdb70",
+    config: {
+      "remove-donation": {
+        name: "Remove donation",
+        details: "Hides all donation popups and buttons",
+        defaultValue: true,
+      },
+    },
+  },
+  "wikipedia-borderless": {
+    name: "Wikipedia Borderless",
+    details: "Remove annoying borders from figures and tables",
+    keywords: [categories.theme],
+    hostnames: ["*wikipedia.org"],
+    color: "#b5ff70",
+  },
+  // ArXiv.org
+  "arxiv-lovely": {
+    author: authors[0],
+    name: "ArXiv Lovely Theme",
+    details: "Lovely theme for ArXiv homepage",
+    keywords: [categories.theme],
+    hostnames: ["arxiv.org", "www.arxiv.org"],
+    css: { "/": "home", "/search/*": "search" },
+    noJS: true,
+    color: "#ff87a5",
   },
 };
 

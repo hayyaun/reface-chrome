@@ -24,7 +24,7 @@ export type Store = {
 export const useStore = create(
   persist(
     immer<Store>((set) => ({
-      global: [],
+      global: ["samantha"],
       addGlobal: (key, hostname) => {
         set((state) => {
           if (state.global.includes(key)) return;
