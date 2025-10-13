@@ -16,7 +16,7 @@ const patches: { [key: string]: Patch } = {
   // General
   samantha: {
     name: "Ask Samantha",
-    details: "...",
+    details: "Your all-in-one ai assistant!",
     keywords: [categories.mix, "ai"],
     hostnames: ["*"],
     global: true,

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { RiSettings2Line } from "react-icons/ri";
 import PatchItem from "../components/PatchItem";
 import { categories } from "../config/mapping";
 import patches from "../config/patches";
@@ -69,12 +70,22 @@ export default function PatchList({ hostname }: Props) {
         </a>
       </div>
       {configModal && (
-        <Modal close={() => setConfigModal(null)}>
+        <Modal
+          Icon={RiSettings2Line}
+          name={patches[configModal].name + " config"}
+          details={patches[configModal].details}
+          close={() => setConfigModal(null)}
+        >
           {({ close }) => <ConfigModal patchKey={configModal} close={close} />}
         </Modal>
       )}
       {profileModal && Component && (
-        <Modal close={() => setProfileModal(null)}>
+        <Modal
+          Icon={patches[profileModal].profile!.icon}
+          name={patches[profileModal].name + " profile"}
+          details={patches[profileModal].details}
+          close={() => setProfileModal(null)}
+        >
           {({ close }) => <Component close={close} />}
         </Modal>
       )}

@@ -1,13 +1,12 @@
 import { produce } from "immer";
 import _ from "lodash";
 import { useMemo, useState } from "react";
-import { RiCloseLine, RiResetLeftLine, RiSettings2Line } from "react-icons/ri";
+import { RiResetLeftLine } from "react-icons/ri";
 import { reloadActiveTab } from "../chrome/utils";
 import patches from "../config/patches";
 import { usePrefs } from "../prefs";
 import { useStore } from "../store";
 import { extractDefaultConfigData } from "../utils/patch";
-import Label from "./Label";
 import SettingItem from "./SettingItem";
 
 interface Props {
@@ -35,17 +34,6 @@ export default function ConfigModal({ patchKey, close }: Props) {
   };
   return (
     <>
-      <div aria-label="Header" className="flex gap-2 p-4 pr-2">
-        <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75">
-          <RiSettings2Line className="size-5" />
-        </div>
-        <Label name={patch.name + " config"} details={patch.details} />
-        <div className="flex-1" />
-        <RiCloseLine
-          className="size-6 cursor-pointer text-red-400 transition hover:-rotate-90 hover:text-red-600"
-          onClick={close}
-        />
-      </div>
       <div className="flex flex-1 flex-col overflow-y-auto">
         {Object.keys(data).map((configKey, i) => (
           <SettingItem
