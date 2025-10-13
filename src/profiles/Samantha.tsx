@@ -48,7 +48,7 @@ export default function Samantha() {
       from: "popup",
       to: "background",
       action: "openai_ask",
-      data: message,
+      data: newMessages,
     });
     setMessages(newMessages);
     set("");
@@ -91,7 +91,7 @@ export default function Samantha() {
               "self-start bg-red-200/5",
             )}
           >
-            Thinking...
+            Deep Thinking...
           </div>
         )}
         {!messages.length && (
@@ -120,7 +120,7 @@ export default function Samantha() {
           className="btn-primary group shrink-0 rounded-lg p-1.5"
           type="submit"
         >
-          <RiSendPlaneFill className="size-5 transition group-hover:scale-105 group-active:scale-95" />
+          <RiSendPlaneFill className="size-4 transition group-hover:scale-105 group-active:scale-95" />
         </button>
       </form>
     </div>

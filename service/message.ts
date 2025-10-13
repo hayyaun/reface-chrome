@@ -1,7 +1,6 @@
 import type { Message } from "../src/types";
 import { updateBadge } from "./badge";
 import { ask } from "./openai";
-import { state } from "./state";
 
 export function addMessageListener() {
   chrome.runtime.onMessage.addListener(async (msg: Message) => {
@@ -26,11 +25,8 @@ export function addMessageListener() {
             break;
           }
           case "openai_ask": {
-            const apiKey = state.service.config["samantha"]?.["apiKey"] as
-              | string
-              | undefined;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const answer = await ask(msg.data as any, apiKey);
+            const answer = await ask(msg.data as any);
             // Respond back to popup
             chrome.runtime.sendMessage<Message>({
               from: "background",

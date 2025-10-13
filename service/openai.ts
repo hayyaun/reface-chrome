@@ -1,9 +1,12 @@
 import { OpenAI } from "openai";
-import { getCurrentTabHTML, tools } from "./openai-tools";
+import { searchDOM, tools } from "./openai-tools";
+import { state } from "./state";
 
-const MAX_TOKEN = 128_000;
+// const MAX_TOKEN = 128_000;
+const THINKING_DEPTH = 5;
+const MAX_THINKING_DEPTH = 15;
 
-const config: Omit<
+const chatConfig: Omit<
   OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming,
   "messages"
 > = {
@@ -13,13 +16,20 @@ const config: Omit<
 
 let openai: OpenAI | null = null;
 
-export async function ask(message: string, apiKey?: string): Promise<string> {
+export async function ask(
+  _messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+): Promise<string> {
   try {
-    if (!apiKey) return "Please add an API key in config";
+    const config = state.service.config["samantha"];
+    const apiKey = config?.["apiKey"] as string;
 
+    if (!apiKey) return "Please add an API key in config";
     if (!openai) openai = new OpenAI({ apiKey });
 
-    // TODO health check
+    const thinkingDepth = Math.min(
+      MAX_THINKING_DEPTH,
+      (config?.["thinkginDepth"] as number) || THINKING_DEPTH,
+    );
 
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       {
@@ -27,57 +37,56 @@ export async function ask(message: string, apiKey?: string): Promise<string> {
         content: [
           "Try answering questions or manipulating web pages based on defined tools.",
           "Don't answer questions about anything else than provided page.",
+          "Use searchDOM function to recursively search through content.",
+          "Call searchDOM function multiple time to search deeply and recursively through context.",
+          `At lease call functions ${thinkingDepth - 1} times to give them better answer instead of repeatedly asking them if they need more information.`,
         ].join("\n"),
       },
-      { role: "user", content: message },
+      ..._messages,
     ];
 
-    // First API request
-    const response = await openai.chat.completions.create({
-      ...config,
-      messages,
-      tools,
-      tool_choice: "auto", // TODO can be enhanced
-    });
+    for (let i = 0; i < thinkingDepth; i++) {
+      const response = await openai.chat.completions.create({
+        ...chatConfig,
+        messages,
+        tools,
+        tool_choice: "auto",
+      });
 
-    const responseMessage = response.choices[0].message;
+      const responseMessage = response.choices[0].message;
 
-    // If no tool call, just output the response
-    if (!responseMessage.tool_calls) {
-      return responseMessage.content || "Nothing to do!";
-    }
-
-    // Handle tool calls (could be multiple, but handling one for simplicity)
-    const toolCall = responseMessage.tool_calls[0];
-
-    let toolResult;
-
-    if (toolCall.type === "function") {
-      const toolName = toolCall.function.name;
-      // const toolArgs = JSON.parse(toolCall.function.arguments);
-      if (toolName === "getCurrentTabHTML") {
-        toolResult = await getCurrentTabHTML();
-        if (config.model === "gpt-4o-mini") {
-          const tokenLeft = MAX_TOKEN - (responseMessage.content?.length || 0);
-          const maxLenPossible = Math.min(tokenLeft, toolResult.length);
-          toolResult = toolResult.slice(0, maxLenPossible);
-        }
-      } else {
-        toolResult = "Functionality not defined!";
+      // If no tool call, just output the response
+      if (!responseMessage.tool_calls) {
+        return responseMessage.content || "Nothing to do!";
       }
+
+      // Handle tool calls (could be multiple, but handling one for simplicity)
+      const toolCall = responseMessage.tool_calls[0];
+
+      let toolResult;
+
+      if (toolCall.type === "function") {
+        const toolName = toolCall.function.name;
+        const toolArgs = JSON.parse(toolCall.function.arguments);
+        if (toolName === "searchDOM") {
+          toolResult = await searchDOM(toolArgs);
+        } else {
+          toolResult = "Functionality not defined!";
+        }
+      }
+
+      // Append the model's response and the tool result to messages
+      messages.push(responseMessage);
+      messages.push({
+        role: "tool",
+        tool_call_id: toolCall.id,
+        content: JSON.stringify(toolResult),
+      });
     }
 
-    // Append the model's response and the tool result to messages
-    messages.push(responseMessage);
-    messages.push({
-      role: "tool",
-      tool_call_id: toolCall.id,
-      content: JSON.stringify(toolResult),
-    });
-
-    // Second API request with updated messages
+    // Final API request with updated messages
     const secondResponse = await openai.chat.completions.create({
-      ...config,
+      ...chatConfig,
       messages,
     });
 

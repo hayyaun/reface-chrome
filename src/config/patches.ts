@@ -33,6 +33,12 @@ const patches: { [key: string]: Patch } = {
         defaultValue: "",
         details: "Your OpenAI api key",
       },
+      thinkingDepth: {
+        name: "Thinking depth",
+        defaultValue: 5,
+        details:
+          "The amount of time and effort to put on deep searching and thinking through the document. (Maximum depth: 15)",
+      },
     },
   },
   "read-time": {
