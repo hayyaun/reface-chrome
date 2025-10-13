@@ -29,7 +29,8 @@ export function addMessageListener() {
             const apiKey = state.service.config["samantha"]?.["apiKey"] as
               | string
               | undefined;
-            const answer = await ask(msg.data as string, apiKey);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const answer = await ask(msg.data as any, apiKey);
             // Respond back to popup
             chrome.runtime.sendMessage<Message>({
               from: "background",

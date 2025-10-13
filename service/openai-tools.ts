@@ -6,7 +6,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
     function: {
       name: "getCurrentTabHTML",
       description:
-        "Get the current tab html content, could be used to summerize or look for specific elements.",
+        "Get the current tab html content, could be used to summerize or look for specific elements or anything else.",
     },
   },
 ];

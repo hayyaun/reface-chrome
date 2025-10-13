@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import { useEffect, useState, type FormEventHandler } from "react";
+import type OpenAI from "openai";
+import { useEffect, useRef, useState, type FormEventHandler } from "react";
 import { RiSendPlaneFill } from "react-icons/ri";
 import Chips from "../components/Chips";
 import type { Message } from "../types";
@@ -10,12 +11,23 @@ const hints = [
   "Apply dark theme",
 ];
 
+const initialMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+  {
+    role: "system",
+    content: [
+      "Try answering questions or manipulating web pages based on defined tools.",
+      "Don't answer questions about anything else than provided page.",
+    ].join("\n"),
+  },
+];
+
 export default function Samantha() {
   const [loading, setLoading] = useState(false);
   const [message, set] = useState("");
-  const [messages, setMessages] = useState<
-    { content: string; sender: "bot" | "user" }[]
-  >([]);
+  const [messages, setMessages] =
+    useState<OpenAI.Chat.Completions.ChatCompletionMessageParam[]>(
+      initialMessages,
+    );
 
   useEffect(() => {
     if (import.meta.env.DEV) return;
@@ -24,7 +36,7 @@ export default function Samantha() {
       if (msg.action !== "openai_answer") return;
       setMessages((s) => [
         ...s,
-        { content: msg.data as string, sender: "bot" },
+        { content: msg.data as string, role: "assistant" },
       ]);
       setLoading(false);
     }
@@ -37,33 +49,52 @@ export default function Samantha() {
   const ask: FormEventHandler = async (ev) => {
     ev.preventDefault();
     if (import.meta.env.DEV) return;
+    if (!message.length) return;
     setLoading(true);
+    const newMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+      ...messages,
+      { content: message, role: "user" },
+    ];
     await chrome.runtime.sendMessage<Message>({
       from: "popup",
       to: "background",
       action: "openai_ask",
-      data: message,
+      data: newMessages,
     });
-    setMessages((s) => [...s, { content: message, sender: "user" }]);
+    setMessages(newMessages);
     set("");
   };
 
+  const scrollbox = useRef<HTMLDivElement>(null!);
+
+  useEffect(() => {
+    scrollbox.current.scrollTo({
+      top: scrollbox.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages.length]);
+
   return (
     <div className="flex flex-1 flex-col gap-2 overflow-hidden">
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8">
-        {messages.map(({ sender, content }, i) => (
-          <div
-            key={i}
-            className={clsx(
-              "max-w-4/5 rounded-md p-3 px-4 leading-[150%] break-words whitespace-pre-line select-text",
-              sender === "bot"
-                ? "self-start bg-red-200/5"
-                : "self-end bg-blue-200/5",
-            )}
-          >
-            {content}
-          </div>
-        ))}
+      <div
+        ref={scrollbox}
+        className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8"
+      >
+        {messages
+          .filter((v) => v.role !== "system")
+          .map(({ role, content }, i) => (
+            <div
+              key={i}
+              className={clsx(
+                "max-w-4/5 rounded-md p-3 px-4 leading-[150%] break-words whitespace-pre-line select-text",
+                role === "assistant"
+                  ? "self-start bg-red-200/5"
+                  : "self-end bg-blue-200/5",
+              )}
+            >
+              {content?.toString()}
+            </div>
+          ))}
         {loading && (
           <div
             className={clsx(

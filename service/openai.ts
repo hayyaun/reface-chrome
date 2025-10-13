@@ -1,6 +1,8 @@
 import { OpenAI } from "openai";
 import { getCurrentTabHTML, tools } from "./openai-tools";
 
+const MAX_TOKEN = 128_000;
+
 const config: Omit<
   OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming,
   "messages"
@@ -9,32 +11,25 @@ const config: Omit<
   temperature: 0.1,
 };
 
-export async function ask(message: string, apiKey?: string): Promise<string> {
+let openai: OpenAI | null = null;
+
+export async function ask(
+  messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+  apiKey?: string,
+): Promise<string> {
   try {
     if (!apiKey) return "Please add an API key in config";
 
-    const openai = new OpenAI({ apiKey });
+    if (!openai) openai = new OpenAI({ apiKey });
 
-    if (!openai) return "Wrong API key provided, please change in config";
-
-    // Initial messages
-    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-      {
-        role: "system",
-        content: [
-          "Try answering questions or manipulating web pages based on defined tools.",
-          "Don't answer questions about anything else than provided page.",
-        ].join("\n"),
-      },
-      { role: "user", content: message },
-    ];
+    // TODO health check
 
     // First API request
     const response = await openai.chat.completions.create({
       ...config,
       messages,
       tools,
-      tool_choice: "required", // TODO can be enhanced
+      tool_choice: "auto", // TODO can be enhanced
     });
 
     const responseMessage = response.choices[0].message;
@@ -61,11 +56,18 @@ export async function ask(message: string, apiKey?: string): Promise<string> {
 
     // Append the model's response and the tool result to messages
     messages.push(responseMessage);
-    messages.push({
-      role: "tool",
-      tool_call_id: toolCall.id,
-      content: JSON.stringify(toolResult),
-    });
+    if (toolResult) {
+      for (let i = 0; i < (toolResult!.length % MAX_TOKEN) + 1; i++) {
+        messages.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: toolResult.slice(
+            i * MAX_TOKEN,
+            Math.min((i + 1) * MAX_TOKEN, toolResult.length),
+          ),
+        });
+      }
+    }
 
     // Second API request with updated messages
     const secondResponse = await openai.chat.completions.create({
