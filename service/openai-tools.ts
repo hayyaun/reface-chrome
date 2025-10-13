@@ -1,14 +1,13 @@
 import type OpenAI from "openai";
 
 export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
-  // {
-  //   type: "function",
-  //   function: {
-  //     name: "getCurrentTabHTML",
-  //     description:
-  //       "Get the current tab html content, could be used to summerize or look for specific elements or anything else.",
-  //   },
-  // },
+  {
+    type: "function",
+    function: {
+      name: "getRawHTML",
+      description: "Gets raw html of the page.",
+    },
+  },
   {
     type: "function",
     function: {
@@ -52,7 +51,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
   },
 ];
 
-export async function getCurrentTabHTML(): Promise<string> {
+export async function getRawHTML(): Promise<string> {
   const [tab] = await chrome.tabs.query({
     active: true,
     currentWindow: true,

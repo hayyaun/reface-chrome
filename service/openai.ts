@@ -1,18 +1,11 @@
 import { OpenAI } from "openai";
-import { searchDOM, tools } from "./openai-tools";
+import type { Message } from "../src/types";
+import { getRawHTML, searchDOM, tools } from "./openai-tools";
 import { state } from "./state";
 
 // const MAX_TOKEN = 128_000;
 const THINKING_DEPTH = 5;
 const MAX_THINKING_DEPTH = 15;
-
-const chatConfig: Omit<
-  OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming,
-  "messages"
-> = {
-  model: "gpt-4o-mini",
-  temperature: 0.1,
-};
 
 let openai: OpenAI | null = null;
 
@@ -26,9 +19,17 @@ export async function ask(
     if (!apiKey) return "Please add an API key in config";
     if (!openai) openai = new OpenAI({ apiKey });
 
+    const chatConfig: Omit<
+      OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming,
+      "messages"
+    > = {
+      model: (config?.["model"] as string) ?? "gpt-5-mini",
+      temperature: (config?.["temperature"] as number) ?? 1.0,
+    };
+
     const thinkingDepth = Math.min(
       MAX_THINKING_DEPTH,
-      (config?.["thinkginDepth"] as number) || THINKING_DEPTH,
+      (config?.["thinkginDepth"] as number) ?? THINKING_DEPTH,
     );
 
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
@@ -37,7 +38,6 @@ export async function ask(
         content: [
           "Try answering questions or manipulating web pages based on defined tools.",
           "Don't answer questions about anything else than provided page.",
-          "Use searchDOM function to recursively search through content.",
           "Call searchDOM function multiple time to search deeply and recursively through context.",
           `At lease call functions ${thinkingDepth - 1} times to give them better answer instead of repeatedly asking them if they need more information.`,
         ].join("\n"),
@@ -60,6 +60,18 @@ export async function ask(
         return responseMessage.content || "Nothing to do!";
       }
 
+      // Keep user in notice before final answer is ready
+
+      chrome.runtime.sendMessage<Message>({
+        from: "background",
+        to: "popup",
+        action: "openai_thinking",
+        data: {
+          iter: i,
+          content: responseMessage.content || "Deep thinking...",
+        },
+      });
+
       // Handle tool calls (could be multiple, but handling one for simplicity)
       const toolCall = responseMessage.tool_calls[0];
 
@@ -68,7 +80,9 @@ export async function ask(
       if (toolCall.type === "function") {
         const toolName = toolCall.function.name;
         const toolArgs = JSON.parse(toolCall.function.arguments);
-        if (toolName === "searchDOM") {
+        if (toolName === "getRawHTML") {
+          toolResult = await getRawHTML();
+        } else if (toolName === "searchDOM") {
           toolResult = await searchDOM(toolArgs);
         } else {
           toolResult = "Functionality not defined!";
@@ -92,7 +106,7 @@ export async function ask(
 
     return secondResponse.choices[0].message.content || "Nothing to say!";
   } catch (err) {
-    console.debug(err);
-    return "Something went wrong!";
+    console.debug({ err });
+    return "Something went wrong!\n" + err;
   }
 }

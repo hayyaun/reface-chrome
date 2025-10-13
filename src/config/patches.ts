@@ -39,6 +39,24 @@ const patches: { [key: string]: Patch } = {
         details:
           "The amount of time and effort to put on deep searching and thinking through the document. (Maximum depth: 15)",
       },
+      temperature: {
+        name: "Temperature",
+        defaultValue: 1.0,
+        details: "Randomness of the ai model. (Between: 0-2)",
+      },
+      model: {
+        name: "Model",
+        defaultValue: "gpt-5-mini",
+        details: "The ai model to use",
+        options: [
+          "gpt-5",
+          "gpt-5-mini",
+          "gpt-4o",
+          "gpt-4o-mini",
+          "gpt-4",
+          "gpt-3.5-turbo",
+        ],
+      },
     },
   },
   "read-time": {

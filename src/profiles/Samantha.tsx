@@ -14,10 +14,15 @@ const hints = [
 export default function Samantha() {
   const [loading, setLoading] = useState(false);
   const [message, set] = useState("");
+  const [thinking, setThinking] = useState<{
+    iter: number;
+    content: string;
+  } | null>(null);
   const [messages, setMessages] = useState<
     OpenAI.Chat.Completions.ChatCompletionMessageParam[]
   >([]);
 
+  // answer
   useEffect(() => {
     if (import.meta.env.DEV) return;
     async function listener(msg: Message) {
@@ -35,6 +40,22 @@ export default function Samantha() {
     };
   }, []);
 
+  // thinking
+  useEffect(() => {
+    if (import.meta.env.DEV) return;
+    async function listener(msg: Message) {
+      if (msg.to !== "popup") return;
+      if (msg.action !== "openai_thinking") return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setThinking(msg.data as any);
+    }
+    chrome.runtime.onMessage.addListener(listener);
+    return () => {
+      chrome.runtime.onMessage.removeListener(listener);
+    };
+  }, []);
+
+  // send message
   const ask: FormEventHandler = async (ev) => {
     ev.preventDefault();
     if (import.meta.env.DEV) return;
@@ -91,7 +112,9 @@ export default function Samantha() {
               "self-start bg-red-200/5",
             )}
           >
-            Deep Thinking...
+            {thinking
+              ? `${thinking.content} (${thinking.iter})`
+              : "Deep thinking..."}
           </div>
         )}
         {!messages.length && (

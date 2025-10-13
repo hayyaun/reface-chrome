@@ -8,6 +8,7 @@ export interface PatchConfig {
     name: string;
     details: string;
     defaultValue: ConfigValue;
+    options?: string[];
   };
 }
 
@@ -86,5 +87,5 @@ export interface Message {
   data: unknown;
   from: "background" | "content" | "popup" | "options";
   to: Message["from"];
-  action: "updateBadge" | "openai_ask" | "openai_answer";
+  action: "updateBadge" | "openai_ask" | "openai_answer" | "openai_thinking";
 }
