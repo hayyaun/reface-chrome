@@ -11,23 +11,12 @@ const hints = [
   "Apply dark theme",
 ];
 
-const initialMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-  {
-    role: "system",
-    content: [
-      "Try answering questions or manipulating web pages based on defined tools.",
-      "Don't answer questions about anything else than provided page.",
-    ].join("\n"),
-  },
-];
-
 export default function Samantha() {
   const [loading, setLoading] = useState(false);
   const [message, set] = useState("");
-  const [messages, setMessages] =
-    useState<OpenAI.Chat.Completions.ChatCompletionMessageParam[]>(
-      initialMessages,
-    );
+  const [messages, setMessages] = useState<
+    OpenAI.Chat.Completions.ChatCompletionMessageParam[]
+  >([]);
 
   useEffect(() => {
     if (import.meta.env.DEV) return;
@@ -59,7 +48,7 @@ export default function Samantha() {
       from: "popup",
       to: "background",
       action: "openai_ask",
-      data: newMessages,
+      data: message,
     });
     setMessages(newMessages);
     set("");

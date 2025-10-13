@@ -13,16 +13,24 @@ const config: Omit<
 
 let openai: OpenAI | null = null;
 
-export async function ask(
-  messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-  apiKey?: string,
-): Promise<string> {
+export async function ask(message: string, apiKey?: string): Promise<string> {
   try {
     if (!apiKey) return "Please add an API key in config";
 
     if (!openai) openai = new OpenAI({ apiKey });
 
     // TODO health check
+
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content: [
+          "Try answering questions or manipulating web pages based on defined tools.",
+          "Don't answer questions about anything else than provided page.",
+        ].join("\n"),
+      },
+      { role: "user", content: message },
+    ];
 
     // First API request
     const response = await openai.chat.completions.create({
@@ -49,6 +57,11 @@ export async function ask(
       // const toolArgs = JSON.parse(toolCall.function.arguments);
       if (toolName === "getCurrentTabHTML") {
         toolResult = await getCurrentTabHTML();
+        if (config.model === "gpt-4o-mini") {
+          const tokenLeft = MAX_TOKEN - (responseMessage.content?.length || 0);
+          const maxLenPossible = Math.min(tokenLeft, toolResult.length);
+          toolResult = toolResult.slice(0, maxLenPossible);
+        }
       } else {
         toolResult = "Functionality not defined!";
       }
@@ -57,16 +70,11 @@ export async function ask(
     // Append the model's response and the tool result to messages
     messages.push(responseMessage);
     if (toolResult) {
-      for (let i = 0; i < (toolResult!.length % MAX_TOKEN) + 1; i++) {
-        messages.push({
-          role: "tool",
-          tool_call_id: toolCall.id,
-          content: toolResult.slice(
-            i * MAX_TOKEN,
-            Math.min((i + 1) * MAX_TOKEN, toolResult.length),
-          ),
-        });
-      }
+      messages.push({
+        role: "tool",
+        tool_call_id: toolCall.id,
+        content: JSON.stringify(toolResult),
+      });
     }
 
     // Second API request with updated messages
