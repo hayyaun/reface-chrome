@@ -1,10 +1,7 @@
 import { setBadgeStateActive, updateBadgeForTab } from "./badge";
 import { afterFadeIn, beforeFadeIn } from "./effects";
-import {
-  applyPatch,
-  clearPatches,
-  findApplicablePatches,
-} from "./patch";
+import { addMessageListener } from "./message";
+import { applyPatch, clearPatches, findApplicablePatches } from "./patch";
 import { state } from "./state";
 
 // Tabs
@@ -51,3 +48,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   const applicable = findApplicablePatches(tab);
   updateBadgeForTab(tab, applicable.length);
 });
+
+// Events
+
+addMessageListener();

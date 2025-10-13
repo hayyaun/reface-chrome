@@ -29,7 +29,7 @@ export default function Modals() {
       {profileModal && Component && (
         <Modal
           Icon={patches[profileModal].profile!.icon}
-          name={patches[profileModal].name + " profile"}
+          name={patches[profileModal].name}
           details={patches[profileModal].details}
           close={() => setProfileModal(null)}
         >

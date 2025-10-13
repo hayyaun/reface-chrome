@@ -11,6 +11,7 @@ const hints = [
 ];
 
 export default function Samantha() {
+  const [loading, setLoading] = useState(false);
   const [message, set] = useState("");
   const [messages, setMessages] = useState<
     { content: string; sender: "bot" | "user" }[]
@@ -25,6 +26,7 @@ export default function Samantha() {
         ...s,
         { content: msg.data as string, sender: "bot" },
       ]);
+      setLoading(false);
     }
     chrome.runtime.onMessage.addListener(listener);
     return () => {
@@ -33,14 +35,16 @@ export default function Samantha() {
   }, []);
 
   const ask = async () => {
-    const result = await chrome.runtime.sendMessage<Message>({
+    if (import.meta.env.DEV) return;
+    setLoading(true);
+    await chrome.runtime.sendMessage<Message>({
       from: "popup",
       to: "background",
       action: "openai_ask",
       data: message,
     });
-    console.log({ result });
     setMessages((s) => [...s, { content: message, sender: "user" }]);
+    set("");
   };
 
   return (
@@ -59,6 +63,16 @@ export default function Samantha() {
             {content}
           </div>
         ))}
+        {loading && (
+          <div
+            className={clsx(
+              "max-w-4/5 rounded-md p-3 leading-[150%]",
+              "self-start bg-red-200/5",
+            )}
+          >
+            Thinking...
+          </div>
+        )}
         {!messages.length && (
           <div className="flex flex-1 flex-col items-center justify-center gap-2">
             <p className="mb-2 opacity-45">Get started by trying these:</p>
