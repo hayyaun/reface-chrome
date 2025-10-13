@@ -3,7 +3,6 @@ import PatchItem from "../components/PatchItem";
 import { categories } from "../config/mapping";
 import patches from "../config/patches";
 import strings from "../config/strings";
-import { useUI } from "../store";
 import { match } from "../utils/match";
 import Chips from "./Chips";
 import Modals from "./Modals";
@@ -13,8 +12,6 @@ interface Props {
 }
 
 export default function PatchList({ hostname }: Props) {
-  const setConfigModal = useUI((s) => s.setConfigModal);
-  const setProfileModal = useUI((s) => s.setProfileModal);
   const [selectedCategory, setSelectedCategory] = useState(categories.all);
 
   const relevantPatchKeys = useMemo(
@@ -47,13 +44,7 @@ export default function PatchList({ hostname }: Props) {
         ))}
       </div>
       {relevantPatchKeys.map((patchKey) => (
-        <PatchItem
-          key={patchKey}
-          hostname={hostname}
-          patchKey={patchKey}
-          openConfig={() => setConfigModal(patchKey)}
-          openProfile={() => setProfileModal(patchKey)}
-        />
+        <PatchItem key={patchKey} hostname={hostname} patchKey={patchKey} />
       ))}
       <div className="mt-3 flex flex-col items-stretch justify-center gap-1 p-2">
         <a

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { chromeSyncStorage } from "./chrome/storage";
+import { chromeSyncStorage } from "../chrome/storage";
 
 export interface Prefs {
   fadeIn: boolean;

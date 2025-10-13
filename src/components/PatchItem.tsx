@@ -11,23 +11,16 @@ import {
 import { reloadActiveTab } from "../chrome/utils";
 import { categories, icons } from "../config/mapping";
 import patches from "../config/patches";
+import { useUIActions } from "../hooks/ui";
 import { usePrefs, useStore } from "../store";
 import Label from "./Label";
 
 interface Props {
   hostname?: string;
   patchKey: string;
-  openConfig: () => void;
-  openProfile: () => void;
 }
 
-export default memo(function PatchItem({
-  hostname,
-  patchKey,
-  openConfig,
-  openProfile,
-}: Props) {
-  const patch = patches[patchKey];
+export default memo(function PatchItem({ hostname, patchKey }: Props) {
   const global = useStore((s) => s.global);
   const addGlobal = useStore((s) => s.addGlobal);
   const removeGlobal = useStore((s) => s.removeGlobal);
@@ -37,6 +30,10 @@ export default memo(function PatchItem({
   const removePatch = useStore((s) => s.removePatch);
   const hostnames = useStore((s) => s.hostnames);
   const autoReload = usePrefs((s) => s.autoReload);
+
+  const { openConfig, openProfile } = useUIActions(patchKey);
+
+  const patch = patches[patchKey];
   const enabledGlobally = global.includes(patchKey);
   const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
   const excluded =
@@ -46,6 +43,7 @@ export default memo(function PatchItem({
     : typeof patch.logo !== "string"
       ? patch.logo
       : null;
+
   return (
     <div className="relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       {Icon && (
