@@ -28,7 +28,11 @@ export default function Modals() {
       )}
       {profileModal && Component && (
         <Modal
-          Icon={patches[profileModal].profile!.icon}
+          Icon={
+            typeof patches[profileModal].logo === "object"
+              ? patches[profileModal].logo
+              : patches[profileModal].profile!.icon
+          }
           name={patches[profileModal].name}
           details={patches[profileModal].details}
           close={() => setProfileModal(null)}
