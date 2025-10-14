@@ -1,9 +1,4 @@
-export async function getRawHTML(): Promise<string> {
-  const [tab] = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  if (!tab) return "No active tab found!";
+export async function getRawHTML(tab: chrome.tabs.Tab): Promise<string> {
   const results = await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
     func: () => document.body.innerHTML,

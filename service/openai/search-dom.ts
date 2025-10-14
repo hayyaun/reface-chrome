@@ -17,13 +17,10 @@ interface ElementInfo {
   path: string;
 }
 
-export async function searchDOM(params: SearchDOMParams): Promise<string> {
-  const [tab] = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  if (!tab) return JSON.stringify({ error: "No active tab found!" });
-
+export async function searchDOM(
+  tab: chrome.tabs.Tab,
+  params: SearchDOMParams,
+): Promise<string> {
   const results = await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
     func: (args) => {

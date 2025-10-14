@@ -7,7 +7,6 @@ import SettingItem from "./SettingItem";
 
 export default function Settings() {
   const global = useService((s) => s.global);
-  const remove = useService((s) => s.removeGlobal);
   const fadeIn = usePrefs((s) => s.fadeIn);
   const setFadeIn = usePrefs((s) => s.setFadeIn);
   const showBadge = usePrefs((s) => s.showBadge);
@@ -28,8 +27,8 @@ export default function Settings() {
         <SettingItem
           title="Samantha"
           details="AI assistant"
-          value={global.includes("samantha")}
-          onChange={() => remove("samantha")}
+          value={true}
+          onChange={() => {}}
         />
         <SettingItem
           title="Show Badge"

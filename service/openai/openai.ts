@@ -12,12 +12,30 @@ const MAX_THINKING_DEPTH = 15;
 
 let openai: OpenAI | null = null;
 
+const systemContent = [
+  "Try answering questions or manipulating web pages based on defined tools.",
+  "Don't answer questions about anything else than provided page.",
+  "Use getReadableContent as much as possible to answer in the first place",
+  "Call searchDOM function multiple time to search deeply and recursively through context.",
+].join("\n");
+
 export async function ask(
   _messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
 ): Promise<string> {
   try {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
+    if (!tab) return "No active tab found!";
+
     const config = state.service.config["samantha"];
-    const apiKey = config?.["apiKey"] as string;
+    let apiKey = config?.["apiKey"] as string;
+
+    // let the service-worker load and rehydrate once
+    if (!apiKey) await new Promise((res) => setTimeout(res, 500));
+    apiKey = config?.["apiKey"] as string;
 
     if (!apiKey) return "Please add an API key in config";
     if (!openai) openai = new OpenAI({ apiKey });
@@ -36,15 +54,7 @@ export async function ask(
     );
 
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-      {
-        role: "system",
-        content: [
-          "Try answering questions or manipulating web pages based on defined tools.",
-          "Don't answer questions about anything else than provided page.",
-          "Call searchDOM function multiple time to search deeply and recursively through context.",
-          `At lease call functions ${thinkingDepth - 1} times to give them better answer instead of repeatedly asking them if they need more information.`,
-        ].join("\n"),
-      },
+      { role: "system", content: systemContent },
       ..._messages,
     ];
 
@@ -53,7 +63,7 @@ export async function ask(
         ...chatConfig,
         messages,
         tools,
-        tool_choice: "auto",
+        tool_choice: "required",
       });
 
       console.debug(
@@ -92,11 +102,11 @@ export async function ask(
           const toolName = toolCall.function.name;
           const toolArgs = JSON.parse(toolCall.function.arguments);
           if (toolName === "getRawHTML") {
-            toolResult = await getRawHTML();
+            toolResult = await getRawHTML(tab);
           } else if (toolName === "searchDOM") {
-            toolResult = await searchDOM(toolArgs);
+            toolResult = await searchDOM(tab, toolArgs);
           } else if (toolName === "getReadableContent") {
-            toolResult = await getReadableContent();
+            toolResult = await getReadableContent(tab);
           } else {
             toolResult = "Functionality not defined!";
           }

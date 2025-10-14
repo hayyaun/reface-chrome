@@ -1,10 +1,6 @@
-export async function getReadableContent(): Promise<string> {
-  const [tab] = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  if (!tab) return "No active tab found!";
-
+export async function getReadableContent(
+  tab: chrome.tabs.Tab,
+): Promise<string> {
   const results = await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
     func: () => {
