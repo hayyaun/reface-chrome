@@ -1,4 +1,4 @@
-import patches from "../src/config/patches";
+import { patches } from "../src/config/compileTime";
 import { match } from "../src/utils/match";
 import { extractDefaultConfigData } from "../src/utils/patch";
 import { state } from "./state";
