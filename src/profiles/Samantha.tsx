@@ -13,7 +13,6 @@ const hints = [
 ];
 
 export default function Samantha() {
-  const [loading, setLoading] = useState(false);
   const [message, set] = useState("");
   const [thinking, setThinking] = useState<{
     iter: number;
@@ -33,7 +32,7 @@ export default function Samantha() {
         ...s,
         { role: "assistant", content: msg.data as string },
       ]);
-      setLoading(false);
+      setThinking(null);
     }
     chrome.runtime.onMessage.addListener(listener);
     return () => {
@@ -61,7 +60,7 @@ export default function Samantha() {
     ev.preventDefault();
     if (import.meta.env.DEV) return;
     if (!message.length) return;
-    setLoading(true);
+    setThinking({ iter: 0, content: "Deep thinking..." });
     const newMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       ...messages,
       { role: "user", content: message },
@@ -106,16 +105,14 @@ export default function Samantha() {
               <Markdown>{content?.toString()}</Markdown>
             </div>
           ))}
-        {loading && (
+        {thinking && (
           <div
             className={clsx(
               "max-w-4/5 rounded-md p-3 px-4 leading-[150%]",
               "self-start bg-red-200/5",
             )}
           >
-            {thinking
-              ? `${thinking.content} (${thinking.iter})`
-              : "Deep thinking..."}
+            {thinking.content} {thinking.iter ? `(${thinking.iter})` : ""}
           </div>
         )}
         {!messages.length && (
