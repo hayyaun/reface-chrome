@@ -9,7 +9,7 @@ import type { Message } from "../types";
 const hints = [
   "Summerize page content",
   "Gather all external links",
-  "Estimate reading time",
+  "Close all wikipedia tabs",
 ];
 
 export default function Samantha() {
