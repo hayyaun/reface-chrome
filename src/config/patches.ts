@@ -28,6 +28,19 @@ const patches: { [key: string]: Patch } = {
       Component: Samantha,
     },
     config: {
+      model: {
+        name: "Model",
+        defaultValue: "gpt-5-mini",
+        details: "The ai model to use",
+        options: [
+          { name: "GPT 5", value: "gpt-5" },
+          { name: "GPT 5 mini", value: "gpt-5-mini" },
+          { name: "GPT 4", value: "gpt-4o" },
+          { name: "GPT 4o mini", value: "gpt-4o-mini" },
+          { name: "GPT 4", value: "gpt-4" },
+          { name: "GPT 3.5 turbo", value: "gpt-3.5-turbo" },
+        ],
+      },
       apiKey: {
         name: "API Key",
         defaultValue: "",
@@ -43,19 +56,6 @@ const patches: { [key: string]: Patch } = {
         name: "Temperature",
         defaultValue: 1.0,
         details: "Randomness of the ai model. (Between: 0-2)",
-      },
-      model: {
-        name: "Model",
-        defaultValue: "gpt-5-mini",
-        details: "The ai model to use",
-        options: [
-          "gpt-5",
-          "gpt-5-mini",
-          "gpt-4o",
-          "gpt-4o-mini",
-          "gpt-4",
-          "gpt-3.5-turbo",
-        ],
       },
     },
   },

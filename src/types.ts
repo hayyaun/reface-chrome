@@ -3,12 +3,17 @@ import type { IconType } from "react-icons";
 
 export type ConfigValue = string | number | boolean | undefined;
 
+export interface Option {
+  name: string;
+  value: string;
+}
+
 export interface PatchConfig {
   [key: string]: {
     name: string;
     details: string;
     defaultValue: ConfigValue;
-    options?: string[];
+    options?: Option[];
   };
 }
 

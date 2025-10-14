@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import { RiCheckboxBlankLine, RiCheckboxFill } from "react-icons/ri";
+import type { Option } from "../types";
+import Dropdown from "./Dropdown";
 import Label from "./Label";
 
 type Props<T> = {
@@ -7,6 +9,7 @@ type Props<T> = {
   details: string;
   value: T;
   onChange: (v: T) => void;
+  options?: Option[];
 };
 
 export default function SettingItem<T>({
@@ -14,6 +17,7 @@ export default function SettingItem<T>({
   details,
   value,
   onChange,
+  options,
 }: Props<T>) {
   return (
     <li className="odd-color flex flex-wrap items-center justify-between gap-2 p-2 pl-4 transition select-none">
@@ -44,13 +48,20 @@ export default function SettingItem<T>({
           onChange={(ev) => onChange(Number(ev.target.value) as T)}
         />
       )}
-      {typeof value === "string" && (
+      {typeof value === "string" && !Array.isArray(options) && (
         <input
           aria-label="Text Input"
           className="w-full rounded-md bg-white/5 p-1.5 px-2"
           placeholder={title}
           value={value}
           onChange={(ev) => onChange(ev.target.value as T)}
+        />
+      )}
+      {Array.isArray(options) && (
+        <Dropdown
+          value={value as string}
+          onChange={(option) => onChange(option.value as T)}
+          options={options}
         />
       )}
     </li>

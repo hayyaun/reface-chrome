@@ -47,6 +47,7 @@ export default function ConfigModal({ patchKey, close }: Props) {
                 }),
               );
             }}
+            options={patch.config![configKey].options}
           />
         ))}
       </div>
