@@ -1,6 +1,6 @@
 import type { Message } from "../src/types";
 import { updateBadge } from "./badge";
-import { ask } from "./openai";
+import { ask } from "./openai/openai";
 
 export function addMessageListener() {
   chrome.runtime.onMessage.addListener(async (msg: Message) => {

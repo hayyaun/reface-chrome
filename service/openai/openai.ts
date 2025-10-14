@@ -1,7 +1,10 @@
 import { OpenAI } from "openai";
-import type { Message } from "../src/types";
-import { getRawHTML, searchDOM, tools } from "./openai-tools";
-import { state } from "./state";
+import type { Message } from "../../src/types";
+import { state } from "../state";
+import { getRawHTML } from "./html";
+import { getReadableContent } from "./readable-content";
+import { searchDOM } from "./search-dom";
+import { tools } from "./tools";
 
 // const MAX_TOKEN = 128_000;
 const THINKING_DEPTH = 5;
@@ -53,7 +56,11 @@ export async function ask(
         tool_choice: "auto",
       });
 
-      console.debug("Response", { messages, response });
+      console.debug(
+        "Response",
+        { messages, response },
+        JSON.stringify(messages).length,
+      );
 
       const responseMessage = response.choices[0].message;
 
@@ -88,6 +95,8 @@ export async function ask(
             toolResult = await getRawHTML();
           } else if (toolName === "searchDOM") {
             toolResult = await searchDOM(toolArgs);
+          } else if (toolName === "getReadableContent") {
+            toolResult = await getReadableContent();
           } else {
             toolResult = "Functionality not defined!";
           }
@@ -102,12 +111,12 @@ export async function ask(
     }
 
     // Final API request with updated messages
-    const secondResponse = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       ...chatConfig,
       messages,
     });
 
-    return secondResponse.choices[0].message.content || "Nothing to say!";
+    return response.choices[0].message.content || "Nothing to say!";
   } catch (err) {
     console.debug({ err });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

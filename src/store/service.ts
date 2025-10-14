@@ -24,7 +24,7 @@ interface Service {
 export const useService = create(
   persist(
     immer<Service>((set) => ({
-      global: ["samantha"],
+      global: [],
       addGlobal: (key, hostname) => {
         set((state) => {
           if (state.global.includes(key)) return;

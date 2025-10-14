@@ -1,3 +1,3 @@
 export * from "./prefs";
-export * from "./store";
+export * from "./service";
 export * from "./ui";

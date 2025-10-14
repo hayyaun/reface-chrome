@@ -2,6 +2,7 @@ import clsx from "clsx";
 import type OpenAI from "openai";
 import { useEffect, useRef, useState, type FormEventHandler } from "react";
 import { RiSendPlaneFill } from "react-icons/ri";
+import Markdown from "react-markdown";
 import Chips from "../components/Chips";
 import type { Message } from "../types";
 
@@ -63,7 +64,7 @@ export default function Samantha() {
     setLoading(true);
     const newMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       ...messages,
-      { content: message, role: "user" },
+      { role: "user", content: message },
     ];
     await chrome.runtime.sendMessage<Message>({
       from: "popup",
@@ -102,7 +103,7 @@ export default function Samantha() {
                   : "self-end bg-blue-200/5",
               )}
             >
-              {content?.toString()}
+              <Markdown>{content?.toString()}</Markdown>
             </div>
           ))}
         {loading && (
