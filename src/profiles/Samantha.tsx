@@ -85,7 +85,7 @@ export default function Samantha() {
   }, [messages.length]);
 
   return (
-    <div className="flex flex-1 flex-col gap-2 overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden">
       <div
         ref={scrollbox}
         className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8"
@@ -130,11 +130,11 @@ export default function Samantha() {
           </div>
         )}
       </div>
-      <form className="flex shrink-0 grow-0 gap-2 p-4" onSubmit={ask}>
+      <form className="flex shrink-0 grow-0 gap-2 p-4 pt-2" onSubmit={ask}>
         <input
           aria-label="Text Input"
           className="flex-1 rounded-md bg-white/5 p-1.5 px-2"
-          placeholder="Ask Samantha to do something on this page..."
+          placeholder="How can I help you?"
           value={message}
           onChange={(ev) => set(ev.target.value)}
         />
