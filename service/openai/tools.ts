@@ -1,6 +1,7 @@
 import type OpenAI from "openai";
 
 export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
+  // DOM
   {
     type: "function",
     function: {
@@ -54,6 +55,310 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
           },
         },
         required: ["selector"],
+      },
+    },
+  },
+  // Chrome tabs
+  {
+    type: "function",
+    function: {
+      name: "chrome_tabs_query",
+      description:
+        "Gets all tabs that have the specified properties, or all tabs if no properties are specified.",
+      parameters: {
+        type: "object",
+        properties: {
+          queryInfo: {
+            type: "object",
+            properties: {
+              active: {
+                type: "boolean",
+                description: "Whether the tabs are active in their windows.",
+              },
+              audible: {
+                type: "boolean",
+                description: "Whether the tabs are audible.",
+              },
+              autoDiscardable: {
+                type: "boolean",
+                description:
+                  "Whether the tabs can be discarded automatically by the browser when resources are low.",
+              },
+              currentWindow: {
+                type: "boolean",
+                description: "Whether the tabs are in the current window.",
+              },
+              discarded: {
+                type: "boolean",
+                description:
+                  "Whether the tabs are discarded. A discarded tab is one whose content has been unloaded from memory, but is still visible in the tabstrip. Its content is reloaded the next time it is activated.",
+              },
+              frozen: {
+                type: "boolean",
+                description: "Whether the tabs are frozen.",
+              },
+              groupId: {
+                type: "number",
+                description: "The ID of the group that the tabs are in.",
+              },
+              highlighted: {
+                type: "boolean",
+                description: "Whether the tabs are highlighted.",
+              },
+              index: {
+                type: "number",
+                description:
+                  "The zero-based index of the tabs within their windows.",
+              },
+              lastFocusedWindow: {
+                type: "boolean",
+                description: "Whether the tabs are in the last focused window.",
+              },
+              muted: {
+                type: "boolean",
+                description: "Whether the tabs are muted.",
+              },
+              pinned: {
+                type: "boolean",
+                description: "Whether the tabs are pinned.",
+              },
+              splitViewId: {
+                type: "number",
+                description: "The ID of the split view that the tabs are in.",
+              },
+              status: {
+                type: "string",
+                description:
+                  "The status of the tabs. Can be either loading or complete.",
+                enum: ["loading", "complete"],
+              },
+              title: {
+                type: "string",
+                description: "Match page titles against a pattern.",
+              },
+              url: {
+                type: ["string", "array"],
+                description:
+                  "Match tabs against one or more URL patterns. Fragment identifiers are not matched.",
+                items: { type: "string" },
+              },
+              windowId: {
+                type: "number",
+                description:
+                  "The ID of the parent window, or windows.WINDOW_ID_CURRENT for the current window.",
+              },
+              windowType: {
+                type: "string",
+                description: "The type of window the tabs are in.",
+                enum: ["normal", "popup", "panel", "app", "devtools"],
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: [],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_tabs_create",
+      description: "Creates a new tab.",
+      parameters: {
+        type: "object",
+        properties: {
+          createProperties: {
+            type: "object",
+            properties: {
+              active: {
+                type: "boolean",
+                description:
+                  "Whether the tab should become the active tab in the window.",
+              },
+              index: {
+                type: "number",
+                description: "The position the tab should take in the window.",
+              },
+              openerTabId: {
+                type: "number",
+                description: "The ID of the tab that opened this tab.",
+              },
+              pinned: {
+                type: "boolean",
+                description: "Whether the tab should be pinned.",
+              },
+              selected: {
+                type: "boolean",
+                description: "Deprecated; use active instead.",
+              },
+              url: {
+                type: "string",
+                description: "The URL to initially navigate the tab to.",
+              },
+              windowId: {
+                type: "number",
+                description: "The window to create the tab in.",
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["createProperties"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_tabs_update",
+      description:
+        "Modifies the properties of a tab. Properties that are not specified in updateProperties are not modified.",
+      parameters: {
+        type: "object",
+        properties: {
+          tabId: {
+            type: "number",
+            description: "The ID of the tab to update.",
+          },
+          updateProperties: {
+            type: "object",
+            properties: {
+              active: {
+                type: "boolean",
+                description: "Whether the tab should be active.",
+              },
+              autoDiscardable: {
+                type: "boolean",
+                description:
+                  "Whether the tab should be discarded automatically by the browser when resources are low.",
+              },
+              highlighted: {
+                type: "boolean",
+                description:
+                  "Adds or removes the tab from the current selection.",
+              },
+              muted: {
+                type: "boolean",
+                description: "Whether the tab should be muted.",
+              },
+              openerTabId: {
+                type: "number",
+                description: "The ID of the tab that opened this tab.",
+              },
+              pinned: {
+                type: "boolean",
+                description: "Whether the tab should be pinned.",
+              },
+              selected: {
+                type: "boolean",
+                description: "Deprecated; use highlighted instead.",
+              },
+              url: {
+                type: "string",
+                description: "A URL to change the tab's document to.",
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["updateProperties"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_tabs_remove",
+      description: "Closes one or more tabs.",
+      parameters: {
+        type: "object",
+        properties: {
+          tabIds: {
+            type: ["number", "array"],
+            description: "The tab or list of tabs to close.",
+            items: { type: "number" },
+          },
+        },
+        required: ["tabIds"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_tabs_get",
+      description: "Retrieves details about the specified tab.",
+      parameters: {
+        type: "object",
+        properties: {
+          tabId: {
+            type: "number",
+            description: "The ID of the tab to retrieve.",
+          },
+        },
+        required: ["tabId"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_tabs_move",
+      description:
+        "Moves one or more tabs to a new position within its window, or to a new window.",
+      parameters: {
+        type: "object",
+        properties: {
+          tabIds: {
+            type: ["number", "array"],
+            description: "The tab or list of tabs to move.",
+            items: { type: "number" },
+          },
+          moveProperties: {
+            type: "object",
+            properties: {
+              index: {
+                type: "number",
+                description: "The position to move the tab to.",
+              },
+              windowId: {
+                type: "number",
+                description: "The window to move the tab to.",
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["tabIds", "moveProperties"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_tabs_reload",
+      description: "Reload a tab.",
+      parameters: {
+        type: "object",
+        properties: {
+          tabId: {
+            type: "number",
+            description:
+              "The ID of the tab to reload; defaults to the selected tab of the current window.",
+          },
+          reloadProperties: {
+            type: "object",
+            properties: {
+              bypassCache: {
+                type: "boolean",
+                description: "Whether using any local cache. Default is false.",
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: [],
       },
     },
   },

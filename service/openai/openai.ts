@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { OpenAI } from "openai";
 import type { Message } from "../../src/types";
 import { state } from "../state";
@@ -63,7 +64,7 @@ export async function ask(
         ...chatConfig,
         messages,
         tools,
-        tool_choice: "required",
+        tool_choice: i > 0 ? "auto" : "required",
       });
 
       console.debug(
@@ -107,6 +108,14 @@ export async function ask(
             toolResult = await searchDOM(tab, toolArgs);
           } else if (toolName === "getReadableContent") {
             toolResult = await getReadableContent(tab);
+          } else if (toolName.includes("chrome_tabs_")) {
+            const method: keyof typeof chrome.tabs = toolName.replace(
+              "chrome_tabs_",
+              "",
+            ) as any;
+            const func = chrome.tabs[method] as any;
+            const args = Object.keys(toolArgs || {}).map((k) => toolArgs[k]);
+            toolResult = await func(...args);
           } else {
             toolResult = "Functionality not defined!";
           }
@@ -129,7 +138,6 @@ export async function ask(
     return response.choices[0].message.content || "Nothing to say!";
   } catch (err) {
     console.debug({ err });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return "Something went wrong!\n" + (err as any).error.message;
   }
 }
