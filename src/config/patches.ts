@@ -12,6 +12,7 @@ import type { HostnameConfig, Patch } from "../types";
 import authors from "./authors";
 import { categories } from "./mapping";
 
+/* @__PURE__ */
 const patches: { [key: string]: Patch } = {
   // General
   samantha: {

@@ -103,6 +103,7 @@ export default function Samantha() {
               )}
             >
               <Markdown>{content?.toString()}</Markdown>
+              {/* {content?.toString()} */}
             </div>
           ))}
         {thinking && (
