@@ -8,8 +8,8 @@ import type { Message } from "../types";
 
 const hints = [
   "Summerize page content",
-  "Gather all wikipedia links",
-  "Apply dark theme",
+  "Gather all external links",
+  "Estimate reading time",
 ];
 
 export default function Samantha() {
