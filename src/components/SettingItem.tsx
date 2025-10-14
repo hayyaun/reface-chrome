@@ -17,7 +17,7 @@ export default function SettingItem<T>({
 }: Props<T>) {
   return (
     <li className="odd-color flex flex-wrap items-center justify-between gap-2 p-2 pl-4 transition select-none">
-      <Label name={title} details={details} />
+      <Label name={title} details={details} lines={0} />
       {typeof value === "boolean" ? (
         <div
           aria-label="Toggle Button"
