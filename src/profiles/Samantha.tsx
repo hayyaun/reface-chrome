@@ -10,6 +10,7 @@ const hints = [
   "Summerize page content",
   "Gather all external links",
   "Close all wikipedia tabs",
+  "Open 5 first links in new tab",
 ];
 
 export default function Samantha() {
