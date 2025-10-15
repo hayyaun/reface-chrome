@@ -8,9 +8,9 @@ import type { Message } from "../types";
 
 const hints = [
   "Summerize page content",
-  "Gather all external links",
   "Close all wikipedia tabs",
   "Open 5 first links in new tab",
+  "Organize my bookmarks",
 ];
 
 export default function Samantha() {

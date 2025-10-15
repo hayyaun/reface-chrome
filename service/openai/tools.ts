@@ -362,4 +362,210 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
       },
     },
   },
+  // Chrome bookmarks
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_search",
+      description:
+        "Searches for BookmarkTreeNodes matching the given query. Queries specified with an object produce BookmarkTreeNodes matching all specified properties.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: {
+            type: ["string", "object"],
+            description:
+              "Either a string of words and quoted phrases that are matched against bookmark URLs and titles, or an object. If an object, the properties `query`, `url`, and `title` may be specified and bookmarks matching all specified properties will be produced.",
+            properties: {
+              query: {
+                type: "string",
+                description:
+                  "A string of words and quoted phrases that are matched against bookmark URLs and titles.",
+              },
+              title: {
+                type: "string",
+                description: "The title of the bookmark; matches verbatim.",
+              },
+              url: {
+                type: "string",
+                description:
+                  "The URL of the bookmark; matches verbatim. Note that folders have no URL.",
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["query"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_create",
+      description:
+        "Creates a bookmark or folder under the specified parentId. If url is NULL or missing, it will be a folder.",
+      parameters: {
+        type: "object",
+        properties: {
+          bookmark: {
+            type: "object",
+            properties: {
+              index: {
+                type: "number",
+                description: "The position of the new bookmark.",
+              },
+              parentId: {
+                type: "string",
+                description:
+                  "The ID of the parent folder. Defaults to the Other Bookmarks folder.",
+              },
+              title: {
+                type: "string",
+                description: "The title of the bookmark.",
+              },
+              url: { type: "string", description: "The URL of the bookmark." },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["bookmark"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_update",
+      description:
+        "Updates the properties of a bookmark or folder. Specify only the properties that you want to change; unspecified properties will be left unchanged. Note: Currently, only 'title' and 'url' are supported.",
+      parameters: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "The ID of the bookmark to update.",
+          },
+          changes: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "The new title." },
+              url: { type: "string", description: "The new URL." },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["id", "changes"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_remove",
+      description: "Removes a bookmark or an empty bookmark folder.",
+      parameters: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "The ID of the bookmark to remove.",
+          },
+        },
+        required: ["id"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_removeTree",
+      description: "Recursively removes a bookmark folder.",
+      parameters: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "The ID of the folder to remove recursively.",
+          },
+        },
+        required: ["id"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_get",
+      description: "Retrieves the specified BookmarkTreeNode(s).",
+      parameters: {
+        type: "object",
+        properties: {
+          idOrIdList: {
+            type: ["string", "array"],
+            description:
+              "A single string-valued id, or an array of string-valued ids.",
+            items: { type: "string" },
+          },
+        },
+        required: ["idOrIdList"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_move",
+      description:
+        "Moves the specified BookmarkTreeNode to the provided location.",
+      parameters: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "The ID of the bookmark to move.",
+          },
+          destination: {
+            type: "object",
+            properties: {
+              index: { type: "number", description: "The new position." },
+              parentId: {
+                type: "string",
+                description: "The new parent folder ID.",
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["id", "destination"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_getChildren",
+      description:
+        "Retrieves the children of the specified BookmarkTreeNode id.",
+      parameters: {
+        type: "object",
+        properties: {
+          id: { type: "string", description: "The ID of the folder." },
+        },
+        required: ["id"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "chrome_bookmarks_getTree",
+      description: "Retrieves the entire Bookmarks hierarchy.",
+      parameters: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
+    },
+  },
 ];

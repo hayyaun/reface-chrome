@@ -27,12 +27,12 @@
     "type": "module"
   },
   "permissions": [
-    "webNavigation",
-    "activeTab",
     "tabs",
+    "webNavigation",
     "storage",
     "scripting",
-    "downloads"
+    "downloads",
+    "bookmarks"
   ],
   "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [

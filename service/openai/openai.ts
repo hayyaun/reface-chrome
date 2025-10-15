@@ -116,6 +116,14 @@ export async function ask(
             const func = chrome.tabs[method] as any;
             const args = Object.keys(toolArgs || {}).map((k) => toolArgs[k]);
             toolResult = await func(...args);
+          } else if (toolName.includes("chrome_bookmarks_")) {
+            const method: keyof typeof chrome.bookmarks = toolName.replace(
+              "chrome_bookmarks_",
+              "",
+            ) as any;
+            const func = chrome.bookmarks[method] as any;
+            const args = Object.keys(toolArgs || {}).map((k) => toolArgs[k]);
+            toolResult = await func(...args);
           } else {
             toolResult = "Functionality not defined!";
           }
