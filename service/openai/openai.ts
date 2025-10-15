@@ -18,6 +18,7 @@ const systemContent = [
   "Don't answer questions about anything else than provided page.",
   "Use getReadableContent as much as possible to answer in the first place",
   "Call searchDOM function multiple time to search deeply and recursively through context.",
+  "Notice: Can't modify the root bookmark folders.",
 ].join("\n");
 
 export async function ask(
@@ -146,6 +147,9 @@ export async function ask(
     return response.choices[0].message.content || "Nothing to say!";
   } catch (err) {
     console.debug({ err });
-    return "Something went wrong!\n" + (err as any).error.message;
+    return (
+      "Something went wrong!\n" +
+      (typeof err === "string" ? err : ((err as any)?.error?.message ?? ""))
+    );
   }
 }
