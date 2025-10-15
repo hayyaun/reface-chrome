@@ -31,7 +31,7 @@ const patches: { [key: string]: Patch } = {
     config: {
       model: {
         name: "Model",
-        defaultValue: "gpt-5-mini",
+        defaultValue: "gpt-5",
         details: "The ai model to use",
         options: [
           { name: "GPT 5", value: "gpt-5" },

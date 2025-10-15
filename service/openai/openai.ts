@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import _ from "lodash";
 import { OpenAI } from "openai";
 import type {
   ChatCompletionCreateParamsNonStreaming,
@@ -18,6 +19,7 @@ const systemContent = [
   "Use getReadableContent as much as possible to answer in the first place",
   "Call searchDOM function multiple time to search deeply and recursively through context.",
   "Notice: Can't modify the root bookmark folders.",
+  "If there's more than 128 tool-calls in a single message, split and send the extra in the next message.",
 ].join("\n");
 
 export async function ask(
@@ -80,9 +82,11 @@ export async function ask(
       if (!responseMessage.tool_calls) break;
 
       // Keep user in notice before final answer is ready
-      const thinking_tools = responseMessage.tool_calls
-        .map((tc) => (tc.type === "function" ? tc.function.name : tc.id))
-        .join(", ");
+      const thinking_tools = _.uniq(
+        responseMessage.tool_calls.map((tc) =>
+          tc.type === "function" ? tc.function.name : tc.id,
+        ),
+      ).join(", ");
 
       updateAiThinking({
         iter: thinking.iter,
