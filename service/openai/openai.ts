@@ -115,11 +115,11 @@ export async function ask(
     });
 
     return response.choices[0].message.content || "Nothing to say!";
-  } catch (err) {
-    console.debug({ err });
+  } catch (err: any) {
+    console.debug("ERR:OPENAI_ASK", { err });
     return (
       "Something went wrong!\n" +
-      (typeof err === "string" ? err : ((err as any)?.error?.message ?? ""))
+      (err?.error?.message ?? err?.message ?? err ?? "")
     );
   }
 }

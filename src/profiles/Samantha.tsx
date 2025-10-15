@@ -85,7 +85,7 @@ export default function Samantha() {
   }, [messages.length]);
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="relative flex flex-1 flex-col overflow-hidden">
       <div
         ref={scrollbox}
         className="relative flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8"
@@ -129,16 +129,8 @@ export default function Samantha() {
             ))}
           </div>
         )}
-        {!!messages.length && (
-          <button
-            aria-label="Clear button"
-            className="group absolute top-0 left-4 shrink-0 rounded-lg bg-red-400/5 p-1.75 text-red-400 hover:bg-red-400/10"
-            onClick={clear}
-          >
-            <RiDeleteBinFill className="size-5 transition group-hover:scale-105 group-active:scale-95" />
-          </button>
-        )}
       </div>
+
       <form className="flex shrink-0 grow-0 gap-2 p-4 pt-2" onSubmit={ask}>
         <input
           aria-label="Text Input"
@@ -154,6 +146,16 @@ export default function Samantha() {
           <RiSendPlaneFill className="size-4 transition group-hover:scale-105 group-active:scale-95" />
         </button>
       </form>
+
+      {!!messages.length && (
+        <button
+          aria-label="Clear button"
+          className="group absolute top-0 left-4 shrink-0 rounded-lg bg-red-400/5 p-1.75 text-red-400 hover:bg-red-400/10"
+          onClick={clear}
+        >
+          <RiDeleteBinFill className="size-5 transition group-hover:scale-105 group-active:scale-95" />
+        </button>
+      )}
     </div>
   );
 }
