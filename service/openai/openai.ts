@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { OpenAI } from "openai";
+import {
+  AI_THINKING_DEPTH_DEFAULT,
+  AI_THINKING_DEPTH_MAX,
+} from "../../src/config/constants";
 import type { Message } from "../../src/types";
 import { state } from "../state";
 import { getRawHTML } from "./html";
 import { getReadableContent } from "./readable-content";
 import { searchDOM } from "./search-dom";
 import { tools } from "./tools";
-
-// const MAX_TOKEN = 128_000;
-const THINKING_DEPTH = 5;
-const MAX_THINKING_DEPTH = 15;
 
 let openai: OpenAI | null = null;
 
@@ -51,8 +51,8 @@ export async function ask(
     };
 
     const thinkingDepth = Math.min(
-      MAX_THINKING_DEPTH,
-      (config?.["thinkginDepth"] as number) ?? THINKING_DEPTH,
+      AI_THINKING_DEPTH_MAX,
+      (config?.["thinkginDepth"] as number) ?? AI_THINKING_DEPTH_DEFAULT,
     );
 
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
@@ -70,6 +70,7 @@ export async function ask(
 
       console.debug(
         "Response",
+        messages.length,
         { messages, response },
         JSON.stringify(messages).length,
       );

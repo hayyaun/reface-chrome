@@ -1,9 +1,10 @@
 import clsx from "clsx";
-import type OpenAI from "openai";
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useEffect, useRef, useState, type FormEventHandler } from "react";
-import { RiSendPlaneFill } from "react-icons/ri";
+import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
 import Chips from "../components/Chips";
+import { useService } from "../store";
 import type { Message } from "../types";
 
 const hints = [
@@ -14,14 +15,15 @@ const hints = [
 ];
 
 export default function Samantha() {
+  const messages = useService((s) => s.chat);
+  const addMessage = useService((s) => s.addChatMessage);
+  const clear = useService((s) => s.clearChat);
+
   const [message, set] = useState("");
   const [thinking, setThinking] = useState<{
     iter: number;
     content: string;
   } | null>(null);
-  const [messages, setMessages] = useState<
-    OpenAI.Chat.Completions.ChatCompletionMessageParam[]
-  >([]);
 
   // answer
   useEffect(() => {
@@ -29,17 +31,14 @@ export default function Samantha() {
     async function listener(msg: Message) {
       if (msg.to !== "popup") return;
       if (msg.action !== "openai_answer") return;
-      setMessages((s) => [
-        ...s,
-        { role: "assistant", content: msg.data as string },
-      ]);
+      addMessage({ role: "assistant", content: msg.data as string });
       setThinking(null);
     }
     chrome.runtime.onMessage.addListener(listener);
     return () => {
       chrome.runtime.onMessage.removeListener(listener);
     };
-  }, []);
+  }, [addMessage]);
 
   // thinking
   useEffect(() => {
@@ -62,17 +61,17 @@ export default function Samantha() {
     if (import.meta.env.DEV) return;
     if (!message.length) return;
     setThinking({ iter: 0, content: "Deep thinking..." });
-    const newMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-      ...messages,
-      { role: "user", content: message },
-    ];
+    const newMessage: ChatCompletionMessageParam = {
+      role: "user",
+      content: message,
+    };
     await chrome.runtime.sendMessage<Message>({
       from: "popup",
       to: "background",
       action: "openai_ask",
-      data: newMessages,
+      data: { ...messages, newMessage },
     });
-    setMessages(newMessages);
+    addMessage(newMessage);
     set("");
   };
 
@@ -89,7 +88,7 @@ export default function Samantha() {
     <div className="flex flex-1 flex-col overflow-hidden">
       <div
         ref={scrollbox}
-        className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8"
+        className="relative flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8"
       >
         {messages
           .filter((v) => v.role !== "system")
@@ -129,6 +128,15 @@ export default function Samantha() {
               />
             ))}
           </div>
+        )}
+        {!!messages.length && (
+          <button
+            aria-label="Clear button"
+            className="group absolute top-0 left-4 shrink-0 rounded-lg bg-red-400/5 p-1.75 text-red-400 hover:bg-red-400/10"
+            onClick={clear}
+          >
+            <RiDeleteBinFill className="size-5 transition group-hover:scale-105 group-active:scale-95" />
+          </button>
         )}
       </div>
       <form className="flex shrink-0 grow-0 gap-2 p-4 pt-2" onSubmit={ask}>

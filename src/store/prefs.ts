@@ -3,6 +3,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { chromeSyncStorage } from "../chrome/storage";
 
+export const PREFS_KEY = "prefs";
+
 interface Prefs {
   fadeIn: boolean;
   setFadeIn: (v: boolean) => void;
@@ -39,7 +41,7 @@ export const usePrefs = create(
       setSync: (sync) => set({ sync }),
     })),
     {
-      name: "prefs",
+      name: PREFS_KEY,
       storage: createJSONStorage(() =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         import.meta.env.DEV ? (localStorage as any) : chromeSyncStorage,
@@ -49,5 +51,3 @@ export const usePrefs = create(
     },
   ),
 );
-
-export const PREFS_KEY = usePrefs.persist.getOptions().name!;

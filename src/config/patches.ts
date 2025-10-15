@@ -10,6 +10,7 @@ import {
 import Samantha from "../profiles/Samantha";
 import type { HostnameConfig, Patch } from "../types";
 import authors from "./authors";
+import { AI_THINKING_DEPTH_DEFAULT, AI_THINKING_DEPTH_MAX } from "./constants";
 import { categories } from "./mapping";
 
 const patches: { [key: string]: Patch } = {
@@ -48,9 +49,8 @@ const patches: { [key: string]: Patch } = {
       },
       thinkingDepth: {
         name: "Thinking depth",
-        defaultValue: 5,
-        details:
-          "The amount of time and effort to put on deep searching and thinking through the document. (Maximum depth: 15)",
+        defaultValue: AI_THINKING_DEPTH_DEFAULT,
+        details: `The amount of time and effort to put on deep searching and thinking through the document. (Maximum depth: ${AI_THINKING_DEPTH_MAX})`,
       },
       temperature: {
         name: "Temperature",

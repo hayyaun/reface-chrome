@@ -1,0 +1,2 @@
+export const AI_THINKING_DEPTH_DEFAULT = 50;
+export const AI_THINKING_DEPTH_MAX = 50;

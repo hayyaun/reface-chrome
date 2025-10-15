@@ -1,9 +1,11 @@
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { chromeLocalStorage } from "../chrome/storage";
-import { devItems } from "../config/dev";
 import type { HostnameConfig, PatchConfigData } from "../types";
+
+export const STORE_KEY = "main";
 
 interface Service {
   global: string[];
@@ -19,6 +21,10 @@ interface Service {
   config: { [patchKey: string]: PatchConfigData | undefined };
   updateConfig: (patchKey: string, data: PatchConfigData) => void;
   resetConfig: (patchKey: string) => void;
+  // ai
+  chat: ChatCompletionMessageParam[];
+  addChatMessage: (message: ChatCompletionMessageParam) => void;
+  clearChat: () => void;
 }
 
 export const useService = create(
@@ -40,7 +46,7 @@ export const useService = create(
         // if current tab specified - remove patch
         if (hostname) useService.getState().removePatch(hostname, key);
       },
-      hostnames: import.meta.env.DEV ? devItems : {},
+      hostnames: {},
       _initHostname: (hostname) => {
         set((state) => {
           if (state.hostnames[hostname]) return;
@@ -101,9 +107,19 @@ export const useService = create(
           if (state.config[patchKey]) delete state.config[patchKey];
         });
       },
+      // ai
+      chat: [],
+      addChatMessage: (message) => {
+        set((state) => {
+          state.chat.push(message);
+        });
+      },
+      clearChat: () => {
+        set({ chat: [] });
+      },
     })),
     {
-      name: "main",
+      name: STORE_KEY,
       storage: createJSONStorage(() =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         import.meta.env.DEV ? (localStorage as any) : chromeLocalStorage,
@@ -113,5 +129,3 @@ export const useService = create(
     },
   ),
 );
-
-export const STORE_KEY = useService.persist.getOptions().name!;
