@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { OpenAI } from "openai";
-import {
-  AI_THINKING_DEPTH_DEFAULT,
-  AI_THINKING_DEPTH_MAX,
-} from "../../src/config/constants";
-import type { Message } from "../../src/types";
+import type {
+  ChatCompletionCreateParamsNonStreaming,
+  ChatCompletionMessageParam,
+} from "openai/resources/index.mjs";
+import { updateAiThinking } from "../message";
 import { state } from "../state";
 import { proceedToolCall } from "./toolcall";
 import { tools } from "./tools";
@@ -12,15 +12,16 @@ import { tools } from "./tools";
 let openai: OpenAI | null = null;
 
 const systemContent = [
-  "Try answering questions or manipulating web pages based on defined tools.",
-  "Don't answer questions about anything else than provided page.",
+  "Notice: keep answers short! keep answers short! don't ask too many questions!",
+  "Try answering questions based on defined tools.",
+  "Don't answer questions out of provided tools scope.",
   "Use getReadableContent as much as possible to answer in the first place",
   "Call searchDOM function multiple time to search deeply and recursively through context.",
   "Notice: Can't modify the root bookmark folders.",
 ].join("\n");
 
 export async function ask(
-  _messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+  _messages: ChatCompletionMessageParam[],
 ): Promise<string> {
   try {
     const [tab] = await chrome.tabs.query({
@@ -40,30 +41,27 @@ export async function ask(
     if (!apiKey) return "Please add an API key in config";
     if (!openai) openai = new OpenAI({ apiKey });
 
-    const chatConfig: Omit<
-      OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming,
-      "messages"
-    > = {
-      model: (config?.["model"] as string) ?? "gpt-5-mini",
-      temperature: (config?.["temperature"] as number) ?? 1.0,
-    };
+    const chatConfig: Omit<ChatCompletionCreateParamsNonStreaming, "messages"> =
+      {
+        model: (config?.["model"] as string) ?? "gpt-5-mini",
+        temperature: (config?.["temperature"] as number) ?? 1.0,
+      };
 
-    const thinkingDepth = Math.min(
-      AI_THINKING_DEPTH_MAX,
-      (config?.["thinkginDepth"] as number) ?? AI_THINKING_DEPTH_DEFAULT,
-    );
-
-    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+    const messages: ChatCompletionMessageParam[] = [
       { role: "system", content: systemContent },
       ..._messages,
     ];
 
-    for (let i = 0; i < thinkingDepth; i++) {
+    const thinking = { iter: -1 };
+
+    while (true) {
+      thinking.iter++;
+
       const response = await openai.chat.completions.create({
         ...chatConfig,
         messages,
-        tools,
-        tool_choice: i > 0 ? "auto" : "required",
+        tools: tools,
+        tool_choice: thinking.iter > 0 ? "auto" : "required",
       });
 
       console.debug(
@@ -75,30 +73,26 @@ export async function ask(
 
       const responseMessage = response.choices[0].message;
 
-      // If no tool call, just output the response
-      if (!responseMessage.tool_calls) {
-        return responseMessage.content || "Nothing to do!";
-      }
-
-      // Keep user in notice before final answer is ready
-
-      chrome.runtime.sendMessage<Message>({
-        from: "background",
-        to: "popup",
-        action: "openai_thinking",
-        data: {
-          iter: i,
-          content: responseMessage.content || "Deep thinking...",
-        },
-      });
-
       // Append assistant message before toolcall responses
       messages.push(responseMessage);
+
+      // If no tool call, exit loop
+      if (!responseMessage.tool_calls) break;
+
+      // Keep user in notice before final answer is ready
+      const thinking_tools = responseMessage.tool_calls
+        .map((tc) => (tc.type === "function" ? tc.function.name : tc.id))
+        .join(", ");
+
+      updateAiThinking({
+        iter: thinking.iter,
+        content: "Using existing tools: " + thinking_tools,
+      });
 
       // Handle tool calls
       const toolCalls = responseMessage.tool_calls;
       for (const toolCall of toolCalls) {
-        const toolResult = proceedToolCall(toolCall, tab);
+        const toolResult = await proceedToolCall(toolCall, tab);
         // Append the model's response and the tool result to messages
         messages.push({
           role: "tool",
@@ -108,18 +102,26 @@ export async function ask(
       }
     }
 
+    updateAiThinking({
+      iter: 0,
+      content: "Deep thinking...",
+    });
+
     // Final API request with updated messages
     const response = await openai.chat.completions.create({
       ...chatConfig,
       messages,
     });
 
-    return response.choices[0].message.content || "Nothing to say!";
+    updateAiThinking(null);
+    return response.choices[0].message.content || "Done!";
   } catch (err: any) {
-    console.debug("ERR:OPENAI_ASK", { err });
+    console.debug("ERROR:OPENAI_ASK", err);
+
+    updateAiThinking(null);
     return (
       "Something went wrong!\n" +
-      (err?.error?.message ?? err?.message ?? err ?? "")
+      (err?.error?.message || err?.message || err || "")
     );
   }
 }

@@ -88,9 +88,24 @@ export interface Patch {
   };
 }
 
-export interface Message {
+type Sender = "background" | "content" | "popup" | "options";
+
+interface BaseMessage {
+  from: Sender;
+  to: Sender;
   data: unknown;
-  from: "background" | "content" | "popup" | "options";
-  to: Message["from"];
-  action: "updateBadge" | "openai_ask" | "openai_answer" | "openai_thinking";
 }
+
+export type OpenaiThinkingMessageData = {
+  iter: number;
+  content: string;
+} | null;
+
+export type Message =
+  | (BaseMessage & { action: "updateBadge" })
+  | (BaseMessage & { action: "openai_ask" })
+  | (BaseMessage & { action: "openai_answer" })
+  | (BaseMessage & {
+      action: "openai_thinking";
+      data: OpenaiThinkingMessageData;
+    });

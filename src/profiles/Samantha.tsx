@@ -5,7 +5,7 @@ import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
 import Chips from "../components/Chips";
 import { useService } from "../store";
-import type { Message } from "../types";
+import type { Message, OpenaiThinkingMessageData } from "../types";
 
 const hints = [
   "Summerize page content",
@@ -20,25 +20,7 @@ export default function Samantha() {
   const clear = useService((s) => s.clearChat);
 
   const [message, set] = useState("");
-  const [thinking, setThinking] = useState<{
-    iter: number;
-    content: string;
-  } | null>(null);
-
-  // answer
-  useEffect(() => {
-    if (import.meta.env.DEV) return;
-    async function listener(msg: Message) {
-      if (msg.to !== "popup") return;
-      if (msg.action !== "openai_answer") return;
-      addMessage({ role: "assistant", content: msg.data as string });
-      setThinking(null);
-    }
-    chrome.runtime.onMessage.addListener(listener);
-    return () => {
-      chrome.runtime.onMessage.removeListener(listener);
-    };
-  }, [addMessage]);
+  const [thinking, setThinking] = useState<OpenaiThinkingMessageData>(null);
 
   // thinking
   useEffect(() => {
@@ -60,7 +42,8 @@ export default function Samantha() {
     ev.preventDefault();
     if (import.meta.env.DEV) return;
     if (!message.length) return;
-    setThinking({ iter: 0, content: "Deep thinking..." });
+    if (thinking) return;
+    setThinking({ iter: 0, content: "Processing..." });
     const newMessage: ChatCompletionMessageParam = {
       role: "user",
       content: message,
@@ -69,7 +52,7 @@ export default function Samantha() {
       from: "popup",
       to: "background",
       action: "openai_ask",
-      data: { ...messages, newMessage },
+      data: [...messages, newMessage],
     });
     addMessage(newMessage);
     set("");
@@ -82,7 +65,7 @@ export default function Samantha() {
       top: scrollbox.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [messages.length]);
+  }, [messages.length, thinking]);
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
@@ -103,13 +86,12 @@ export default function Samantha() {
               )}
             >
               <Markdown>{content?.toString()}</Markdown>
-              {/* {content?.toString()} */}
             </div>
           ))}
         {thinking && (
           <div
             className={clsx(
-              "max-w-4/5 rounded-md p-3 px-4 leading-[150%]",
+              "max-w-4/5 animate-pulse rounded-md p-3 px-4 leading-[150%]",
               "self-start bg-red-200/5",
             )}
           >
@@ -138,6 +120,7 @@ export default function Samantha() {
           placeholder="How can I help you?"
           value={message}
           onChange={(ev) => set(ev.target.value)}
+          disabled={!!thinking}
         />
         <button
           className="btn-primary group shrink-0 rounded-lg p-1.5"
@@ -150,7 +133,7 @@ export default function Samantha() {
       {!!messages.length && (
         <button
           aria-label="Clear button"
-          className="group absolute top-0 left-4 shrink-0 rounded-lg bg-red-400/5 p-1.75 text-red-400 hover:bg-red-400/10"
+          className="group absolute top-0 left-4 shrink-0 rounded-lg bg-red-400/5 p-1.75 text-red-400 backdrop-blur-2xl hover:bg-red-400/10"
           onClick={clear}
         >
           <RiDeleteBinFill className="size-5 transition group-hover:scale-105 group-active:scale-95" />
