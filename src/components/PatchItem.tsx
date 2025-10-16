@@ -73,7 +73,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           target="_blank"
           href={patch.author.donation}
         >
-          <CiCoffeeCup className="size-4" />
+          <CiCoffeeCup className="icon-zoom" />
         </a>
       )}
       {patch.config && (
@@ -82,7 +82,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           className="tiny-btn group"
           onClick={openConfig}
         >
-          <RiSettings2Line className="icon-zoom" />
+          <RiSettings2Line className="icon-rotate" />
         </div>
       )}
       {!!patch.profile && (
@@ -141,9 +141,9 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           }}
         >
           {(enabledGlobally ? !excluded : enabled) ? (
-            <RiDeleteBinFill className="size-4" />
+            <RiDeleteBinFill className="icon-zoom" />
           ) : (
-            <RiAddFill className="size-4" />
+            <RiAddFill className="icon-zoom" />
           )}
         </div>
       )}
