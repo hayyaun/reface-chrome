@@ -45,19 +45,12 @@ export default function Backup() {
         lines={null}
       />
       <div aria-label="Buttons" className="flex h-12 gap-2 py-2">
-        <button
-          title="Import"
-          className="group shrink-0 rounded-lg bg-white/5 p-1.5 hover:bg-white/10"
-          onClick={onImport}
-        >
-          <RiUpload2Line className="size-5 transition group-hover:translate-y-0.25 group-active:-translate-y-0.25" />
+        <button title="Import" className="icon-btn group" onClick={onImport}>
+          <RiUpload2Line className="icon-jump-reverse" />
         </button>
-        <button
-          className="group flex items-center gap-2 rounded-md bg-purple-600 pr-3 pl-4 text-center text-white transition hover:bg-purple-700 active:bg-purple-800"
-          onClick={onExport}
-        >
+        <button className="btn-primary text-btn group" onClick={onExport}>
           Export
-          <RiDownload2Line className="size-5 transition group-hover:-translate-y-0.25 group-active:translate-y-0.25" />
+          <RiDownload2Line className="icon-jump" />
         </button>
       </div>
     </li>

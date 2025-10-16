@@ -69,39 +69,37 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       {patch.author?.donation && (
         <a
           title="Buy me a coffee"
-          className="tiny-btn bg-yellow-300/3 hover:bg-yellow-400/10"
+          className="tiny-btn group btn-yellow"
           target="_blank"
           href={patch.author.donation}
         >
-          <CiCoffeeCup className="size-4 text-yellow-400" />
+          <CiCoffeeCup className="size-4" />
         </a>
       )}
       {patch.config && (
         <div
           title="Global Config"
-          className="tiny-btn bg-white/3 hover:bg-white/10"
+          className="tiny-btn group"
           onClick={openConfig}
         >
-          <RiSettings2Line className="size-4" />
+          <RiSettings2Line className="icon-zoom" />
         </div>
       )}
       {!!patch.profile && (
         <div
           title={patch.profile.title}
-          className="tiny-btn bg-white/3 hover:bg-white/10"
+          className="tiny-btn group"
           onClick={openProfile}
         >
-          <patch.profile.icon className="size-4" />
+          <patch.profile.icon className="icon-zoom" />
         </div>
       )}
       {patch.global && !patch.profile && (
         <div
           title={!enabledGlobally ? "Enable Globally" : "Disable Globally"}
           className={clsx(
-            "tiny-btn",
-            !enabledGlobally
-              ? "bg-green-300/3 hover:bg-green-400/10"
-              : "bg-red-300/3 hover:bg-red-400/10",
+            "tiny-btn group",
+            !enabledGlobally ? "btn-green" : "btn-red",
           )}
           onClick={() => {
             if (!enabledGlobally) addGlobal(patchKey, hostname);
@@ -110,9 +108,9 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           }}
         >
           {!enabledGlobally ? (
-            <RiCheckDoubleFill className="size-4 text-green-400" />
+            <RiCheckDoubleFill className="icon-zoom" />
           ) : (
-            <RiCloseFill className="size-4 text-red-400" />
+            <RiCloseFill className="icon-zoom" />
           )}
         </div>
       )}
@@ -128,10 +126,8 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
                 : "Apply"
           }
           className={clsx(
-            "tiny-btn",
-            (enabledGlobally ? !excluded : enabled)
-              ? "bg-red-300/3 hover:bg-red-400/10"
-              : "bg-green-300/3 hover:bg-green-400/10",
+            "tiny-btn group",
+            (enabledGlobally ? !excluded : enabled) ? "btn-red" : "btn-green",
           )}
           onClick={() => {
             if (enabledGlobally) {
@@ -145,9 +141,9 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           }}
         >
           {(enabledGlobally ? !excluded : enabled) ? (
-            <RiDeleteBinFill className="size-4 text-red-400" />
+            <RiDeleteBinFill className="size-4" />
           ) : (
-            <RiAddFill className="size-4 text-green-400" />
+            <RiAddFill className="size-4" />
           )}
         </div>
       )}

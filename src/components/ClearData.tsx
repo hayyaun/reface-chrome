@@ -26,11 +26,11 @@ export default function ClearData() {
       />
       <div aria-label="Buttons" className="flex h-12 gap-2 py-2">
         <button
-          className="group flex items-center gap-2 rounded-md bg-white/5 p-1.5 px-1 pr-3 pl-4 text-center text-red-300 transition hover:bg-red-500/25"
+          className="text-btn group text-red-300 hover:bg-red-500/25"
           onClick={onClick}
         >
           Clear data
-          <RiDeleteBinLine className="size-5 transition group-hover:-translate-y-0.25 group-active:translate-y-0.25" />
+          <RiDeleteBinLine className="icon-jump" />
         </button>
       </div>
     </li>

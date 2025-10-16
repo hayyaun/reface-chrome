@@ -21,11 +21,11 @@ export default function Dropdown({
   return (
     <div className="relative w-32">
       <button
-        className="flex w-full items-center justify-between rounded-lg border bg-white/5 px-4 py-2 pr-2 transition hover:bg-white/10 focus:bg-white/15 focus:outline-none"
+        className="group flex w-full items-center justify-between rounded-lg border bg-white/5 px-4 py-2 pr-2 transition hover:bg-white/10 focus:bg-white/15 focus:outline-none"
         onClick={() => setHidden((s) => !s)}
       >
         <span>{title}</span>
-        <RiArrowDownSLine className="-my-2 size-5 text-white/15" />
+        <RiArrowDownSLine className="-my-2 size-5 text-white/15 group-hover:-my-0" />
       </button>
 
       <ul

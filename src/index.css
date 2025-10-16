@@ -92,7 +92,15 @@
   }
 
   .tiny-btn {
-    @apply box-border cursor-pointer rounded-sm border border-white/2 p-1 transition hover:border-white/5;
+    @apply box-border cursor-pointer rounded-sm border border-white/2 bg-white/3 p-1 transition hover:border-white/5 hover:bg-white/10;
+  }
+
+  .icon-btn {
+    @apply shrink-0 rounded-lg bg-white/5 p-1.5 backdrop-blur-2xl transition hover:bg-white/10;
+  }
+
+  .text-btn {
+    @apply flex shrink-0 items-center gap-2 rounded-md bg-white/5 pr-3 pl-4 text-center transition hover:bg-white/10;
   }
 }
 
@@ -100,6 +108,8 @@
   .hide-scrollbar::-webkit-scrollbar {
     @apply size-0;
   }
+
+  /* list */
 
   .odd-color {
     @apply hover:bg-white/5;
@@ -109,7 +119,39 @@
     @apply bg-white/2 hover:bg-white/5;
   }
 
+  /* buttons */
+
   .btn-primary {
     @apply bg-purple-600 text-center text-white transition hover:bg-purple-700 active:bg-purple-800;
+  }
+
+  .btn-red {
+    @apply bg-red-400/3 text-red-400 hover:bg-red-400/10 active:bg-red-400/20;
+  }
+
+  .btn-green {
+    @apply bg-green-300/3 text-green-400 hover:bg-green-400/10 active:bg-green-400/20;
+  }
+
+  .btn-yellow {
+    @apply bg-yellow-300/3 text-yellow-400 hover:bg-yellow-400/10 active:bg-yellow-400/20;
+  }
+
+  /* icons */
+
+  .icon-zoom {
+    @apply size-4 transition group-hover:scale-105 group-active:scale-95;
+  }
+
+  .icon-jump {
+    @apply size-5 transition group-hover:-translate-y-0.25 group-active:translate-y-0.25;
+  }
+
+  .icon-jump-reverse {
+    @apply size-5 transition group-hover:translate-y-0.25 group-active:-translate-y-0.25;
+  }
+
+  .icon-rotate {
+    @apply size-5 transition group-hover:-rotate-12 group-active:-rotate-45;
   }
 }
