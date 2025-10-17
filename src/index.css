@@ -146,15 +146,7 @@
   }
 
   .btn-green {
-    @apply bg-green-300/3 text-green-400 hover:bg-green-400/10 active:bg-green-400/20;
-  }
-
-  .btn-yellow {
-    @apply bg-yellow-300/3 text-yellow-400 hover:bg-yellow-400/10 active:bg-yellow-400/20;
-  }
-
-  .btn-zinc {
-    @apply bg-zinc-300/3 text-zinc-400 hover:bg-zinc-400/10 active:bg-zinc-400/20;
+    @apply bg-green-400/3 text-green-400 hover:bg-green-400/10 active:bg-green-400/20;
   }
 
   /* icons */
