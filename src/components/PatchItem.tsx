@@ -48,7 +48,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
     <div className="group relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       <div
         aria-label="Bg shade"
-        className="pointer-events-none absolute z-0 size-full opacity-5 group-hover:opacity-10"
+        className="pointer-events-none absolute inset-0 z-0 size-full opacity-5 group-hover:opacity-10"
         style={{ backgroundColor: patch.bgcolor }}
       />
       {Icon && (
