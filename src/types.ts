@@ -70,8 +70,11 @@ export interface Patch {
   /** Logo file location */
   logo?: IconType | string;
 
-  /** Default color for add-on */
+  /** Default color for add-on logo */
   color?: string;
+
+  /** Default bgcolor for add-on logo */
+  bgcolor?: string;
 
   /** Config value globally set by user
    * @summary You can access it from `window.__rc_config["patch-name"]["config-key"]`

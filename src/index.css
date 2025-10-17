@@ -6,6 +6,7 @@
   --color-foreground: #ffffff;
   --animate-slide-in: slide-in 0.25s ease both;
   --animate-slide-out: slide-out 0.25s ease both;
+  --animate-shine: shine 2s ease-out infinite alternate 1s both;
 
   @keyframes slide-in {
     from {
@@ -26,6 +27,21 @@
     to {
       transform: translateX(100%);
       opacity: 0;
+    }
+  }
+
+  @keyframes shine {
+    from {
+      transform: rotate(0deg) scale(1);
+      translate: 0px 0px;
+      stroke: #2220;
+      stroke-width: 0;
+    }
+    to {
+      transform: rotate(360deg) scale(2);
+      translate: -8px 8px;
+      stroke: #222f;
+      stroke-width: 8;
     }
   }
 }
@@ -140,7 +156,7 @@
   /* icons */
 
   .icon-zoom {
-    @apply size-4 transition group-hover:scale-105 group-active:scale-95;
+    @apply size-5 transition group-hover:scale-105 group-active:scale-95;
   }
 
   .icon-jump {
@@ -152,6 +168,6 @@
   }
 
   .icon-rotate {
-    @apply size-5 transition group-hover:-rotate-12 group-active:-rotate-45;
+    @apply size-5 transition group-hover:-rotate-20 group-active:-rotate-45;
   }
 }

@@ -45,9 +45,17 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       : null;
 
   return (
-    <div className="relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
+    <div className="group relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
+      <div
+        aria-label="Bg shade"
+        className="pointer-events-none absolute z-0 size-full opacity-5 group-hover:opacity-10"
+        style={{ backgroundColor: patch.bgcolor }}
+      />
       {Icon && (
-        <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75">
+        <div
+          className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75"
+          style={{ backgroundColor: patch.bgcolor }}
+        >
           {typeof patch.logo !== "string" ? (
             <Icon className="size-5" style={{ color: patch.color }} />
           ) : (

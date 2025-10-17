@@ -3,14 +3,14 @@ import {
   RiExternalLinkFill,
   RiFocusLine,
   RiGithubLine,
-  RiMessageFill,
   RiRobot2Fill,
   RiSpeedUpFill,
 } from "react-icons/ri";
+import SamanthaIcon from "../components/SamanthaIcon";
 import Samantha from "../profiles/Samantha";
 import type { HostnameConfig, Patch } from "../types";
 import authors from "./authors";
-import { AI_THINKING_DEPTH_DEFAULT, AI_THINKING_DEPTH_MAX } from "./constants";
+import { AI_THINKING_DEPTH_DEFAULT, AI_THINKING_DEPTH_MAX, PRIMARY_COLOR_DARK } from "./constants";
 import { categories } from "./mapping";
 
 const patches: { [key: string]: Patch } = {
@@ -24,10 +24,12 @@ const patches: { [key: string]: Patch } = {
     noJS: true,
     logo: RiRobot2Fill,
     profile: {
-      icon: RiMessageFill,
+      icon: SamanthaIcon,
       title: "Chat",
       Component: Samantha,
     },
+    color: "yellow",
+    bgcolor: PRIMARY_COLOR_DARK,
     config: {
       model: {
         name: "Model",
