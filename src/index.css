@@ -121,6 +121,8 @@
 }
 
 @layer utilities {
+  /* scrollbar */
+
   .hide-scrollbar::-webkit-scrollbar {
     @apply size-0;
   }
@@ -152,18 +154,18 @@
   /* icons */
 
   .icon-zoom {
-    @apply size-5 transition group-hover:scale-105 group-active:scale-95;
+    @apply size-5 transition group-hover/icon:scale-105 group-active/icon:scale-95;
   }
 
   .icon-jump {
-    @apply size-5 transition group-hover:-translate-y-0.25 group-active:translate-y-0.25;
+    @apply size-5 transition group-hover/icon:-translate-y-0.25 group-active/icon:translate-y-0.25;
   }
 
   .icon-jump-reverse {
-    @apply size-5 transition group-hover:translate-y-0.25 group-active:-translate-y-0.25;
+    @apply size-5 transition group-hover/icon:translate-y-0.25 group-active/icon:-translate-y-0.25;
   }
 
   .icon-rotate {
-    @apply size-5 transition group-hover:-rotate-20 group-active:-rotate-45;
+    @apply size-5 transition group-hover/icon:-rotate-20 group-active/icon:-rotate-45;
   }
 }

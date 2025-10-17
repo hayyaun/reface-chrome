@@ -52,8 +52,8 @@ export default function ConfigModal({ patchKey, close }: Props) {
         ))}
       </div>
       <div aria-label="Buttons" className="flex gap-2 p-2">
-        <button className="icon-btn group" onClick={onReset}>
-          <RiResetLeftLine className="group icon-rotate" />
+        <button className="icon-btn group/icon" onClick={onReset}>
+          <RiResetLeftLine className="icon-rotate" />
         </button>
         <button className="btn-primary flex-1 rounded-lg p-2" onClick={onSave}>
           Save changes

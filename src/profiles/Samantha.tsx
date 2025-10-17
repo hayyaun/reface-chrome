@@ -122,7 +122,7 @@ export default function Samantha() {
           onChange={(ev) => set(ev.target.value)}
           disabled={!!thinking}
         />
-        <button className="btn-primary icon-btn group" type="submit">
+        <button className="btn-primary icon-btn group/icon" type="submit">
           <RiSendPlaneFill className="icon-zoom" />
         </button>
       </form>
@@ -130,7 +130,7 @@ export default function Samantha() {
       {!!messages.length && (
         <button
           aria-label="Clear button"
-          className="icon-btn btn-red group absolute top-0 left-4"
+          className="icon-btn btn-red group/icon absolute top-0 left-4"
           onClick={clear}
         >
           <RiDeleteBinFill className="icon-zoom" />

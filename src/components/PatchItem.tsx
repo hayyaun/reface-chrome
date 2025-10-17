@@ -77,7 +77,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       {patch.author?.donation && (
         <a
           title="Buy me a coffee"
-          className="tiny-btn group bg-zinc-400/3 text-zinc-400 hover:bg-yellow-600/10 hover:text-yellow-600 active:bg-yellow-600/20"
+          className="tiny-btn group/icon bg-zinc-400/3 text-zinc-400 hover:bg-yellow-600/10 hover:text-yellow-600 active:bg-yellow-600/20"
           target="_blank"
           href={patch.author.donation}
         >
@@ -87,7 +87,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       {patch.config && (
         <div
           title="Global Config"
-          className="tiny-btn group"
+          className="tiny-btn group/icon"
           onClick={openConfig}
         >
           <RiSettings2Line className="icon-rotate" />
@@ -96,7 +96,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       {!!patch.profile && (
         <div
           title={patch.profile.title}
-          className="tiny-btn group"
+          className="tiny-btn group/icon"
           onClick={openProfile}
         >
           <patch.profile.icon className="icon-zoom" />
@@ -106,7 +106,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
         <div
           title={!enabledGlobally ? "Enable Globally" : "Disable Globally"}
           className={clsx(
-            "tiny-btn group",
+            "tiny-btn group/icon",
             !enabledGlobally ? "btn-green" : "btn-red",
           )}
           onClick={() => {
@@ -134,7 +134,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
                 : "Apply"
           }
           className={clsx(
-            "tiny-btn group",
+            "tiny-btn group/icon",
             (enabledGlobally ? !excluded : enabled) ? "btn-red" : "btn-green",
           )}
           onClick={() => {

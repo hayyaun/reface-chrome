@@ -28,7 +28,7 @@ export default function Modal({ name, details, Icon, close, children }: Props) {
       )}
     >
       <div aria-label="Header" className="flex gap-2 p-4 pr-2">
-        <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75">
+        <div className="group/icon mr-2 shrink-0 rounded-lg bg-white/10 p-1.75">
           <Icon className="size-5" />
         </div>
         <Label name={name} details={details} />

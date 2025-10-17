@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import type { IconBaseProps } from "react-icons";
 
 export default function SamanthaIcon(props: IconBaseProps) {
@@ -9,14 +8,13 @@ export default function SamanthaIcon(props: IconBaseProps) {
       viewBox="0 0 200 200"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx(props.className, "group")}
       {...props}
     >
       <path d="M83.3332 25H116.667V41.6667H83.3332C55.7189 41.6667 33.3332 64.0524 33.3332 91.6667C33.3332 121.75 53.8505 141.38 99.9998 162.332V141.667H116.667C144.281 141.667 166.667 119.281 166.667 91.6667H183.333C183.333 128.486 153.486 158.333 116.667 158.333V187.5C74.9998 170.833 16.6665 145.833 16.6665 91.6667C16.6665 54.8477 46.5142 25 83.3332 25Z" />
       <g>
         <path
           d="M170.557 72.4482L172.612 67.7342C176.274 59.3288 182.871 52.6367 191.102 48.9756L197.432 46.1601C200.856 44.6377 200.856 39.6567 197.432 38.1343L191.457 35.4761C183.013 31.7208 176.298 24.781 172.698 16.0902L170.588 10.996C169.118 7.44567 164.215 7.44567 162.744 10.996L160.634 16.0902C157.035 24.781 150.32 31.7208 141.877 35.4761L135.9 38.1343C132.477 39.6567 132.477 44.6377 135.9 46.1601L142.231 48.9756C150.462 52.6367 157.059 59.3288 160.722 67.7342L162.776 72.4482C164.28 75.8993 169.053 75.8993 170.557 72.4482Z"
-          className="animate-shine origin-center text-yellow-300 transition group-hover:!text-blue-300"
+          className="animate-shine origin-center text-yellow-300 transition duration-700 group-hover/icon:!text-blue-300"
           style={{ transformBox: "fill-box" }}
         />
       </g>
