@@ -77,7 +77,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       {patch.author?.donation && (
         <a
           title="Buy me a coffee"
-          className="tiny-btn group btn-yellow"
+          className="tiny-btn group btn-zinc"
           target="_blank"
           href={patch.author.donation}
         >
