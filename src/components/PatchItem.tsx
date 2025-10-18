@@ -44,6 +44,8 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       ? patch.logo
       : null;
 
+  const neutral = !patch.css && patch.noJS;
+
   return (
     <div className="group/item relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
       <div
@@ -87,13 +89,13 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       {patch.config && (
         <div
           title="Global Config"
-          className="tiny-btn group/icon"
+          className="tiny-btn group/icon bg-zinc-400/3 text-zinc-400 hover:bg-purple-300/10 hover:text-purple-300 active:bg-purple-300/20"
           onClick={openConfig}
         >
           <RiSettings2Line className="icon-rotate" />
         </div>
       )}
-      {!!patch.profile && (
+      {!!patch.profile && (neutral || enabled) && (
         <div
           title={patch.profile.title}
           className="tiny-btn group/icon"
@@ -102,7 +104,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           <patch.profile.icon className="icon-zoom" />
         </div>
       )}
-      {patch.global && !patch.profile && (
+      {patch.global && !neutral && (
         <div
           title={!enabledGlobally ? "Enable Globally" : "Disable Globally"}
           className={clsx(
@@ -122,7 +124,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           )}
         </div>
       )}
-      {typeof hostname !== "undefined" && !patch.profile && (
+      {typeof hostname !== "undefined" && !neutral && (
         <div
           title={
             enabledGlobally

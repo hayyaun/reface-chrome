@@ -1,5 +1,6 @@
 import {
   RiBookOpenFill,
+  RiEraserLine,
   RiExternalLinkFill,
   RiFocusLine,
   RiGithubLine,
@@ -7,10 +8,15 @@ import {
   RiSpeedUpFill,
 } from "react-icons/ri";
 import SamanthaIcon from "../components/SamanthaIcon";
+import MagicEraser from "../profiles/MagicEraser";
 import Samantha from "../profiles/Samantha";
 import type { HostnameConfig, Patch } from "../types";
 import authors from "./authors";
-import { AI_THINKING_DEPTH_DEFAULT, AI_THINKING_DEPTH_MAX, PRIMARY_COLOR_DARK } from "./constants";
+import {
+  AI_THINKING_DEPTH_DEFAULT,
+  AI_THINKING_DEPTH_MAX,
+  PRIMARY_COLOR_DARK,
+} from "./constants";
 import { categories } from "./mapping";
 
 const patches: { [key: string]: Patch } = {
@@ -24,9 +30,9 @@ const patches: { [key: string]: Patch } = {
     noJS: true,
     logo: RiRobot2Fill,
     profile: {
+      Component: Samantha,
       icon: SamanthaIcon,
       title: "Chat",
-      Component: Samantha,
     },
     color: "yellow",
     bgcolor: PRIMARY_COLOR_DARK,
@@ -58,6 +64,32 @@ const patches: { [key: string]: Patch } = {
         name: "Temperature",
         defaultValue: 1.0,
         details: "Randomness of the ai model. (Between: 0-2)",
+      },
+    },
+  },
+  "magic-eraser": {
+    name: "Magic Eraser",
+    details: "Remove elements you hate from a website",
+    keywords: [categories.feature, "eraser"],
+    hostnames: ["*"],
+    global: false, // not necessary
+    color: "#ff8095",
+    logo: RiEraserLine,
+    profile: {
+      Component: MagicEraser,
+      icon: RiFocusLine,
+      title: "Magic Eraser",
+    },
+    config: {
+      persist: {
+        name: "Persist",
+        details: "Keep your changes in memory",
+        defaultValue: true,
+      },
+      storage: {
+        name: "Websites",
+        details: "List of persisted website settings",
+        defaultValue: {}, // hostname origins
       },
     },
   },

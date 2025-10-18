@@ -1,7 +1,8 @@
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
-export type ConfigValue = string | number | boolean | undefined;
+export type ConfigValue = string | number | boolean | object;
 
 export interface Option {
   name: string;
@@ -91,12 +92,12 @@ export interface Patch {
   };
 }
 
-type Sender = "background" | "content" | "popup" | "options";
+type Entity = "background" | "content" | "popup" | "options";
 
-interface BaseMessage {
-  from: Sender;
-  to: Sender;
-  data: unknown;
+interface BaseMessage<TO extends Entity, T> {
+  from: Entity;
+  to: TO;
+  data: T;
 }
 
 export type OpenaiThinkingMessageData = {
@@ -105,10 +106,18 @@ export type OpenaiThinkingMessageData = {
 } | null;
 
 export type Message =
-  | (BaseMessage & { action: "updateBadge" })
-  | (BaseMessage & { action: "openai_ask" })
-  | (BaseMessage & { action: "openai_answer" })
-  | (BaseMessage & {
+  | (BaseMessage<"background", number> & {
+      action: "updateBadge";
+    })
+  | (BaseMessage<"background", ChatCompletionMessageParam[]> & {
+      action: "openai_ask";
+    })
+  | (BaseMessage<"popup", OpenaiThinkingMessageData> & {
       action: "openai_thinking";
-      data: OpenaiThinkingMessageData;
+    })
+  | (BaseMessage<"content", boolean> & {
+      action: "magic_eraser_selection_mode";
+    })
+  | (BaseMessage<"background", { hostname: string; selector: string }> & {
+      action: "magic_eraser_on_select";
     });

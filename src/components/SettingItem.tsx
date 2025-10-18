@@ -1,5 +1,9 @@
 import clsx from "clsx";
-import { RiCheckboxBlankLine, RiCheckboxFill } from "react-icons/ri";
+import {
+  RiCheckboxBlankLine,
+  RiCheckboxFill,
+  RiCloseCircleLine,
+} from "react-icons/ri";
 import type { Option } from "../types";
 import Dropdown from "./Dropdown";
 import Label from "./Label";
@@ -64,6 +68,19 @@ export default function SettingItem<T>({
           options={options}
         />
       )}
+      {typeof value === "object" &&
+        Object.keys(value as object).map((k, i) => (
+          <div
+            className="flex w-full items-center justify-between gap-2 rounded-full bg-white/2 px-4 py-1"
+            key={i}
+          >
+            {k}
+            <RiCloseCircleLine
+              className="icon-zoom cursor-pointer text-red-400"
+              onClick={() => console.log(k)} // TODO
+            />
+          </div>
+        ))}
     </li>
   );
 }
