@@ -95,7 +95,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           <RiSettings2Line className="icon-rotate" />
         </div>
       )}
-      {!!patch.profile && (
+      {!!patch.profile && (neutral || enabled) && (
         <div
           title={patch.profile.title}
           className="tiny-btn group/icon"
