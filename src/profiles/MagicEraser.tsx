@@ -38,6 +38,7 @@ export default function MagicEraser() {
           <RiFocusLine className="icon-zoom" />
         )}
       </button>
+      <p className="mt-8 opacity-50">Press "esc" to exist selection mode.</p>
       <p className="mt-4 opacity-25">
         You can always manage websites in config and choose to remember your
         settings for next time you visit this website or only apply changes this
