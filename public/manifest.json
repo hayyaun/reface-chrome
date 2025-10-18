@@ -1,7 +1,7 @@
 {
   "name": "Reface",
   "description": "Better browsing experience with Reface extension",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "manifest_version": 3,
   "icons": {
     "16": "assets/logo-duo16.png",
