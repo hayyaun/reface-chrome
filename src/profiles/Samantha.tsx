@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useLiveQuery } from "dexie-react-hooks";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import {
+  memo,
   useCallback,
   useEffect,
   useRef,
@@ -67,12 +68,12 @@ export default function Samantha() {
 
   // ui
   const scrollbox = useRef<HTMLDivElement>(null!);
-  // useEffect(() => {
-  //   scrollbox.current.scrollTo({
-  //     top: scrollbox.current.scrollHeight,
-  //     behavior: "smooth",
-  //   });
-  // }, [messages?.length, thinking]);
+  useEffect(() => {
+    scrollbox.current.scrollTo({
+      top: scrollbox.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages?.length, thinking]);
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
@@ -82,18 +83,8 @@ export default function Samantha() {
       >
         {messages
           ?.filter((v) => v.role !== "system")
-          .map(({ role, content }, i) => (
-            <div
-              key={i}
-              className={clsx(
-                "max-w-4/5 rounded-md p-3 px-4 leading-[150%] break-words whitespace-pre-line select-text",
-                role === "assistant"
-                  ? "self-start bg-red-200/5"
-                  : "self-end bg-blue-200/5",
-              )}
-            >
-              <Markdown>{content?.toString()}</Markdown>
-            </div>
+          .map((msg, i) => (
+            <MessageBubble key={i} {...msg} />
           ))}
         {thinking && (
           <div
@@ -146,3 +137,16 @@ export default function Samantha() {
     </div>
   );
 }
+
+const MessageBubble = memo(({ role, content }: ChatCompletionMessageParam) => (
+  <div
+    className={clsx(
+      "max-w-4/5 rounded-md p-3 px-4 leading-[150%] break-words whitespace-pre-line select-text",
+      role === "assistant"
+        ? "self-start bg-red-200/5"
+        : "self-end bg-blue-200/5",
+    )}
+  >
+    <Markdown>{content?.toString()}</Markdown>
+  </div>
+));
