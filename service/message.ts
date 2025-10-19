@@ -1,3 +1,4 @@
+import db from "../shared/db";
 import { useService } from "../src/store";
 import type { Message, OpenaiThinkingMessageData } from "../src/types";
 import { extractDefaultConfigData } from "../src/utils/patch";
@@ -25,10 +26,7 @@ export function addMessageListener() {
           case "openai_ask": {
             const answer = await ask(msg.data);
             // Respond back to popup
-            useService.getState().addChatMessage({
-              role: "assistant",
-              content: answer,
-            });
+            db.openai.add({ role: "assistant", content: answer });
             break;
           }
           case "magic_eraser_on_select": {

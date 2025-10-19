@@ -1,4 +1,3 @@
-import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -21,10 +20,6 @@ interface Service {
   config: { [patchKey: string]: PatchConfigData | undefined };
   updateConfig: (patchKey: string, data: PatchConfigData) => void;
   resetConfig: (patchKey: string) => void;
-  // ai
-  chat: ChatCompletionMessageParam[];
-  addChatMessage: (message: ChatCompletionMessageParam) => void;
-  clearChat: () => void;
 }
 
 export const useService = create(
@@ -106,17 +101,6 @@ export const useService = create(
         set((state) => {
           if (state.config[patchKey]) delete state.config[patchKey];
         });
-      },
-      // ai
-      // TODO move to db
-      chat: [],
-      addChatMessage: (message) => {
-        set((state) => {
-          state.chat.push(message);
-        });
-      },
-      clearChat: () => {
-        set({ chat: [] });
       },
     })),
     {

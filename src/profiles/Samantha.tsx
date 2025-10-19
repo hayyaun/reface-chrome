@@ -1,10 +1,11 @@
 import clsx from "clsx";
+import { useLiveQuery } from "dexie-react-hooks";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useEffect, useRef, useState, type FormEventHandler } from "react";
 import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
+import db from "../../shared/db";
 import Chips from "../components/Chips";
-import { useService } from "../store";
 import type { Message, OpenaiThinkingMessageData } from "../types";
 
 const hints = [
@@ -15,9 +16,8 @@ const hints = [
 ];
 
 export default function Samantha() {
-  const messages = useService((s) => s.chat);
-  const addMessage = useService((s) => s.addChatMessage);
-  const clear = useService((s) => s.clearChat);
+  const messages = useLiveQuery(() => db.openai.toArray());
+  const clear = () => db.openai.clear();
 
   const [message, set] = useState("");
   const [thinking, setThinking] = useState<OpenaiThinkingMessageData>(null);
@@ -37,9 +37,19 @@ export default function Samantha() {
     };
   }, []);
 
+  const scrollbox = useRef<HTMLDivElement>(null!);
+
+  useEffect(() => {
+    scrollbox.current.scrollTo({
+      top: scrollbox.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages?.length, thinking]);
+
   // send message
   const ask: FormEventHandler = async (ev) => {
     ev.preventDefault();
+    if (!messages) return;
     if (import.meta.env.DEV) return;
     if (!message.length) return;
     if (thinking) return;
@@ -54,18 +64,9 @@ export default function Samantha() {
       action: "openai_ask",
       data: [...messages, newMessage],
     });
-    addMessage(newMessage);
+    await db.openai.add(newMessage);
     set("");
   };
-
-  const scrollbox = useRef<HTMLDivElement>(null!);
-
-  useEffect(() => {
-    scrollbox.current.scrollTo({
-      top: scrollbox.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages.length, thinking]);
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
@@ -74,7 +75,7 @@ export default function Samantha() {
         className="relative flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8"
       >
         {messages
-          .filter((v) => v.role !== "system")
+          ?.filter((v) => v.role !== "system")
           .map(({ role, content }, i) => (
             <div
               key={i}
@@ -98,7 +99,7 @@ export default function Samantha() {
             {thinking.content} {thinking.iter ? `(${thinking.iter})` : ""}
           </div>
         )}
-        {!messages.length && (
+        {!messages?.length && (
           <div className="flex flex-1 flex-col items-center justify-center gap-2">
             <p className="mb-2 opacity-45">Get started by trying these:</p>
             {hints.map((hint, i) => (
@@ -127,7 +128,7 @@ export default function Samantha() {
         </button>
       </form>
 
-      {!!messages.length && (
+      {!!messages?.length && (
         <button
           aria-label="Clear button"
           className="icon-btn btn-red group/icon absolute top-0 left-4"
