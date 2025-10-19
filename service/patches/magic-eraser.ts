@@ -1,5 +1,5 @@
 import type { Message } from "../../shared/types";
-import { getElementPath } from "../utils/dom";
+import { getElementByXPath, getElementXPath } from "../utils/dom";
 
 // Selection Mode
 
@@ -15,7 +15,7 @@ function onClick(ev: MouseEvent) {
     action: "magic_eraser_on_select",
     data: {
       hostname: window.location.hostname,
-      selector: getElementPath(el),
+      selector: getElementXPath(el),
     },
   });
 }
@@ -86,7 +86,8 @@ function applyPersisted() {
   for (const hostname in storage) {
     if (hostname !== window.location.hostname) continue;
     for (const selector of storage[hostname]) {
-      const el = document.querySelector(selector) as HTMLElement;
+      const el = getElementByXPath(selector);
+      if (!el || !(el instanceof HTMLElement)) continue;
       el.style.display = "none";
     }
     break;

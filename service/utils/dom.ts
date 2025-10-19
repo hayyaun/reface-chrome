@@ -1,4 +1,4 @@
-export function getElementPath(el: Element): string {
+export function getElementCSSPath(el: Element): string {
   if (!(el instanceof Element)) return "";
   const path: string[] = [];
   while (el && el.nodeType === Node.ELEMENT_NODE) {
@@ -19,4 +19,42 @@ export function getElementPath(el: Element): string {
     el = el.parentElement!;
   }
   return path.join(" > ");
+}
+
+export function getElementXPath(el: Element): string {
+  if (el.id) return `//*[@id="${el.id}"]`;
+
+  const parts: string[] = [];
+  while (el && el.nodeType === Node.ELEMENT_NODE) {
+    let index = 1;
+    let sibling = el.previousSibling;
+
+    while (sibling) {
+      if (
+        sibling.nodeType === Node.ELEMENT_NODE &&
+        sibling.nodeName === el.nodeName
+      ) {
+        index++;
+      }
+      sibling = sibling.previousSibling;
+    }
+
+    const tagName = el.nodeName.toLowerCase();
+    const pathIndex = `[${index}]`;
+    parts.unshift(tagName + pathIndex);
+    el = el.parentNode as Element;
+  }
+
+  return "/" + parts.join("/");
+}
+
+export function getElementByXPath(xpath: string): Element | null {
+  const result = document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null,
+  );
+  return result.singleNodeValue as Element;
 }
