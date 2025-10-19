@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { RiCheckboxCircleFill } from "react-icons/ri";
 import Footer from "../components/Footer";
 import PatchList from "../components/PatchList";
-import { useService } from "../../shared/store";
+import { useService } from "@/shared/store";
 
 export default function App() {
   const hostnames = useService((s) => s.hostnames);

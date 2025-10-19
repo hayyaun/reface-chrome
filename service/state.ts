@@ -1,4 +1,4 @@
-import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "../shared/store";
+import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "@/shared/store";
 import { updateBadgeForActiveTab } from "./badge";
 
 // State

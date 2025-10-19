@@ -1,5 +1,5 @@
-import patches from "../shared/patches";
-import { extractDefaultConfigData, match } from "../shared/utils";
+import patches from "@/shared/patches";
+import { extractDefaultConfigData, match } from "@/shared/utils";
 import { state } from "./state";
 
 const applied: { [tabId: number]: string[] } = {};

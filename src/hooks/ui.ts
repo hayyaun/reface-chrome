@@ -1,5 +1,5 @@
-import patches from "../../shared/patches";
-import { useUI } from "../../shared/store";
+import patches from "@/shared/patches";
+import { useUI } from "@/shared/store";
 import profiles from "../profiles";
 
 export function useUIActions(patchKey: string) {

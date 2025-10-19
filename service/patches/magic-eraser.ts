@@ -1,4 +1,4 @@
-import type { Message } from "../../shared/types";
+import type { Message } from "@/shared/types";
 import { getElementByXPath, getElementXPath } from "../utils/dom";
 
 // Selection Mode

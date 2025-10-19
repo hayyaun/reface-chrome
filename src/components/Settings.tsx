@@ -1,4 +1,4 @@
-import { usePrefs, useService } from "../../shared/store";
+import { usePrefs, useService } from "@/shared/store";
 import Backup from "./Backup";
 import ClearData from "./ClearData";
 import Modals from "./Modals";

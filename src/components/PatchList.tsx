@@ -1,8 +1,8 @@
 import { lazy, useMemo, useState } from "react";
-import { categories } from "../../shared/mapping";
-import patches from "../../shared/patches";
-import strings from "../../shared/strings";
-import { match } from "../../shared/utils";
+import { categories } from "@/shared/mapping";
+import patches from "@/shared/patches";
+import strings from "@/shared/strings";
+import { match } from "@/shared/utils";
 import PatchItem from "../components/PatchItem";
 import Chips from "./Chips";
 

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useState } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
-import type { Option } from "../../shared/types";
+import type { Option } from "@/shared/types";
 
 interface Props {
   placeholder?: string;

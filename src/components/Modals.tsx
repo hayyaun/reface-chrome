@@ -1,6 +1,6 @@
 import { RiSettings2Line } from "react-icons/ri";
-import patches from "../../shared/patches";
-import { useUI } from "../../shared/store";
+import patches from "@/shared/patches";
+import { useUI } from "@/shared/store";
 import profiles from "../profiles";
 import ConfigModal from "./ConfigModal";
 import Modal from "./Modal";

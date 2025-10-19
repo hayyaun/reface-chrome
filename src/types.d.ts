@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
-import type { ModalProps } from "../shared/types";
+import type { ModalProps } from "@/shared/types";
 
 interface Profile {
   /** Logo file location */

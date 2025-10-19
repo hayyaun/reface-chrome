@@ -1,7 +1,7 @@
-import db from "../shared/store/db";
-import { useService } from "../shared/store";
-import type { Message, OpenaiThinkingMessageData } from "../shared/types";
-import { extractDefaultConfigData } from "../shared/utils";
+import { useService } from "@/shared/store";
+import db from "@/shared/store/db";
+import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
+import { extractDefaultConfigData } from "@/shared/utils";
 import { updateBadge } from "./badge";
 import { ask } from "./openai/openai";
 

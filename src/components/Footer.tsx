@@ -1,5 +1,5 @@
 import { RiGithubFill, RiSettingsFill } from "react-icons/ri";
-import strings from "../../shared/strings";
+import strings from "@/shared/strings";
 
 interface Props {
   options?: boolean;

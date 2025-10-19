@@ -1,6 +1,6 @@
 import terser from "@rollup/plugin-terser";
 import fs from "fs";
-import path from "path";
+import path, { resolve } from "path";
 import { defineConfig } from "vite";
 import { dynamicDirCopyPlugin } from "./plugins/dynamic-dir-copy";
 
@@ -19,6 +19,7 @@ const patchFiles = fs
 
 export default defineConfig({
   plugins: [dynamicDirCopyPlugin("service/patches", "patches", [".css"])],
+  resolve: { alias: { "@": resolve(__dirname) } },
   build: {
     outDir: "dist",
     emptyOutDir: false,

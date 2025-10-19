@@ -8,10 +8,10 @@ import {
   RiDeleteBinFill,
   RiSettings2Line,
 } from "react-icons/ri";
-import { reloadActiveTab } from "../../shared/chrome/utils";
-import { categories, icons } from "../../shared/mapping";
-import patches from "../../shared/patches";
-import { usePrefs, useService } from "../../shared/store";
+import { reloadActiveTab } from "@/shared/chrome/utils";
+import { categories, icons } from "@/shared/mapping";
+import patches from "@/shared/patches";
+import { usePrefs, useService } from "@/shared/store";
 import { useUIActions } from "../hooks/ui";
 import profiles from "../profiles";
 import Label from "./Label";
