@@ -1,4 +1,4 @@
-import patches from "../../shared/config/patches";
+import patches from "../../shared/patches";
 import { useUI } from "../../shared/store";
 import profiles from "../profiles";
 

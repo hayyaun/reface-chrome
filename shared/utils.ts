@@ -1,4 +1,4 @@
-import patches from "./config/patches";
+import patches from "./patches";
 import type { PatchConfigData } from "./types";
 
 export const extractDefaultConfigData = (patchKey: string) => {

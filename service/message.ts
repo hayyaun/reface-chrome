@@ -1,4 +1,4 @@
-import db from "../shared/db";
+import db from "../shared/store/db";
 import { useService } from "../shared/store";
 import type { Message, OpenaiThinkingMessageData } from "../shared/types";
 import { extractDefaultConfigData } from "../shared/utils";

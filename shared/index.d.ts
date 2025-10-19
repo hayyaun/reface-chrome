@@ -1,7 +1,7 @@
 /// <reference types="node" />
 /// <reference types="chrome"/>
 
-import type { PatchConfigData } from "../shared/types";
+import type { PatchConfigData } from "./types";
 
 export {};
 declare global {

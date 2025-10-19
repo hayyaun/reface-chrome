@@ -1,7 +1,7 @@
 import { lazy, useMemo, useState } from "react";
-import { categories } from "../../shared/config/mapping";
-import patches from "../../shared/config/patches";
-import strings from "../../shared/config/strings";
+import { categories } from "../../shared/mapping";
+import patches from "../../shared/patches";
+import strings from "../../shared/strings";
 import { match } from "../../shared/utils";
 import PatchItem from "../components/PatchItem";
 import Chips from "./Chips";
@@ -38,8 +38,10 @@ export default function PatchList({ hostname }: Props) {
         {Object.keys(categories).map((k, i) => (
           <Chips
             key={i}
-            title={categories[k]}
-            active={selectedCategory === categories[k]}
+            title={categories[k as keyof typeof categories]}
+            active={
+              selectedCategory === categories[k as keyof typeof categories]
+            }
             onClick={() => setSelectedCategory(k)}
           />
         ))}

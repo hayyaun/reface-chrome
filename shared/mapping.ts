@@ -7,19 +7,19 @@ import {
   RiToolsLine,
 } from "react-icons/ri";
 
-export const categories: { [key: string]: string } = {
+export const categories = {
   all: "all",
   ads: "ads",
   theme: "theme",
   fix: "fix",
   feature: "feature",
   mix: "mix",
-};
+} satisfies { [key: string]: string };
 
-export const icons: { [key: string]: IconType } = {
+export const icons = {
   [categories.ads]: RiProhibitedLine,
   [categories.theme]: RiPaletteLine,
   [categories.fix]: RiToolsLine,
   [categories.feature]: RiPuzzleLine,
   [categories.mix]: RiShiningLine,
-};
+} satisfies { [key: string]: IconType };

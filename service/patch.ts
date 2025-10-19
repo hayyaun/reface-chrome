@@ -1,4 +1,4 @@
-import patches from "../shared/config/patches";
+import patches from "../shared/patches";
 import { extractDefaultConfigData, match } from "../shared/utils";
 import { state } from "./state";
 

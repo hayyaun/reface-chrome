@@ -2,7 +2,7 @@ import { produce } from "immer";
 import _ from "lodash";
 import { useMemo, useState } from "react";
 import { RiResetLeftLine } from "react-icons/ri";
-import patches from "../../shared/config/patches";
+import patches from "../../shared/patches";
 import { reloadActiveTab } from "../../shared/chrome/utils";
 import { usePrefs, useService } from "../../shared/store";
 import { extractDefaultConfigData } from "../../shared/utils";

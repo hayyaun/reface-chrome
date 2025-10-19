@@ -9,8 +9,8 @@ import {
   RiSettings2Line,
 } from "react-icons/ri";
 import { reloadActiveTab } from "../../shared/chrome/utils";
-import { categories, icons } from "../../shared/config/mapping";
-import patches from "../../shared/config/patches";
+import { categories, icons } from "../../shared/mapping";
+import patches from "../../shared/patches";
 import { usePrefs, useService } from "../../shared/store";
 import { useUIActions } from "../hooks/ui";
 import profiles from "../profiles";

@@ -1,5 +1,4 @@
-import { lazy, type ReactNode } from "react";
-import type { IconType } from "react-icons";
+import { lazy } from "react";
 import {
   RiBookOpenFill,
   RiEraserLine,
@@ -9,25 +8,13 @@ import {
   RiRobot2Fill,
   RiSpeedUpFill,
 } from "react-icons/ri";
-import type { ModalProps } from "../../shared/types";
+import type { Profile } from "../types";
+
+// lazy components
 
 const Samantha = lazy(() => import("./Samantha"));
 const SamanthaIcon = lazy(() => import("../components/SamanthaIcon"));
 const MagicEraser = lazy(() => import("./MagicEraser"));
-
-interface Profile {
-  /** Logo file location */
-  logo?: IconType | string;
-
-  /** Popup menu profile page modal
-   * @see config for retrieving params and variables
-   */
-  modal?: {
-    icon: IconType;
-    title: string;
-    Component: (props: ModalProps) => ReactNode;
-  };
-}
 
 const profiles: { [k: string]: Profile } = {
   // General

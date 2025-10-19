@@ -11,7 +11,7 @@ import {
 } from "react";
 import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
-import db from "../../shared/db";
+import db from "../../shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "../../shared/types";
 import Chips from "../components/Chips";
 

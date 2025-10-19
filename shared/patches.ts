@@ -1,4 +1,4 @@
-import type { HostnameConfig, Patch } from "../../shared/types";
+import type { HostnameConfig, Patch } from "./types";
 import authors from "./authors";
 import {
   AI_THINKING_DEPTH_DEFAULT,
