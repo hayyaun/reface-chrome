@@ -14,7 +14,10 @@ export interface PatchConfig {
     name: string;
     details: string;
     defaultValue: ConfigValue;
+    /** dropdown menu options */
     options?: Option[];
+    /** not shown in ui - used as state */
+    hidden?: boolean;
   };
 }
 

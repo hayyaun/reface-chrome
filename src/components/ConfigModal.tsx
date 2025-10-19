@@ -34,22 +34,24 @@ export default function ConfigModal({ patchKey, close }: Props) {
   return (
     <>
       <div className="flex flex-1 flex-col overflow-y-auto">
-        {Object.keys(data).map((configKey, i) => (
-          <SettingItem
-            key={i}
-            title={patch.config![configKey].name}
-            details={patch.config![configKey].details}
-            value={data[configKey]}
-            onChange={(v) => {
-              set(
-                produce((state) => {
-                  state[configKey] = v;
-                }),
-              );
-            }}
-            options={patch.config![configKey].options}
-          />
-        ))}
+        {Object.keys(data)
+          .filter((key) => !patch.config![key].hidden)
+          .map((key, i) => (
+            <SettingItem
+              key={i}
+              title={patch.config![key].name}
+              details={patch.config![key].details}
+              value={data[key]}
+              onChange={(v) => {
+                set(
+                  produce((state) => {
+                    state[key] = v;
+                  }),
+                );
+              }}
+              options={patch.config![key].options}
+            />
+          ))}
       </div>
       <div aria-label="Buttons" className="flex gap-2 p-2">
         <button className="icon-btn group/icon" onClick={onReset}>

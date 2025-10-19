@@ -45,9 +45,16 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
       : null;
 
   const neutral = !patch.css && patch.noJS;
+  const profile = neutral || enabled ? patch.profile : undefined;
 
   return (
-    <div className="group/item relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5">
+    <div
+      className={clsx(
+        "group/item relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5",
+        { "cursor-pointer": profile },
+      )}
+      onClick={profile && openConfig}
+    >
       <div
         aria-label="Bg shade"
         className="pointer-events-none absolute inset-0 z-0 size-full opacity-5 group-hover/item:opacity-10"
@@ -95,13 +102,13 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           <RiSettings2Line className="icon-rotate" />
         </div>
       )}
-      {!!patch.profile && (neutral || enabled) && (
+      {profile && (
         <div
-          title={patch.profile.title}
+          title={profile.title}
           className="tiny-btn group/icon"
           onClick={openProfile}
         >
-          <patch.profile.icon className="icon-zoom" />
+          <profile.icon className="icon-zoom" />
         </div>
       )}
       {patch.global && !neutral && (

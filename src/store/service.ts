@@ -108,6 +108,7 @@ export const useService = create(
         });
       },
       // ai
+      // TODO move to db
       chat: [],
       addChatMessage: (message) => {
         set((state) => {

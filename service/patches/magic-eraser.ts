@@ -115,4 +115,7 @@ function applyPersisted() {
   }
 }
 
-if (config["persist"]) applyPersisted();
+if (config["persist"]) {
+  applyPersisted();
+  setTimeout(applyPersisted, 1500); // double-check
+}
