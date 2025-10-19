@@ -1,12 +1,18 @@
 import clsx from "clsx";
 import { useLiveQuery } from "dexie-react-hooks";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import { useEffect, useRef, useState, type FormEventHandler } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEventHandler,
+} from "react";
 import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
 import db from "../../shared/db";
-import Chips from "../components/Chips";
 import type { Message, OpenaiThinkingMessageData } from "../../shared/types";
+import Chips from "../components/Chips";
 
 const hints = [
   "Summerize page content",
@@ -17,7 +23,7 @@ const hints = [
 
 export default function Samantha() {
   const messages = useLiveQuery(() => db.openai.toArray());
-  const clear = () => db.openai.clear();
+  const clear = useCallback(() => db.openai.clear(), []);
 
   const [message, set] = useState("");
   const [thinking, setThinking] = useState<OpenaiThinkingMessageData>(null);
@@ -49,13 +55,13 @@ export default function Samantha() {
       role: "user",
       content: message,
     };
+    await db.openai.add(newMessage);
     await chrome.runtime.sendMessage<Message>({
       from: "popup",
       to: "background",
       action: "openai_ask",
       data: [...messages, newMessage],
     });
-    await db.openai.add(newMessage);
     set("");
   };
 
