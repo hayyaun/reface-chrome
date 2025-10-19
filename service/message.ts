@@ -26,7 +26,7 @@ export function addMessageListener() {
           case "openai_ask": {
             const answer = await ask(msg.data);
             // Respond back to popup
-            db.openai.add({ role: "assistant", content: answer });
+            await db.openai.add({ role: "assistant", content: answer });
             break;
           }
           case "magic_eraser_on_select": {

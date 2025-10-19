@@ -63,7 +63,7 @@ export async function ask(
         ...chatConfig,
         messages,
         tools: tools,
-        tool_choice: thinking.iter > 0 ? "auto" : "required",
+        tool_choice: "auto",
       });
 
       console.debug(

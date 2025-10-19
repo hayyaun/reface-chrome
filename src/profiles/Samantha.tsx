@@ -67,12 +67,12 @@ export default function Samantha() {
 
   // ui
   const scrollbox = useRef<HTMLDivElement>(null!);
-  useEffect(() => {
-    scrollbox.current.scrollTo({
-      top: scrollbox.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages?.length, thinking]);
+  // useEffect(() => {
+  //   scrollbox.current.scrollTo({
+  //     top: scrollbox.current.scrollHeight,
+  //     behavior: "smooth",
+  //   });
+  // }, [messages?.length, thinking]);
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
