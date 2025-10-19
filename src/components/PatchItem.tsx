@@ -8,11 +8,12 @@ import {
   RiDeleteBinFill,
   RiSettings2Line,
 } from "react-icons/ri";
-import { reloadActiveTab } from "../chrome/utils";
-import { categories, icons } from "../config/mapping";
-import patches from "../config/patches";
+import { reloadActiveTab } from "../../shared/chrome/utils";
+import { categories, icons } from "../../shared/config/mapping";
+import patches from "../../shared/config/patches";
+import { usePrefs, useService } from "../../shared/store";
 import { useUIActions } from "../hooks/ui";
-import { usePrefs, useService } from "../store";
+import profiles from "../profiles";
 import Label from "./Label";
 
 interface Props {
@@ -34,26 +35,27 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
   const { openConfig, openProfile } = useUIActions(patchKey);
 
   const patch = patches[patchKey];
+  const profile = profiles[patchKey];
   const enabledGlobally = global.includes(patchKey);
   const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
   const excluded =
     !!hostname && hostnames[hostname]?.excluded.includes(patchKey);
-  const Icon = !patch.logo
+  const Icon = !profile.logo
     ? icons[patch.keywords[0] ?? categories.all]
-    : typeof patch.logo !== "string"
-      ? patch.logo
+    : typeof profile.logo !== "string"
+      ? profile.logo
       : null;
 
   const neutral = !patch.css && patch.noJS;
-  const profile = neutral || enabled ? patch.profile : undefined;
+  const modal = neutral || enabled ? profile.modal : undefined;
 
   return (
     <div
       className={clsx(
         "group/item relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5",
-        { "cursor-pointer": profile },
+        { "cursor-pointer": modal },
       )}
-      onClick={profile && openConfig}
+      onClick={modal && openConfig}
     >
       <div
         aria-label="Bg shade"
@@ -65,15 +67,15 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75"
           style={{ backgroundColor: patch.bgcolor }}
         >
-          {typeof patch.logo !== "string" ? (
+          {typeof profile.logo !== "string" ? (
             <Icon className="size-5" style={{ color: patch.color }} />
           ) : (
             <img
               alt={patch.name}
               src={
                 import.meta.env.PROD
-                  ? chrome.runtime.getURL(patch.logo)
-                  : patch.logo
+                  ? chrome.runtime.getURL(profile.logo)
+                  : profile.logo
               }
               className="size-5 object-contain"
             />
@@ -102,13 +104,13 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           <RiSettings2Line className="icon-rotate" />
         </div>
       )}
-      {profile && (
+      {modal && (
         <div
-          title={profile.title}
+          title={modal.title}
           className="tiny-btn group/icon"
           onClick={openProfile}
         >
-          <profile.icon className="icon-zoom" />
+          <modal.icon className="icon-zoom" />
         </div>
       )}
       {patch.global && !neutral && (

@@ -1,4 +1,4 @@
-import type { Message } from "../../src/types";
+import type { Message } from "../../shared/types";
 
 // Selection Mode
 

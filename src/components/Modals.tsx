@@ -1,6 +1,7 @@
 import { RiSettings2Line } from "react-icons/ri";
-import patches from "../config/patches";
-import { useUI } from "../store";
+import patches from "../../shared/config/patches";
+import { useUI } from "../../shared/store";
+import profiles from "../profiles";
 import ConfigModal from "./ConfigModal";
 import Modal from "./Modal";
 
@@ -11,7 +12,7 @@ export default function Modals() {
   const setProfileModal = useUI((s) => s.setProfileModal);
 
   const Component = profileModal
-    ? patches[profileModal].profile?.Component
+    ? profiles[profileModal].modal?.Component
     : null;
 
   return (
@@ -29,9 +30,9 @@ export default function Modals() {
       {profileModal && Component && (
         <Modal
           Icon={
-            typeof patches[profileModal].logo === "object"
-              ? patches[profileModal].logo
-              : patches[profileModal].profile!.icon
+            typeof profiles[profileModal].logo === "object"
+              ? profiles[profileModal].logo
+              : profiles[profileModal].modal!.icon
           }
           name={patches[profileModal].name}
           details={patches[profileModal].details}

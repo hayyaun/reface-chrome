@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { RiFocusLine, RiHand } from "react-icons/ri";
-import type { Message } from "../types";
+import type { Message } from "../../shared/types";
 
 export default function MagicEraser() {
   const [selectionMode, setSelectionMode] = useState(false);

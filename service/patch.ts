@@ -1,6 +1,5 @@
-import { patches } from "../src/config/compileTime";
-import { match } from "../src/utils/match";
-import { extractDefaultConfigData } from "../src/utils/patch";
+import patches from "../shared/config/patches";
+import { extractDefaultConfigData, match } from "../shared/utils";
 import { state } from "./state";
 
 const applied: { [tabId: number]: string[] } = {};

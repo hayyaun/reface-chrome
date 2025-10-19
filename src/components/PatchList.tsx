@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import PatchItem from "../components/PatchItem";
-import { categories } from "../config/mapping";
-import patches from "../config/patches";
-import strings from "../config/strings";
-import { match } from "../utils/match";
+import { categories } from "../../shared/config/mapping";
+import patches from "../../shared/config/patches";
+import strings from "../../shared/config/strings";
 import Chips from "./Chips";
 import Modals from "./Modals";
+import { match } from "../../shared/utils";
 
 interface Props {
   hostname: string;

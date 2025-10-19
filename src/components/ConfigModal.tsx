@@ -2,10 +2,10 @@ import { produce } from "immer";
 import _ from "lodash";
 import { useMemo, useState } from "react";
 import { RiResetLeftLine } from "react-icons/ri";
-import { reloadActiveTab } from "../chrome/utils";
-import patches from "../config/patches";
-import { usePrefs, useService } from "../store";
-import { extractDefaultConfigData } from "../utils/patch";
+import patches from "../../shared/config/patches";
+import { reloadActiveTab } from "../../shared/chrome/utils";
+import { usePrefs, useService } from "../../shared/store";
+import { extractDefaultConfigData } from "../../shared/utils";
 import SettingItem from "./SettingItem";
 
 interface Props {

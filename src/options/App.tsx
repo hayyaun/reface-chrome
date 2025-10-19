@@ -5,8 +5,8 @@ import { RiFilterFill, RiFilterOffFill, RiSettingsFill } from "react-icons/ri";
 import Footer from "../components/Footer";
 import PatchList from "../components/PatchList";
 import Settings from "../components/Settings";
-import { hostnames as entireHostnames } from "../config/patches";
-import { useService } from "../store";
+import { hostnames as entireHostnames } from "../../shared/config/patches";
+import { useService } from "../../shared/store";
 
 export default function App() {
   const hostnames = useService((s) => s.hostnames);

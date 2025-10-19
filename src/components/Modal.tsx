@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useState, type ReactNode } from "react";
 import type { IconType } from "react-icons";
 import { RiCloseLine } from "react-icons/ri";
-import type { ModalProps } from "../types";
+import type { ModalProps } from "../../shared/types";
 import Label from "./Label";
 
 interface Props {

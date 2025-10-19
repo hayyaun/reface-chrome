@@ -1,4 +1,4 @@
-import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "../store";
+import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "../../shared/store";
 
 export function watchStorage(scope: string) {
   if (import.meta.env.PROD) {

@@ -1,16 +1,4 @@
-import {
-  RiBookOpenFill,
-  RiEraserLine,
-  RiExternalLinkFill,
-  RiFocusLine,
-  RiGithubLine,
-  RiRobot2Fill,
-  RiSpeedUpFill,
-} from "react-icons/ri";
-import SamanthaIcon from "../components/SamanthaIcon";
-import MagicEraser from "../profiles/MagicEraser";
-import Samantha from "../profiles/Samantha";
-import type { HostnameConfig, Patch } from "../types";
+import type { HostnameConfig, Patch } from "../../shared/types";
 import authors from "./authors";
 import {
   AI_THINKING_DEPTH_DEFAULT,
@@ -28,12 +16,6 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     global: true,
     noJS: true,
-    logo: RiRobot2Fill,
-    profile: {
-      Component: Samantha,
-      icon: SamanthaIcon,
-      title: "Chat",
-    },
     color: "yellow",
     bgcolor: PRIMARY_COLOR_DARK,
     config: {
@@ -74,12 +56,6 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     global: false, // not necessary
     color: "#ff8095",
-    logo: RiEraserLine,
-    profile: {
-      Component: MagicEraser,
-      icon: RiFocusLine,
-      title: "Magic Eraser",
-    },
     config: {
       persist: {
         name: "Persist",
@@ -99,7 +75,6 @@ const patches: { [key: string]: Patch } = {
     keywords: [categories.feature, "time", "read", "wikipedia"],
     hostnames: ["*wikipedia.org"],
     global: true,
-    logo: RiBookOpenFill,
     color: "#82d7ff",
   },
   "show-fps": {
@@ -109,7 +84,6 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     css: { "/*": "main" },
     global: true,
-    logo: RiSpeedUpFill,
     color: "#ff9675",
   },
   "link-preview": {
@@ -119,7 +93,6 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     css: { "/*": "main" },
     global: true,
-    logo: RiExternalLinkFill,
     color: "#b999ff",
   },
   "github-stats": {
@@ -130,7 +103,6 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     css: { "/*": "main" },
     global: true,
-    logo: RiGithubLine,
     color: "#80b7ff",
     config: {
       token: {
@@ -166,7 +138,6 @@ const patches: { [key: string]: Patch } = {
     details: "Removes irrelavant notices and popups from Wikipedia",
     keywords: [categories.ads, "wikipedia", "focus"],
     hostnames: ["*wikipedia.org"],
-    logo: RiFocusLine,
     color: "#ffdb70",
     config: {
       "remove-donation": {

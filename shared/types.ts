@@ -1,6 +1,4 @@
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import type { ReactNode } from "react";
-import type { IconType } from "react-icons";
 
 export type ConfigValue = string | number | boolean | object;
 
@@ -71,9 +69,6 @@ export interface Patch {
   /** Patch can be applied globally */
   global?: boolean;
 
-  /** Logo file location */
-  logo?: IconType | string;
-
   /** Default color for add-on logo */
   color?: string;
 
@@ -84,15 +79,6 @@ export interface Patch {
    * @summary You can access it from `window.__rc_config["patch-name"]["config-key"]`
    */
   config?: PatchConfig;
-
-  /** Popup menu profile page
-   * @see config for retrieving params and variables
-   */
-  profile?: {
-    icon: IconType;
-    title: string;
-    Component: (props: ModalProps) => ReactNode;
-  };
 }
 
 type Entity = "background" | "content" | "popup" | "options";

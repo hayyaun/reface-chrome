@@ -1,4 +1,4 @@
-import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "../src/store";
+import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "../shared/store";
 import { updateBadgeForActiveTab } from "./badge";
 
 // State
@@ -29,8 +29,7 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
     state.service = useService.getState();
     console.debug("rehydrate background");
     updateBadgeForActiveTab();
-  }
-  if (area === "sync" && changes[PREFS_KEY]) {
+  } else if (area === "sync" && changes[PREFS_KEY]) {
     await usePrefs.persist.rehydrate();
     state.prefs = usePrefs.getState();
     console.debug("rehydrate background prefs");

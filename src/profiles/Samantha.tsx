@@ -6,7 +6,7 @@ import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
 import db from "../../shared/db";
 import Chips from "../components/Chips";
-import type { Message, OpenaiThinkingMessageData } from "../types";
+import type { Message, OpenaiThinkingMessageData } from "../../shared/types";
 
 const hints = [
   "Summerize page content",
@@ -37,15 +37,6 @@ export default function Samantha() {
     };
   }, []);
 
-  const scrollbox = useRef<HTMLDivElement>(null!);
-
-  useEffect(() => {
-    scrollbox.current.scrollTo({
-      top: scrollbox.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages?.length, thinking]);
-
   // send message
   const ask: FormEventHandler = async (ev) => {
     ev.preventDefault();
@@ -67,6 +58,15 @@ export default function Samantha() {
     await db.openai.add(newMessage);
     set("");
   };
+
+  // ui
+  const scrollbox = useRef<HTMLDivElement>(null!);
+  useEffect(() => {
+    scrollbox.current.scrollTo({
+      top: scrollbox.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages?.length, thinking]);
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
