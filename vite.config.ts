@@ -11,6 +11,20 @@ export default defineConfig({
         popup: "popup.html",
         options: "options.html",
       },
+      output: {
+        manualChunks: {
+          vendor: [
+            "react",
+            "react-dom",
+            "react-icons",
+            "react-icons/ri",
+            "openai",
+            "dexie",
+            "dexie-react-hooks",
+            "react-markdown",
+          ], // large deps
+        },
+      },
     },
   },
 });

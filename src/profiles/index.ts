@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { lazy, type ReactNode } from "react";
 import type { IconType } from "react-icons";
 import {
   RiBookOpenFill,
@@ -10,9 +10,10 @@ import {
   RiSpeedUpFill,
 } from "react-icons/ri";
 import type { ModalProps } from "../../shared/types";
-import SamanthaIcon from "../components/SamanthaIcon";
-import MagicEraser from "./MagicEraser";
-import Samantha from "./Samantha";
+
+const Samantha = lazy(() => import("./Samantha"));
+const SamanthaIcon = lazy(() => import("../components/SamanthaIcon"));
+const MagicEraser = lazy(() => import("./MagicEraser"));
 
 interface Profile {
   /** Logo file location */

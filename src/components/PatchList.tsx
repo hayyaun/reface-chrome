@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
-import PatchItem from "../components/PatchItem";
+import { lazy, useMemo, useState } from "react";
 import { categories } from "../../shared/config/mapping";
 import patches from "../../shared/config/patches";
 import strings from "../../shared/config/strings";
-import Chips from "./Chips";
-import Modals from "./Modals";
 import { match } from "../../shared/utils";
+import PatchItem from "../components/PatchItem";
+import Chips from "./Chips";
+
+const Modals = lazy(() => import("./Modals"));
 
 interface Props {
   hostname: string;
