@@ -1,5 +1,4 @@
 /// <reference types="node" />
-/// <reference types="chrome"/>
 
 import type { PatchConfigData } from "./types";
 

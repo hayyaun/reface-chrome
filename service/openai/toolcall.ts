@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ChatCompletionMessageToolCall } from "openai/resources/index.mjs";
+import browser from "webextension-polyfill";
 import { getRawHTML } from "./html";
 import { getReadableContent } from "./readable-content";
 import { searchDOM } from "./search-dom";
 
 export async function proceedToolCall(
   toolCall: ChatCompletionMessageToolCall,
-  tab: chrome.tabs.Tab,
+  tab: browser.Tabs.Tab,
 ): Promise<object | string> {
   try {
     if (toolCall.type === "function") {
@@ -22,20 +23,20 @@ export async function proceedToolCall(
         return await getReadableContent(tab);
       }
       if (toolName.includes("chrome_tabs_")) {
-        const method: keyof typeof chrome.tabs = toolName.replace(
+        const method: keyof typeof browser.tabs = toolName.replace(
           "chrome_tabs_",
           "",
         ) as any;
-        const func = chrome.tabs[method] as any;
+        const func = browser.tabs[method] as any;
         const args = Object.keys(toolArgs || {}).map((k) => toolArgs[k]);
         return await func(...args);
       }
       if (toolName.includes("chrome_bookmarks_")) {
-        const method: keyof typeof chrome.bookmarks = toolName.replace(
+        const method: keyof typeof browser.bookmarks = toolName.replace(
           "chrome_bookmarks_",
           "",
         ) as any;
-        const func = chrome.bookmarks[method] as any;
+        const func = browser.bookmarks[method] as any;
         const args = Object.keys(toolArgs || {}).map((k) => toolArgs[k]);
         return await func(...args);
       }

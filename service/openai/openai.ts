@@ -5,6 +5,7 @@ import type {
   ChatCompletionCreateParamsNonStreaming,
   ChatCompletionMessageParam,
 } from "openai/resources/index.mjs";
+import browser from "webextension-polyfill";
 import { updateAiThinking } from "../message";
 import { state } from "../state";
 import { proceedToolCall } from "./toolcall";
@@ -26,7 +27,7 @@ export async function ask(
   _messages: ChatCompletionMessageParam[],
 ): Promise<string> {
   try {
-    const [tab] = await chrome.tabs.query({
+    const [tab] = await browser.tabs.query({
       active: true,
       currentWindow: true,
     });

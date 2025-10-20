@@ -1,3 +1,5 @@
+import browser from "webextension-polyfill";
+
 interface SearchDOMParams {
   selector: string;
   selectorType?: "css" | "xpath";
@@ -18,10 +20,10 @@ interface ElementInfo {
 }
 
 export async function searchDOM(
-  tab: chrome.tabs.Tab,
+  tab: browser.Tabs.Tab,
   params: SearchDOMParams,
 ): Promise<string> {
-  const results = await chrome.scripting.executeScript({
+  const results = await browser.scripting.executeScript({
     target: { tabId: tab.id! },
     func: (args) => {
       const {
@@ -30,7 +32,7 @@ export async function searchDOM(
         includeChildren = false,
         includeText = true,
         maxResults = 10,
-      } = args;
+      } = args as typeof params;
 
       function getElementPath(element: Element): string {
         const path: string[] = [];
@@ -130,5 +132,7 @@ export async function searchDOM(
     args: [params],
   });
 
-  return results[0].result ?? JSON.stringify({ error: "No result" });
+  return (
+    (results[0].result as string) ?? JSON.stringify({ error: "No result" })
+  );
 }

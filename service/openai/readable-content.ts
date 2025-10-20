@@ -1,7 +1,9 @@
+import browser from "webextension-polyfill";
+
 export async function getReadableContent(
-  tab: chrome.tabs.Tab,
+  tab: browser.Tabs.Tab,
 ): Promise<string> {
-  const results = await chrome.scripting.executeScript({
+  const results = await browser.scripting.executeScript({
     target: { tabId: tab.id! },
     func: () => {
       // Selectors for elements to remove (navigation, ads, etc.)
@@ -135,5 +137,5 @@ export async function getReadableContent(
     },
   });
 
-  return results[0].result ?? "No content";
+  return (results[0].result as never) ?? "No content";
 }

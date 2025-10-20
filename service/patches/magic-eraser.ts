@@ -1,5 +1,7 @@
 import type { Message } from "@/shared/types";
+import browser from "webextension-polyfill";
 import { getElementByXPath, getElementXPath } from "../utils/dom";
+import { isMessage } from "../../shared/guard";
 
 // Selection Mode
 
@@ -9,7 +11,7 @@ function onClick(ev: MouseEvent) {
   onBlur(ev as PointerEvent);
   const el = ev.target as HTMLElement;
   el.style.display = "none";
-  chrome.runtime.sendMessage<Message>({
+  browser.runtime.sendMessage<Message>({
     from: "content",
     to: "background",
     action: "magic_eraser_on_select",
@@ -69,7 +71,8 @@ function stopSelectionMode() {
   });
 }
 
-chrome.runtime.onMessage.addListener(async (msg: Message) => {
+browser.runtime.onMessage.addListener(async (msg: unknown) => {
+  if (!isMessage(msg)) return;
   if (msg.to !== "content") return;
   if (msg.action === "magic_eraser_selection_mode") {
     if (msg.data) beginSelectionMode();

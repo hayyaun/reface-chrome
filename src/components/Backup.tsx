@@ -1,15 +1,16 @@
 import { RiDownload2Line, RiUpload2Line } from "react-icons/ri";
+import browser from "webextension-polyfill";
 import Label from "./Label";
 
 export default function Backup() {
   const onExport = () => {
     if (import.meta.env.DEV) return;
-    chrome.storage.local.get(null, (data) => {
+    browser.storage.local.get(null).then((data) => {
       const blob = new Blob([JSON.stringify(data)], {
         type: "application/json",
       });
       const url = URL.createObjectURL(blob);
-      chrome.downloads.download({ url, filename: "reface.backup.json" });
+      browser.downloads.download({ url, filename: "reface.backup.json" });
     });
   };
   const onImport = () => {
@@ -26,7 +27,7 @@ export default function Backup() {
         if (!content) return;
         const data: { [k: string]: unknown } = JSON.parse(content?.toString());
         if (import.meta.env.PROD) {
-          chrome.storage.local.set(data);
+          browser.storage.local.set(data);
         } else {
           for (const key in data) {
             localStorage.setItem(key, data[key] as string);

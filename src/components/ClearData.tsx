@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
+import browser from "webextension-polyfill";
 import Label from "./Label";
 
 export default function ClearData() {
   const [clicks, setClicks] = useState(0);
   const onClear = async () => {
     if (import.meta.env.PROD) {
-      await chrome.storage.local.clear();
+      await browser.storage.local.clear();
     } else localStorage.clear();
     alert("Data cleared!");
     setClicks(0);

@@ -2,18 +2,23 @@ import { useService } from "@/shared/store";
 import db from "@/shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import { extractDefaultConfigData } from "@/shared/utils";
+import browser from "webextension-polyfill";
 import { updateBadge } from "./badge";
 import { ask } from "./openai/openai";
+import { isMessage } from "../shared/guard";
 
 export function addMessageListener() {
-  chrome.runtime.onMessage.addListener(async (msg: Message) => {
+  browser.runtime.onMessage.addListener(async (msg: unknown) => {
+    if (!isMessage(msg)) return;
     switch (msg.to) {
       // forwarded
       case "content": {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (!tabs.length) return;
-          chrome.tabs.sendMessage(tabs[0].id!, msg);
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
         });
+        if (!tabs.length) return;
+        browser.tabs.sendMessage(tabs[0].id!, msg);
         break;
       }
       // take actions
@@ -55,7 +60,7 @@ export function addMessageListener() {
 }
 
 export function updateAiThinking(message: OpenaiThinkingMessageData) {
-  chrome.runtime.sendMessage<Message>({
+  browser.runtime.sendMessage<Message>({
     from: "background",
     to: "popup",
     action: "openai_thinking",

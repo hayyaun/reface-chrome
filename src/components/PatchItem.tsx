@@ -15,6 +15,7 @@ import { usePrefs, useService } from "@/shared/store";
 import { useUIActions } from "../hooks/ui";
 import profiles from "../profiles";
 import Label from "./Label";
+import browser from "webextension-polyfill";
 
 interface Props {
   hostname?: string;
@@ -74,7 +75,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
               alt={patch.name}
               src={
                 import.meta.env.PROD
-                  ? chrome.runtime.getURL(profile.logo)
+                  ? browser.runtime.getURL(profile.logo)
                   : profile.logo
               }
               className="size-5 object-contain"

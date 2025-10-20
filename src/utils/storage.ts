@@ -1,8 +1,9 @@
 import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "@/shared/store";
+import browser from "webextension-polyfill";
 
 export function watchStorage(scope: string) {
   if (import.meta.env.PROD) {
-    chrome.storage.onChanged.addListener(async (changes, area) => {
+    browser.storage.onChanged.addListener(async (changes, area) => {
       if (area === "local" && changes[STORE_KEY]) {
         await useService.persist.rehydrate();
         console.debug(`rehydrate ${scope}`);

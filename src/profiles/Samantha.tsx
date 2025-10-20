@@ -1,3 +1,6 @@
+import { isMessage } from "@/shared/guard";
+import db from "@/shared/store/db";
+import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import clsx from "clsx";
 import { useLiveQuery } from "dexie-react-hooks";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -11,8 +14,7 @@ import {
 } from "react";
 import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
-import db from "@/shared/store/db";
-import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
+import browser from "webextension-polyfill";
 import Chips from "../components/Chips";
 
 const hints = [
@@ -32,15 +34,16 @@ export default function Samantha() {
   // thinking
   useEffect(() => {
     if (import.meta.env.DEV) return;
-    async function listener(msg: Message) {
+    async function listener(msg: unknown) {
+      if (!isMessage(msg)) return;
       if (msg.to !== "popup") return;
       if (msg.action !== "openai_thinking") return;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setThinking(msg.data as any);
     }
-    chrome.runtime.onMessage.addListener(listener);
+    browser.runtime.onMessage.addListener(listener);
     return () => {
-      chrome.runtime.onMessage.removeListener(listener);
+      browser.runtime.onMessage.removeListener(listener);
     };
   }, []);
 
@@ -57,7 +60,7 @@ export default function Samantha() {
       content: message,
     };
     await db.openai.add(newMessage);
-    await chrome.runtime.sendMessage<Message>({
+    await browser.runtime.sendMessage<Message>({
       from: "popup",
       to: "background",
       action: "openai_ask",

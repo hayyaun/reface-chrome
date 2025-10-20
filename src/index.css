@@ -70,7 +70,7 @@
   body {
     @apply relative m-0 flex h-[100vh] min-w-80 flex-col place-items-center overflow-hidden;
 
-    /* chrome extension */
+    /* extension */
     font-size: 100% !important;
   }
 

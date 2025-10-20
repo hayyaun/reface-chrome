@@ -1,8 +1,9 @@
+import { useService } from "@/shared/store";
 import { useEffect, useMemo, useState } from "react";
 import { RiCheckboxCircleFill } from "react-icons/ri";
+import browser from "webextension-polyfill";
 import Footer from "../components/Footer";
 import PatchList from "../components/PatchList";
-import { useService } from "@/shared/store";
 
 export default function App() {
   const hostnames = useService((s) => s.hostnames);
@@ -10,7 +11,7 @@ export default function App() {
 
   useEffect(() => {
     if (import.meta.env.DEV) return;
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       const activeTab = tabs[0];
       if (!activeTab) return;
       const url = new URL(activeTab.url!);

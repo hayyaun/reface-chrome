@@ -1,10 +1,11 @@
 import patches from "@/shared/patches";
 import { extractDefaultConfigData, match } from "@/shared/utils";
+import browser from "webextension-polyfill";
 import { state } from "./state";
 
 const applied: { [tabId: number]: string[] } = {};
 
-export function findApplicablePatches(tab: chrome.tabs.Tab) {
+export function findApplicablePatches(tab: browser.Tabs.Tab) {
   if (!tab.url) return [];
   const hostname = new URL(tab.url).hostname;
   const applicable: string[] = [];
@@ -46,7 +47,7 @@ export function applyPatch(patchKey: string, tabId: number, pathname: string) {
     if (state.service.config[patchKey]) {
       data = state.service.config[patchKey];
     }
-    chrome.scripting.executeScript({
+    browser.scripting.executeScript({
       target: { tabId },
       func: ({ patchKey, data }) => {
         window.__rc_config = window.__rc_config || {};
@@ -57,7 +58,7 @@ export function applyPatch(patchKey: string, tabId: number, pathname: string) {
   }
   // JS
   if (!patch.noJS) {
-    chrome.scripting.executeScript({
+    browser.scripting.executeScript({
       target: { tabId },
       files: [`patches/${patchKey}.js`],
     });
@@ -66,7 +67,7 @@ export function applyPatch(patchKey: string, tabId: number, pathname: string) {
   if (patch.css) {
     for (const pathRule in patch.css) {
       if (!match(pathname, pathRule)) continue;
-      chrome.scripting.insertCSS({
+      browser.scripting.insertCSS({
         target: { tabId },
         files: [`patches/${patchKey}-${patch.css[pathRule]}.css`],
       });

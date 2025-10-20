@@ -1,7 +1,8 @@
+import type { Message } from "@/shared/types";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { RiFocusLine, RiHand } from "react-icons/ri";
-import type { Message } from "@/shared/types";
+import browser from "webextension-polyfill";
 
 export default function MagicEraser() {
   const [selectionMode, setSelectionMode] = useState(false);
@@ -11,7 +12,7 @@ export default function MagicEraser() {
   // Trigger selection mode on content (activeTab)
   useEffect(() => {
     if (!import.meta.env.PROD) return;
-    chrome.runtime.sendMessage<Message>({
+    browser.runtime.sendMessage<Message>({
       from: "popup",
       to: "content",
       action: "magic_eraser_selection_mode",
