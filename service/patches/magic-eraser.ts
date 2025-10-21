@@ -1,6 +1,8 @@
-import api from "@/shared/api";
+// @ts-expect-error inline import
+import api from "@/shared/api?magic-eraser";
 import type { MagicEraserConfigData, Message } from "@/shared/types";
-import { getElementByXPath, getElementXPath } from "../utils/dom";
+// @ts-expect-error inline import
+import { getElementByXPath, getElementXPath } from "../utils/dom?magic-eraser";
 
 // Selection Mode
 

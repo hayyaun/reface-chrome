@@ -34,6 +34,7 @@ export default defineConfig({
         ...patchFiles,
       },
       output: {
+        // inlineDynamicImports: true,
         entryFileNames: "[name].js",
         format: "es",
       },
