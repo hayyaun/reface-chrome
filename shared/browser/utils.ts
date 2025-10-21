@@ -10,21 +10,21 @@ export async function reloadActiveTab() {
 }
 
 export async function getActiveTab(): Promise<browser.tabs.Tab | undefined> {
-  if (typeof api === typeof browser) {
-    const tabs = await api.tabs.query({ active: true, currentWindow: true });
+  if (typeof browser !== "undefined") {
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
     if (!tabs.length || !tabs[0]) return;
     return tabs[0];
   }
-  const tabs = await new Promise<browser.tabs.Tab[]>((resolve) =>
-    api.tabs.query({ active: true, currentWindow: true }, resolve),
+  const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) =>
+    chrome.tabs.query({ active: true, currentWindow: true }, resolve),
   );
   if (!tabs.length || !tabs[0]) return;
   return tabs[0];
 }
 
 export async function getTab(tabId: number): Promise<browser.tabs.Tab> {
-  if (typeof api === typeof browser) {
-    return await api.tabs.get(tabId);
+  if (typeof browser !== "undefined") {
+    return await browser.tabs.get(tabId);
   }
-  return new Promise<browser.tabs.Tab>((resolve) => api.tabs.get(tabId, resolve));
+  return new Promise<chrome.tabs.Tab>((resolve) => chrome.tabs.get(tabId, resolve));
 }

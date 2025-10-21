@@ -5,9 +5,9 @@ import Label from "./Label";
 export default function Backup() {
   const onExport = async () => {
     if (import.meta.env.DEV) return;
-    const data = await (typeof api === typeof browser
-      ? api.storage.local.get(null)
-      : new Promise((resolve) => api.storage.local.get(null, resolve)));
+    const data = await (typeof browser !== "undefined"
+      ? browser.storage.local.get(null)
+      : new Promise((resolve) => chrome.storage.local.get(null, resolve)));
     const blob = new Blob([JSON.stringify(data)], {
       type: "application/json",
     });

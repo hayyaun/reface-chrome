@@ -12,24 +12,24 @@ export const state = {
 // Storage
 
 // on load
-if (typeof api === typeof browser) {
-  api.storage.local.get(STORE_KEY).then(async (data) => {
+if (typeof browser !== "undefined") {
+  browser.storage.local.get(STORE_KEY).then(async (data) => {
     if (!data[STORE_KEY]) return;
     await useService.persist.rehydrate();
     state.service = useService.getState();
   });
-  api.storage.local.get(PREFS_KEY).then(async (data) => {
+  browser.storage.local.get(PREFS_KEY).then(async (data) => {
     if (!data[PREFS_KEY]) return;
     await usePrefs.persist.rehydrate();
     state.prefs = usePrefs.getState();
   });
 } else {
-  api.storage.local.get(STORE_KEY, async (data) => {
+  chrome.storage.local.get(STORE_KEY, async (data) => {
     if (!data[STORE_KEY]) return;
     await useService.persist.rehydrate();
     state.service = useService.getState();
   });
-  api.storage.local.get(PREFS_KEY, async (data) => {
+  chrome.storage.local.get(PREFS_KEY, async (data) => {
     if (!data[PREFS_KEY]) return;
     await usePrefs.persist.rehydrate();
     state.prefs = usePrefs.getState();
