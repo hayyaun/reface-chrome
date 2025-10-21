@@ -1,7 +1,7 @@
-import type { MagicEraserConfigData } from "@/shared/types/patch";
 import { useService } from "@/shared/store";
 import db from "@/shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
+import type { MagicEraserConfigData } from "@/shared/types/patch";
 import { extractDefaultConfigData } from "@/shared/utils";
 import { produce } from "immer";
 import { updateBadge } from "./badge";
@@ -10,7 +10,6 @@ import { ask } from "./openai/openai";
 export function addMessageListener() {
   chrome.runtime.onMessage.addListener(async (msg: Message) => {
     switch (msg.to) {
-      // forwarded
       case "content": {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           if (!tabs.length) return;
@@ -18,13 +17,13 @@ export function addMessageListener() {
         });
         break;
       }
-      // take actions
       case "background": {
         switch (msg.action) {
           case "updateBadge": {
             updateBadge(msg.data);
             break;
           }
+          // patches ---
           case "openai_ask": {
             const answer = await ask(msg.data);
             // Respond back to popup
@@ -34,18 +33,13 @@ export function addMessageListener() {
           case "magic_eraser_on_select": {
             const PATCH_KEY = "magic-eraser";
             const { hostname, selector } = msg.data;
-            const config = useService.getState().config[
-              PATCH_KEY
-            ] as MagicEraserConfigData;
-            const newConfig = produce(
-              config ?? extractDefaultConfigData(PATCH_KEY),
-              (draft) => {
-                if (!draft.storage) draft.storage = {};
-                const storage = draft.storage;
-                if (!storage[hostname]) storage[hostname] = [];
-                storage[hostname].push(selector);
-              },
-            );
+            const config = useService.getState().config[PATCH_KEY] as MagicEraserConfigData;
+            const newConfig = produce(config ?? extractDefaultConfigData(PATCH_KEY), (draft) => {
+              if (!draft.storage) draft.storage = {};
+              const storage = draft.storage;
+              if (!storage[hostname]) storage[hostname] = [];
+              storage[hostname].push(selector);
+            });
             useService.getState().updateConfig(PATCH_KEY, newConfig);
             break;
           }

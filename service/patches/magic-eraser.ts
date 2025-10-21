@@ -1,4 +1,4 @@
-import type { Message } from "@/shared/types";
+import type { MagicEraserConfigData, Message } from "@/shared/types";
 import { getElementByXPath, getElementXPath } from "../utils/dom";
 
 // Selection Mode
@@ -78,10 +78,10 @@ chrome.runtime.onMessage.addListener(async (msg: Message) => {
 
 // Persist Mode
 
-const config = window.__rc_config["magic-eraser"];
+const config = window.__rc_config["magic-eraser"] as MagicEraserConfigData;
 
 function applyPersisted() {
-  const storage = config["storage"] as { [hostname: string]: string[] };
+  const storage = config["storage"];
   for (const hostname in storage) {
     if (hostname !== window.location.hostname) continue;
     for (const selector of storage[hostname]) {

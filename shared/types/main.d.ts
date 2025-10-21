@@ -3,12 +3,12 @@ import type { PatchMessage } from "./patch";
 
 export {};
 
-export type ConfigValue = string | number | boolean | object;
-
 export interface Option {
   name: string;
   value: string;
 }
+
+export type ConfigValue = string | number | boolean | object;
 
 interface PatchConfigItem<T> {
   name: string;
@@ -19,11 +19,6 @@ interface PatchConfigItem<T> {
   /** not shown in ui - used as state */
   hidden?: boolean;
 }
-
-export type PatchConfig<T extends ConfigValue> = Record<
-  string, // patchKey
-  PatchConfigItem<T>
->;
 
 export type PatchConfigData = Record<string, ConfigValue>;
 
@@ -46,7 +41,7 @@ export interface Author {
 /**
  * Represents a patch or patch that can be applied to a web page or system.
  */
-export interface Patch {
+export interface Patch<T extends PatchConfigData = unknown> {
   /** Name of the author or inspired by */
   author?: Author;
 
@@ -82,7 +77,7 @@ export interface Patch {
   /** Config value globally set by user
    * @summary You can access it from `window.__rc_config["patch-name"]["config-key"]`
    */
-  config?: PatchConfig;
+  config?: Record<string, PatchConfigItem<T>>;
 }
 
 type Entity = "background" | "content" | "popup" | "options";
@@ -93,13 +88,7 @@ export interface BaseMessage<TO extends Entity, ACT extends string, T> {
   data: T;
 }
 
-export type OpenaiThinkingMessageData = {
-  iter: number;
-  content: string;
-} | null;
-
 export type Message =
   | BaseMessage<"background", "updateBadge", number>
   | BaseMessage<"background", "openai_ask", ChatCompletionMessageParam[]>
-  | BaseMessage<"popup", "openai_thinking", OpenaiThinkingMessageData>
   | PatchMessage;

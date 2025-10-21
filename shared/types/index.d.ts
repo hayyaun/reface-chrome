@@ -7,11 +7,11 @@ export {};
 
 declare global {
   interface Window {
-    __rc_config: {
+    __rc_config: Readonly<{
       [patchKey: string]: PatchConfigData;
-    };
+    }>;
   }
 }
 
-export * from "./patch";
 export * from "./main";
+export * from "./patch";

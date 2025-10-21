@@ -14,7 +14,7 @@ Follow these steps:
 - Hover on each field tp read the related docs.
 - You can specify css files mapped to each url pathname.
 - If config keyvals are defined, they'll be accessible via `window.__rc_config` in your script. (if enabled)
-- To customize logo or profile modal, shown in popup, navigate to `src/profiles`.
+- To customize logo or profile modal, shown in popup, navigate to `src/profiles/index.ts`.
 - IndexedDB is also available in `shared/store/db.ts` [update with caution].
 - For message support, ticket an issue.
 

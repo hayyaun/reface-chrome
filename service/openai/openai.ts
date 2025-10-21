@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from "lodash";
 import { OpenAI } from "openai";
-import type {
-  ChatCompletionCreateParamsNonStreaming,
-  ChatCompletionMessageParam,
-} from "openai/resources/index.mjs";
+import type { ChatCompletionCreateParamsNonStreaming, ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { updateAiThinking } from "../message";
 import { state } from "../state";
 import { proceedToolCall } from "./toolcall";
@@ -22,9 +19,7 @@ const systemContent = [
   "If there's more than 128 tool-calls in a single message, split and send the extra in the next message.",
 ].join("\n");
 
-export async function ask(
-  _messages: ChatCompletionMessageParam[],
-): Promise<string> {
+export async function ask(_messages: ChatCompletionMessageParam[]): Promise<string> {
   try {
     const [tab] = await chrome.tabs.query({
       active: true,
@@ -33,7 +28,7 @@ export async function ask(
 
     if (!tab) return "No active tab found!";
 
-    const config = state.service.config["samantha"];
+    const config = state.service.config["openai"];
     let apiKey = config?.["apiKey"] as string;
 
     // let the service-worker load and rehydrate once
@@ -43,16 +38,12 @@ export async function ask(
     if (!apiKey) return "Please add an API key in config";
     if (!openai) openai = new OpenAI({ apiKey });
 
-    const chatConfig: Omit<ChatCompletionCreateParamsNonStreaming, "messages"> =
-      {
-        model: (config?.["model"] as string) ?? "gpt-5-mini",
-        temperature: (config?.["temperature"] as number) ?? 1.0,
-      };
+    const chatConfig: Omit<ChatCompletionCreateParamsNonStreaming, "messages"> = {
+      model: (config?.["model"] as string) ?? "gpt-5-mini",
+      temperature: (config?.["temperature"] as number) ?? 1.0,
+    };
 
-    const messages: ChatCompletionMessageParam[] = [
-      { role: "system", content: systemContent },
-      ..._messages,
-    ];
+    const messages: ChatCompletionMessageParam[] = [{ role: "system", content: systemContent }, ..._messages];
 
     const thinking = { iter: -1 };
 
@@ -66,12 +57,7 @@ export async function ask(
         tool_choice: "auto",
       });
 
-      console.debug(
-        "Response",
-        messages.length,
-        { messages, response },
-        JSON.stringify(messages).length,
-      );
+      console.debug("Response", messages.length, { messages, response }, JSON.stringify(messages).length);
 
       const responseMessage = response.choices[0].message;
 
@@ -83,9 +69,7 @@ export async function ask(
 
       // Keep user in notice before final answer is ready
       const thinking_tools = _.uniq(
-        responseMessage.tool_calls.map((tc) =>
-          tc.type === "function" ? tc.function.name : tc.id,
-        ),
+        responseMessage.tool_calls.map((tc) => (tc.type === "function" ? tc.function.name : tc.id)),
       ).join(", ");
 
       updateAiThinking({
@@ -123,9 +107,6 @@ export async function ask(
     console.debug("ERROR:OPENAI_ASK", err);
 
     updateAiThinking(null);
-    return (
-      "Something went wrong!\n" +
-      (err?.error?.message || err?.message || err || "")
-    );
+    return "Something went wrong!\n" + (err?.error?.message || err?.message || err || "");
   }
 }
