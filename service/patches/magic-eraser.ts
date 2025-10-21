@@ -10,7 +10,6 @@ function onClick(ev: MouseEvent) {
   const el = ev.target as HTMLElement;
   el.style.display = "none";
   chrome.runtime.sendMessage<Message>({
-    from: "content",
     to: "background",
     action: "magic_eraser_on_select",
     data: {

@@ -1,4 +1,3 @@
-import type { HostnameConfig, Patch } from "./types";
 import authors from "./authors";
 import {
   AI_THINKING_DEPTH_DEFAULT,
@@ -6,6 +5,7 @@ import {
   PRIMARY_COLOR_DARK,
 } from "./constants";
 import { categories } from "./mapping";
+import type { HostnameConfig, Patch } from "./types";
 
 const patches: { [key: string]: Patch } = {
   // General
@@ -65,7 +65,7 @@ const patches: { [key: string]: Patch } = {
       storage: {
         name: "Websites",
         details: "List of persisted website settings",
-        defaultValue: {}, // hostname origins
+        defaultValue: {},
       },
     },
   },

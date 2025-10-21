@@ -1,10 +1,10 @@
+import type { Option } from "@/shared/types";
 import clsx from "clsx";
 import {
   RiCheckboxBlankLine,
   RiCheckboxFill,
   RiCloseCircleLine,
 } from "react-icons/ri";
-import type { Option } from "@/shared/types";
 import { isRecord } from "../utils/string";
 import Dropdown from "./Dropdown";
 import Label from "./Label";

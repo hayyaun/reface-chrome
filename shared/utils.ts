@@ -1,13 +1,15 @@
 import patches from "./patches";
 import type { PatchConfigData } from "./types";
 
-export const extractDefaultConfigData = (patchKey: string) => {
+export function extractDefaultConfigData<T extends PatchConfigData>(
+  patchKey: string,
+) {
   const config = patches[patchKey].config || {};
   return Object.keys(config).reduce((acc, key) => {
     acc[key] = config[key].defaultValue;
     return acc;
-  }, {} as PatchConfigData);
-};
+  }, {} as PatchConfigData) as T;
+}
 
 export function match(str: string, rule: string) {
   const escapeRegex = (str: string) =>

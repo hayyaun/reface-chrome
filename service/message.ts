@@ -1,7 +1,9 @@
+import type { MagicEraserConfigData } from "@/shared/types/patch";
 import { useService } from "@/shared/store";
 import db from "@/shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import { extractDefaultConfigData } from "@/shared/utils";
+import { produce } from "immer";
 import { updateBadge } from "./badge";
 import { ask } from "./openai/openai";
 
@@ -32,18 +34,18 @@ export function addMessageListener() {
           case "magic_eraser_on_select": {
             const PATCH_KEY = "magic-eraser";
             const { hostname, selector } = msg.data;
-            const config = useService.getState().config[PATCH_KEY];
-            const newConfig = {
-              ...(config ?? extractDefaultConfigData(PATCH_KEY)),
-            };
-            if (typeof newConfig["storage"] !== "object") {
-              newConfig["storage"] = {};
-            }
-            const storage = newConfig["storage"] as {
-              [hostname: string]: string[];
-            };
-            if (!storage[hostname]) storage[hostname] = [];
-            storage[hostname].push(selector);
+            const config = useService.getState().config[
+              PATCH_KEY
+            ] as MagicEraserConfigData;
+            const newConfig = produce(
+              config ?? extractDefaultConfigData(PATCH_KEY),
+              (draft) => {
+                if (!draft.storage) draft.storage = {};
+                const storage = draft.storage;
+                if (!storage[hostname]) storage[hostname] = [];
+                storage[hostname].push(selector);
+              },
+            );
             useService.getState().updateConfig(PATCH_KEY, newConfig);
             break;
           }
@@ -56,7 +58,6 @@ export function addMessageListener() {
 
 export function updateAiThinking(message: OpenaiThinkingMessageData) {
   chrome.runtime.sendMessage<Message>({
-    from: "background",
     to: "popup",
     action: "openai_thinking",
     data: message,

@@ -1,4 +1,7 @@
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import type { PatchMessage } from "./patch";
+
+export {};
 
 export type ConfigValue = string | number | boolean | object;
 
@@ -7,21 +10,22 @@ export interface Option {
   value: string;
 }
 
-export interface PatchConfig {
-  [key: string]: {
-    name: string;
-    details: string;
-    defaultValue: ConfigValue;
-    /** dropdown menu options */
-    options?: Option[];
-    /** not shown in ui - used as state */
-    hidden?: boolean;
-  };
+interface PatchConfigItem<T> {
+  name: string;
+  details: string;
+  defaultValue: T;
+  /** dropdown menu options */
+  options?: Option[];
+  /** not shown in ui - used as state */
+  hidden?: boolean;
 }
 
-export interface PatchConfigData {
-  [key: string]: ConfigValue;
-}
+export type PatchConfig<T extends ConfigValue> = Record<
+  string, // patchKey
+  PatchConfigItem<T>
+>;
+
+export type PatchConfigData = Record<string, ConfigValue>;
 
 export interface ModalProps {
   close: () => void;
@@ -83,9 +87,9 @@ export interface Patch {
 
 type Entity = "background" | "content" | "popup" | "options";
 
-interface BaseMessage<TO extends Entity, T> {
-  from: Entity;
+export interface BaseMessage<TO extends Entity, ACT extends string, T> {
   to: TO;
+  action: ACT;
   data: T;
 }
 
@@ -95,18 +99,7 @@ export type OpenaiThinkingMessageData = {
 } | null;
 
 export type Message =
-  | (BaseMessage<"background", number> & {
-      action: "updateBadge";
-    })
-  | (BaseMessage<"background", ChatCompletionMessageParam[]> & {
-      action: "openai_ask";
-    })
-  | (BaseMessage<"popup", OpenaiThinkingMessageData> & {
-      action: "openai_thinking";
-    })
-  | (BaseMessage<"content", boolean> & {
-      action: "magic_eraser_selection_mode";
-    })
-  | (BaseMessage<"background", { hostname: string; selector: string }> & {
-      action: "magic_eraser_on_select";
-    });
+  | BaseMessage<"background", "updateBadge", number>
+  | BaseMessage<"background", "openai_ask", ChatCompletionMessageParam[]>
+  | BaseMessage<"popup", "openai_thinking", OpenaiThinkingMessageData>
+  | PatchMessage;

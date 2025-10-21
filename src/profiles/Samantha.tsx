@@ -1,3 +1,5 @@
+import db from "@/shared/store/db";
+import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import clsx from "clsx";
 import { useLiveQuery } from "dexie-react-hooks";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -11,8 +13,6 @@ import {
 } from "react";
 import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
-import db from "@/shared/store/db";
-import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import Chips from "../components/Chips";
 
 const hints = [
@@ -58,7 +58,6 @@ export default function Samantha() {
     };
     await db.openai.add(newMessage);
     await chrome.runtime.sendMessage<Message>({
-      from: "popup",
       to: "background",
       action: "openai_ask",
       data: [...messages, newMessage],
