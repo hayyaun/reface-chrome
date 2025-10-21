@@ -1,6 +1,4 @@
-export async function getReadableContent(
-  tab: chrome.tabs.Tab,
-): Promise<string> {
+export async function getReadableContent(tab: chrome.tabs.Tab): Promise<string> {
   const results = await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
     func: () => {
@@ -87,12 +85,7 @@ export async function getReadableContent(
             if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(tag)) {
               const content = el.textContent?.trim();
               if (content) {
-                text +=
-                  "\n\n" +
-                  "#".repeat(parseInt(tag[1])) +
-                  " " +
-                  content +
-                  "\n\n";
+                text += "\n\n" + "#".repeat(parseInt(tag[1])) + " " + content + "\n\n";
               }
             }
             // Handle paragraphs

@@ -42,8 +42,7 @@ export default defineConfig({
           mangle: {
             toplevel: true,
             nth_identifier: {
-              get: (n: number) =>
-                `rc_${crypto.randomUUID().split("-")[0]}_${n}`,
+              get: (n: number) => `rc_${crypto.randomUUID().split("-")[0]}_${n}`,
             },
           },
         }),

@@ -1,13 +1,7 @@
 import clsx from "clsx";
 import { memo } from "react";
 import { CiCoffeeCup } from "react-icons/ci";
-import {
-  RiAddFill,
-  RiCheckDoubleFill,
-  RiCloseFill,
-  RiDeleteBinFill,
-  RiSettings2Line,
-} from "react-icons/ri";
+import { RiAddFill, RiCheckDoubleFill, RiCloseFill, RiDeleteBinFill, RiSettings2Line } from "react-icons/ri";
 import { reloadActiveTab } from "@/shared/chrome/utils";
 import { categories, icons } from "@/shared/mapping";
 import patches from "@/shared/patches";
@@ -38,8 +32,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
   const profile = profiles[patchKey];
   const enabledGlobally = global.includes(patchKey);
   const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
-  const excluded =
-    !!hostname && hostnames[hostname]?.excluded.includes(patchKey);
+  const excluded = !!hostname && hostnames[hostname]?.excluded.includes(patchKey);
   const Icon = !profile.logo
     ? icons[patch.keywords[0] ?? categories.all]
     : typeof profile.logo !== "string"
@@ -63,20 +56,13 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
         style={{ backgroundColor: patch.bgcolor }}
       />
       {Icon && (
-        <div
-          className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75"
-          style={{ backgroundColor: patch.bgcolor }}
-        >
+        <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75" style={{ backgroundColor: patch.bgcolor }}>
           {typeof profile.logo !== "string" ? (
             <Icon className="size-5" style={{ color: patch.color }} />
           ) : (
             <img
               alt={patch.name}
-              src={
-                import.meta.env.PROD
-                  ? chrome.runtime.getURL(profile.logo)
-                  : profile.logo
-              }
+              src={import.meta.env.PROD ? chrome.runtime.getURL(profile.logo) : profile.logo}
               className="size-5 object-contain"
             />
           )}
@@ -105,49 +91,27 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
         </div>
       )}
       {modal && (
-        <div
-          title={modal.title}
-          className="tiny-btn group/icon"
-          onClick={openProfile}
-        >
+        <div title={modal.title} className="tiny-btn group/icon" onClick={openProfile}>
           <modal.icon className="icon-zoom" />
         </div>
       )}
       {patch.global && !neutral && (
         <div
           title={!enabledGlobally ? "Enable Globally" : "Disable Globally"}
-          className={clsx(
-            "tiny-btn group/icon",
-            !enabledGlobally ? "btn-green" : "btn-red",
-          )}
+          className={clsx("tiny-btn group/icon", !enabledGlobally ? "btn-green" : "btn-red")}
           onClick={() => {
             if (!enabledGlobally) addGlobal(patchKey, hostname);
             else removeGlobal(patchKey, hostname);
             if (autoReload) setTimeout(reloadActiveTab, 150);
           }}
         >
-          {!enabledGlobally ? (
-            <RiCheckDoubleFill className="icon-zoom" />
-          ) : (
-            <RiCloseFill className="icon-zoom" />
-          )}
+          {!enabledGlobally ? <RiCheckDoubleFill className="icon-zoom" /> : <RiCloseFill className="icon-zoom" />}
         </div>
       )}
       {typeof hostname !== "undefined" && !neutral && (
         <div
-          title={
-            enabledGlobally
-              ? !excluded
-                ? "Exclude"
-                : "Include"
-              : enabled
-                ? "Remove"
-                : "Apply"
-          }
-          className={clsx(
-            "tiny-btn group/icon",
-            (enabledGlobally ? !excluded : enabled) ? "btn-red" : "btn-green",
-          )}
+          title={enabledGlobally ? (!excluded ? "Exclude" : "Include") : enabled ? "Remove" : "Apply"}
+          className={clsx("tiny-btn group/icon", (enabledGlobally ? !excluded : enabled) ? "btn-red" : "btn-green")}
           onClick={() => {
             if (enabledGlobally) {
               if (!excluded) excludePatch(hostname, patchKey);

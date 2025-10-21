@@ -17,20 +17,11 @@ interface ElementInfo {
   path: string;
 }
 
-export async function searchDOM(
-  tab: chrome.tabs.Tab,
-  params: SearchDOMParams,
-): Promise<string> {
+export async function searchDOM(tab: chrome.tabs.Tab, params: SearchDOMParams): Promise<string> {
   const results = await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
     func: (args) => {
-      const {
-        selector,
-        selectorType = "css",
-        includeChildren = false,
-        includeText = true,
-        maxResults = 10,
-      } = args;
+      const { selector, selectorType = "css", includeChildren = false, includeText = true, maxResults = 10 } = args;
 
       function getElementPath(element: Element): string {
         const path: string[] = [];
@@ -92,27 +83,14 @@ export async function searchDOM(
         let elements: Element[];
 
         if (selectorType === "xpath") {
-          const xpathResult = document.evaluate(
-            selector,
-            document,
-            null,
-            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-            null,
-          );
+          const xpathResult = document.evaluate(selector, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
           elements = [];
-          for (
-            let i = 0;
-            i < Math.min(xpathResult.snapshotLength, maxResults);
-            i++
-          ) {
+          for (let i = 0; i < Math.min(xpathResult.snapshotLength, maxResults); i++) {
             const node = xpathResult.snapshotItem(i);
             if (node instanceof Element) elements.push(node);
           }
         } else {
-          elements = Array.from(document.querySelectorAll(selector)).slice(
-            0,
-            maxResults,
-          );
+          elements = Array.from(document.querySelectorAll(selector)).slice(0, maxResults);
         }
 
         const results = elements.map(getElementInfo);

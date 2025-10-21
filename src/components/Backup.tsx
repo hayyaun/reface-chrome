@@ -38,18 +38,9 @@ export default function Backup() {
   };
   return (
     <li className="odd-color flex items-center justify-between gap-4 p-2 py-1 pl-4 transition select-none">
-      <Label
-        name="Backup"
-        details="Manually backup all your data"
-        limit={400}
-        lines={null}
-      />
+      <Label name="Backup" details="Manually backup all your data" limit={400} lines={null} />
       <div aria-label="Buttons" className="flex h-12 gap-2 py-2">
-        <button
-          title="Import"
-          className="icon-btn group/icon"
-          onClick={onImport}
-        >
+        <button title="Import" className="icon-btn group/icon" onClick={onImport}>
           <RiUpload2Line className="icon-jump-reverse" />
         </button>
         <button className="btn-primary text-btn group/icon" onClick={onExport}>

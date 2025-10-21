@@ -20,28 +20,18 @@ export default function MagicEraser() {
 
   return (
     <div className="px-4">
-      <p className="opacity-50">
-        To begin removing elements from the current tab, press the button below:
-      </p>
+      <p className="opacity-50">To begin removing elements from the current tab, press the button below:</p>
       <button
-        className={clsx(
-          "text-btn group/icon my-4 w-full justify-center",
-          selectionMode ? "btn-red" : "btn-primary",
-        )}
+        className={clsx("text-btn group/icon my-4 w-full justify-center", selectionMode ? "btn-red" : "btn-primary")}
         onClick={toggleSelectionMode}
       >
         {selectionMode ? "Stop Selection" : "Selection Mode"}
-        {selectionMode ? (
-          <RiHand className="icon-zoom" />
-        ) : (
-          <RiFocusLine className="icon-zoom" />
-        )}
+        {selectionMode ? <RiHand className="icon-zoom" /> : <RiFocusLine className="icon-zoom" />}
       </button>
       <p className="mt-8 opacity-50">Press "esc" to exist selection mode.</p>
       <p className="mt-4 opacity-25">
-        You can always manage websites in config and choose to remember your
-        settings for next time you visit this website or only apply changes this
-        time.
+        You can always manage websites in config and choose to remember your settings for next time you visit this
+        website or only apply changes this time.
       </p>
     </div>
   );

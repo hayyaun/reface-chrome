@@ -12,9 +12,7 @@ export function dynamicDirCopyPlugin(
     name: "dynamic-dur-copy",
     buildStart() {
       const cssDir = path.resolve(process.cwd(), dir);
-      const files = fs
-        .readdirSync(cssDir)
-        .filter((f) => exts.some((ext) => f.endsWith(ext)));
+      const files = fs.readdirSync(cssDir).filter((f) => exts.some((ext) => f.endsWith(ext)));
       files.forEach((file) => {
         let content = fs.readFileSync(path.join(cssDir, file), "utf-8");
         // Apply replacements in order

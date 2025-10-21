@@ -1,10 +1,6 @@
 import type { Option } from "@/shared/types";
 import clsx from "clsx";
-import {
-  RiCheckboxBlankLine,
-  RiCheckboxFill,
-  RiCloseCircleLine,
-} from "react-icons/ri";
+import { RiCheckboxBlankLine, RiCheckboxFill, RiCloseCircleLine } from "react-icons/ri";
 import { isRecord } from "../utils/string";
 import Dropdown from "./Dropdown";
 import Label from "./Label";
@@ -17,13 +13,7 @@ type Props<T> = {
   options?: Option[];
 };
 
-export default function SettingItem<T>({
-  title,
-  details,
-  value,
-  onChange,
-  options,
-}: Props<T>) {
+export default function SettingItem<T>({ title, details, value, onChange, options }: Props<T>) {
   return (
     <li className="odd-color flex flex-wrap items-center justify-between gap-2 p-2 pl-4 transition select-none">
       <Label name={title} details={details} lines={0} />
@@ -63,11 +53,7 @@ export default function SettingItem<T>({
         />
       )}
       {Array.isArray(options) && (
-        <Dropdown
-          value={value as string}
-          onChange={(option) => onChange(option.value as T)}
-          options={options}
-        />
+        <Dropdown value={value as string} onChange={(option) => onChange(option.value as T)} options={options} />
       )}
       {isRecord(value) &&
         Object.keys(value).map((k, i) => (

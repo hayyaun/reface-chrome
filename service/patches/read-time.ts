@@ -1,7 +1,4 @@
-function renderReadingTime(
-  article: HTMLDivElement | null,
-  target: HTMLDivElement | null,
-) {
+function renderReadingTime(article: HTMLDivElement | null, target: HTMLDivElement | null) {
   // If we weren't provided an article, we don't need to render anything.
   if (!article || !target) return;
   const text = article.textContent || "";

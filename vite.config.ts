@@ -16,13 +16,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendorPrior: ["react", "react-dom", "react-icons"],
-          vendor: [
-            "react-icons/ri",
-            "openai",
-            "dexie",
-            "dexie-react-hooks",
-            "react-markdown",
-          ],
+          vendor: ["react-icons/ri", "openai", "dexie", "dexie-react-hooks", "react-markdown"],
         },
       },
     },

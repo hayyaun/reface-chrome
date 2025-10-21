@@ -24,12 +24,7 @@ export default function Settings() {
     <section className="flex flex-1 flex-col overflow-y-auto pb-12">
       <p className="p-4 opacity-50">General</p>
       <ul>
-        <SettingItem
-          title="Samantha"
-          details="AI assistant"
-          value={true}
-          onChange={() => {}}
-        />
+        <SettingItem title="Samantha" details="AI assistant" value={true} onChange={() => {}} />
         <SettingItem
           title="Show Badge"
           details="Show the number of enabled patches for active tab"
@@ -84,9 +79,7 @@ export default function Settings() {
       {!!global.length && (
         <div className="my-2 mt-4 p-2">
           <p className="opacity-50">Global</p>
-          <p className="text-tiny mt-1 opacity-50">
-            Patches that applied globally
-          </p>
+          <p className="text-tiny mt-1 opacity-50">Patches that applied globally</p>
         </div>
       )}
       {global.map((patchKey) => (

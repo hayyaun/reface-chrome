@@ -22,19 +22,13 @@ export async function proceedToolCall(
         return await getReadableContent(tab);
       }
       if (toolName.includes("chrome_tabs_")) {
-        const method: keyof typeof chrome.tabs = toolName.replace(
-          "chrome_tabs_",
-          "",
-        ) as any;
+        const method: keyof typeof chrome.tabs = toolName.replace("chrome_tabs_", "") as any;
         const func = chrome.tabs[method] as any;
         const args = Object.keys(toolArgs || {}).map((k) => toolArgs[k]);
         return await func(...args);
       }
       if (toolName.includes("chrome_bookmarks_")) {
-        const method: keyof typeof chrome.bookmarks = toolName.replace(
-          "chrome_bookmarks_",
-          "",
-        ) as any;
+        const method: keyof typeof chrome.bookmarks = toolName.replace("chrome_bookmarks_", "") as any;
         const func = chrome.bookmarks[method] as any;
         const args = Object.keys(toolArgs || {}).map((k) => toolArgs[k]);
         return await func(...args);

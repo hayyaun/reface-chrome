@@ -5,7 +5,5 @@ export function isRecord(obj: unknown): obj is { [k: string]: unknown } {
 }
 
 export function isStringRecord(obj: unknown): obj is { [k: string]: string } {
-  return (
-    isRecord(obj) && Object.values(obj).every((v) => typeof v === "string")
-  );
+  return isRecord(obj) && Object.values(obj).every((v) => typeof v === "string");
 }

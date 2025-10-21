@@ -86,8 +86,7 @@ export const useService = create(
         useService.getState()._initHostname(hostname);
         set((state) => {
           const index = state.hostnames[hostname]!.excluded.indexOf(key);
-          if (index !== -1)
-            state.hostnames[hostname]!.excluded.splice(index, 1);
+          if (index !== -1) state.hostnames[hostname]!.excluded.splice(index, 1);
         });
         useService.getState().addPatch(hostname, key);
       },

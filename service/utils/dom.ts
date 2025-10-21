@@ -30,10 +30,7 @@ export function getElementXPath(el: Element): string {
     let sibling = el.previousSibling;
 
     while (sibling) {
-      if (
-        sibling.nodeType === Node.ELEMENT_NODE &&
-        sibling.nodeName === el.nodeName
-      ) {
+      if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === el.nodeName) {
         index++;
       }
       sibling = sibling.previousSibling;
@@ -49,12 +46,6 @@ export function getElementXPath(el: Element): string {
 }
 
 export function getElementByXPath(xpath: string): Element | null {
-  const result = document.evaluate(
-    xpath,
-    document,
-    null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null,
-  );
+  const result = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
   return result.singleNodeValue as Element;
 }

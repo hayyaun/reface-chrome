@@ -3,14 +3,7 @@ import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import clsx from "clsx";
 import { useLiveQuery } from "dexie-react-hooks";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type FormEventHandler,
-} from "react";
+import { memo, useCallback, useEffect, useRef, useState, type FormEventHandler } from "react";
 import { RiDeleteBinFill, RiSendPlaneFill } from "react-icons/ri";
 import Markdown from "react-markdown";
 import Chips from "../components/Chips";
@@ -76,10 +69,7 @@ export default function Samantha() {
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
-      <div
-        ref={scrollbox}
-        className="relative flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8"
-      >
+      <div ref={scrollbox} className="relative flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8">
         {messages
           ?.filter((v) => v.role !== "system")
           .map((msg, i) => (
@@ -87,10 +77,7 @@ export default function Samantha() {
           ))}
         {thinking && (
           <div
-            className={clsx(
-              "max-w-4/5 animate-pulse rounded-md p-3 px-4 leading-[150%]",
-              "self-start bg-red-200/5",
-            )}
+            className={clsx("max-w-4/5 animate-pulse rounded-md p-3 px-4 leading-[150%]", "self-start bg-red-200/5")}
           >
             {thinking.content} {thinking.iter ? `(${thinking.iter})` : ""}
           </div>
@@ -99,12 +86,7 @@ export default function Samantha() {
           <div className="flex flex-1 flex-col items-center justify-center gap-2">
             <p className="mb-2 opacity-45">Get started by trying these:</p>
             {hints.map((hint, i) => (
-              <Chips
-                key={i}
-                active={false}
-                title={hint}
-                onClick={() => set(hint)}
-              />
+              <Chips key={i} active={false} title={hint} onClick={() => set(hint)} />
             ))}
           </div>
         )}
@@ -125,11 +107,7 @@ export default function Samantha() {
       </form>
 
       {!!messages?.length && (
-        <button
-          aria-label="Clear button"
-          className="icon-btn btn-red group/icon absolute top-0 left-4"
-          onClick={clear}
-        >
+        <button aria-label="Clear button" className="icon-btn btn-red group/icon absolute top-0 left-4" onClick={clear}>
           <RiDeleteBinFill className="icon-zoom" />
         </button>
       )}
@@ -141,9 +119,7 @@ const MessageBubble = memo(({ role, content }: ChatCompletionMessageParam) => (
   <div
     className={clsx(
       "max-w-4/5 rounded-md p-3 px-4 leading-[150%] break-words whitespace-pre-line select-text",
-      role === "assistant"
-        ? "self-start bg-red-200/5"
-        : "self-end bg-blue-200/5",
+      role === "assistant" ? "self-start bg-red-200/5" : "self-end bg-blue-200/5",
     )}
   >
     <Markdown>{content?.toString()}</Markdown>

@@ -1,9 +1,5 @@
 import authors from "./authors";
-import {
-  AI_THINKING_DEPTH_DEFAULT,
-  AI_THINKING_DEPTH_MAX,
-  PRIMARY_COLOR_DARK,
-} from "./constants";
+import { AI_THINKING_DEPTH_DEFAULT, AI_THINKING_DEPTH_MAX, PRIMARY_COLOR_DARK } from "./constants";
 import { categories } from "./mapping";
 import type { HostnameConfig, Patch } from "./types";
 
@@ -170,7 +166,8 @@ const patches: { [key: string]: Patch } = {
 export default patches;
 
 export const hostnames = Object.fromEntries(
-  [...new Set(Object.values(patches).flatMap((patch) => patch.hostnames))].map(
-    (hn) => [hn || "*", { enabled: [], excluded: [] }],
-  ),
+  [...new Set(Object.values(patches).flatMap((patch) => patch.hostnames))].map((hn) => [
+    hn || "*",
+    { enabled: [], excluded: [] },
+  ]),
 ) as { [hostname: string]: HostnameConfig };

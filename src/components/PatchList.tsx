@@ -39,9 +39,7 @@ export default function PatchList({ hostname }: Props) {
           <Chips
             key={i}
             title={categories[k as keyof typeof categories]}
-            active={
-              selectedCategory === categories[k as keyof typeof categories]
-            }
+            active={selectedCategory === categories[k as keyof typeof categories]}
             onClick={() => setSelectedCategory(k)}
           />
         ))}

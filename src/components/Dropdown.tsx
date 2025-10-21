@@ -10,12 +10,7 @@ interface Props {
   onChange: (option: Option) => void;
 }
 
-export default function Dropdown({
-  placeholder = "Select option",
-  options,
-  value,
-  onChange,
-}: Props) {
+export default function Dropdown({ placeholder = "Select option", options, value, onChange }: Props) {
   const [hidden, setHidden] = useState(true);
   const title = options.find((o) => o.value === value)?.name ?? placeholder;
   return (

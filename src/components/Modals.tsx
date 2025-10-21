@@ -11,9 +11,7 @@ export default function Modals() {
   const profileModal = useUI((s) => s.profileModal);
   const setProfileModal = useUI((s) => s.setProfileModal);
 
-  const Component = profileModal
-    ? profiles[profileModal].modal?.Component
-    : null;
+  const Component = profileModal ? profiles[profileModal].modal?.Component : null;
 
   return (
     <>

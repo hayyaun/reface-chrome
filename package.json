@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build && npm run build-service && npm run bundle",
     "build-service": "vite build --config vite.config.service.ts",
     "lint": "eslint .",
+    "format": "prettier --write .",
     "preview": "vite preview",
     "bundle": "crx pack ./dist --zip-output ./dist/extension.zip"
   },

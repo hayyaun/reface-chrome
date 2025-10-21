@@ -1,15 +1,9 @@
 const config = window.__rc_config["github-stats"];
 
 const reserved = ["topics", "users", "orgs", "collections", "contact"];
-const excludes = [
-  "#code-tab",
-  ".AppHeader-context-item",
-  '[data-pjax="#repo-content-pjax-container"]',
-];
+const excludes = ["#code-tab", ".AppHeader-context-item", '[data-pjax="#repo-content-pjax-container"]'];
 
-const links = document.querySelectorAll<HTMLAnchorElement>(
-  "a" + excludes.map((q) => `:not(${q})`).join(""),
-);
+const links = document.querySelectorAll<HTMLAnchorElement>("a" + excludes.map((q) => `:not(${q})`).join(""));
 
 links.forEach(async (link) => {
   const rawHref = link.getAttribute("href");
@@ -24,9 +18,7 @@ links.forEach(async (link) => {
   const items: string[] = [];
   async function addItem(key: string): Promise<number> {
     try {
-      const res = await fetch(
-        `https://img.shields.io/github/${key}/${args[1]}/${args[2]}.json`,
-      );
+      const res = await fetch(`https://img.shields.io/github/${key}/${args[1]}/${args[2]}.json`);
       const data = (await res.json()) as { value: string };
       let value = parseFloat(data.value);
       if (Number.isNaN(value)) return 0;

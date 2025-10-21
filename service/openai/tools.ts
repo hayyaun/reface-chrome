@@ -39,8 +39,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
           },
           includeChildren: {
             type: "boolean",
-            description:
-              "Whether to include information about immediate children",
+            description: "Whether to include information about immediate children",
             default: false,
           },
           includeText: {
@@ -63,8 +62,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "chrome_tabs_query",
-      description:
-        "Gets all tabs that have the specified properties, or all tabs if no properties are specified.",
+      description: "Gets all tabs that have the specified properties, or all tabs if no properties are specified.",
       parameters: {
         type: "object",
         properties: {
@@ -81,8 +79,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
               },
               autoDiscardable: {
                 type: "boolean",
-                description:
-                  "Whether the tabs can be discarded automatically by the browser when resources are low.",
+                description: "Whether the tabs can be discarded automatically by the browser when resources are low.",
               },
               currentWindow: {
                 type: "boolean",
@@ -107,8 +104,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
               },
               index: {
                 type: "number",
-                description:
-                  "The zero-based index of the tabs within their windows.",
+                description: "The zero-based index of the tabs within their windows.",
               },
               lastFocusedWindow: {
                 type: "boolean",
@@ -128,8 +124,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
               },
               status: {
                 type: "string",
-                description:
-                  "The status of the tabs. Can be either loading or complete.",
+                description: "The status of the tabs. Can be either loading or complete.",
                 enum: ["loading", "complete"],
               },
               title: {
@@ -138,14 +133,12 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
               },
               url: {
                 type: ["string", "array"],
-                description:
-                  "Match tabs against one or more URL patterns. Fragment identifiers are not matched.",
+                description: "Match tabs against one or more URL patterns. Fragment identifiers are not matched.",
                 items: { type: "string" },
               },
               windowId: {
                 type: "number",
-                description:
-                  "The ID of the parent window, or windows.WINDOW_ID_CURRENT for the current window.",
+                description: "The ID of the parent window, or windows.WINDOW_ID_CURRENT for the current window.",
               },
               windowType: {
                 type: "string",
@@ -173,8 +166,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
             properties: {
               active: {
                 type: "boolean",
-                description:
-                  "Whether the tab should become the active tab in the window.",
+                description: "Whether the tab should become the active tab in the window.",
               },
               index: {
                 type: "number",
@@ -230,13 +222,11 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
               },
               autoDiscardable: {
                 type: "boolean",
-                description:
-                  "Whether the tab should be discarded automatically by the browser when resources are low.",
+                description: "Whether the tab should be discarded automatically by the browser when resources are low.",
               },
               highlighted: {
                 type: "boolean",
-                description:
-                  "Adds or removes the tab from the current selection.",
+                description: "Adds or removes the tab from the current selection.",
               },
               muted: {
                 type: "boolean",
@@ -305,8 +295,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "chrome_tabs_move",
-      description:
-        "Moves one or more tabs to a new position within its window, or to a new window.",
+      description: "Moves one or more tabs to a new position within its window, or to a new window.",
       parameters: {
         type: "object",
         properties: {
@@ -344,8 +333,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
         properties: {
           tabId: {
             type: "number",
-            description:
-              "The ID of the tab to reload; defaults to the selected tab of the current window.",
+            description: "The ID of the tab to reload; defaults to the selected tab of the current window.",
           },
           reloadProperties: {
             type: "object",
@@ -379,8 +367,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
             properties: {
               query: {
                 type: "string",
-                description:
-                  "A string of words and quoted phrases that are matched against bookmark URLs and titles.",
+                description: "A string of words and quoted phrases that are matched against bookmark URLs and titles.",
               },
               title: {
                 type: "string",
@@ -388,8 +375,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
               },
               url: {
                 type: "string",
-                description:
-                  "The URL of the bookmark; matches verbatim. Note that folders have no URL.",
+                description: "The URL of the bookmark; matches verbatim. Note that folders have no URL.",
               },
             },
             additionalProperties: false,
@@ -417,8 +403,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
               },
               parentId: {
                 type: "string",
-                description:
-                  "The ID of the parent folder. Defaults to the Other Bookmarks folder.",
+                description: "The ID of the parent folder. Defaults to the Other Bookmarks folder.",
               },
               title: {
                 type: "string",
@@ -503,8 +488,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
         properties: {
           idOrIdList: {
             type: ["string", "array"],
-            description:
-              "A single string-valued id, or an array of string-valued ids.",
+            description: "A single string-valued id, or an array of string-valued ids.",
             items: { type: "string" },
           },
         },
@@ -516,8 +500,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "chrome_bookmarks_move",
-      description:
-        "Moves the specified BookmarkTreeNode to the provided location.",
+      description: "Moves the specified BookmarkTreeNode to the provided location.",
       parameters: {
         type: "object",
         properties: {
@@ -545,8 +528,7 @@ export const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
     type: "function",
     function: {
       name: "chrome_bookmarks_getChildren",
-      description:
-        "Retrieves the children of the specified BookmarkTreeNode id.",
+      description: "Retrieves the children of the specified BookmarkTreeNode id.",
       parameters: {
         type: "object",
         properties: {
