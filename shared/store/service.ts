@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { chromeLocalStorage } from "../chrome/storage";
+import { chromeLocalStorage } from "../browser/storage";
 import type { HostnameConfig, PatchConfigData } from "../types";
 
 export const STORE_KEY = "main";

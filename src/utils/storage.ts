@@ -1,8 +1,9 @@
+import api from "@/shared/api";
 import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "@/shared/store";
 
 export function watchStorage(scope: string) {
   if (import.meta.env.PROD) {
-    chrome.storage.onChanged.addListener(async (changes, area) => {
+    api.storage.onChanged.addListener(async (changes, area) => {
       if (area === "local" && changes[STORE_KEY]) {
         await useService.persist.rehydrate();
         console.debug(`rehydrate ${scope}`);

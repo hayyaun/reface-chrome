@@ -1,5 +1,6 @@
-import { RiGithubFill, RiSettingsFill } from "react-icons/ri";
+import api from "@/shared/api";
 import strings from "@/shared/strings";
+import { RiGithubFill, RiSettingsFill } from "react-icons/ri";
 
 interface Props {
   options?: boolean;
@@ -8,7 +9,7 @@ interface Props {
 export default function Footer({ options }: Props) {
   const openOptions = () => {
     if (import.meta.env.DEV) return;
-    chrome.runtime.openOptionsPage();
+    api.runtime.openOptionsPage();
   };
 
   return (

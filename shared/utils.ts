@@ -4,7 +4,7 @@ import type { PatchConfigData } from "./types";
 export function extractDefaultConfigData<T extends PatchConfigData>(patchKey: string) {
   const config = patches[patchKey].config || {};
   return Object.keys(config).reduce((acc, key) => {
-    acc[key] = config[key].defaultValue;
+    acc[key] = config[key].defaultValue as T;
     return acc;
   }, {} as PatchConfigData) as T;
 }

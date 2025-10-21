@@ -1,3 +1,5 @@
+import api from "@/shared/api";
+
 interface SearchDOMParams {
   selector: string;
   selectorType?: "css" | "xpath";
@@ -17,8 +19,8 @@ interface ElementInfo {
   path: string;
 }
 
-export async function searchDOM(tab: chrome.tabs.Tab, params: SearchDOMParams): Promise<string> {
-  const results = await chrome.scripting.executeScript({
+export async function searchDOM(tab: browser.tabs.Tab, params: SearchDOMParams): Promise<string> {
+  const results = await api.scripting.executeScript({
     target: { tabId: tab.id! },
     func: (args) => {
       const {
@@ -85,37 +87,41 @@ export async function searchDOM(tab: chrome.tabs.Tab, params: SearchDOMParams): 
         return info;
       }
 
-      try {
-        let elements: Element[];
+      function run() {
+        try {
+          let elements: Element[];
 
-        if (selectorType === "xpath") {
-          const xpathResult = document.evaluate(
-            selector,
-            document,
-            null,
-            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-            null,
-          );
-          elements = [];
-          for (let i = 0; i < Math.min(xpathResult.snapshotLength, maxResults); i++) {
-            const node = xpathResult.snapshotItem(i);
-            if (node instanceof Element) elements.push(node);
+          if (selectorType === "xpath") {
+            const xpathResult = document.evaluate(
+              selector,
+              document,
+              null,
+              XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+              null,
+            );
+            elements = [];
+            for (let i = 0; i < Math.min(xpathResult.snapshotLength, maxResults); i++) {
+              const node = xpathResult.snapshotItem(i);
+              if (node instanceof Element) elements.push(node);
+            }
+          } else {
+            elements = Array.from(document.querySelectorAll(selector)).slice(0, maxResults);
           }
-        } else {
-          elements = Array.from(document.querySelectorAll(selector)).slice(0, maxResults);
+
+          const results = elements.map(getElementInfo);
+
+          return JSON.stringify({
+            count: elements.length,
+            results,
+          });
+        } catch (error) {
+          return JSON.stringify({
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
         }
-
-        const results = elements.map(getElementInfo);
-
-        return JSON.stringify({
-          count: elements.length,
-          results,
-        });
-      } catch (error) {
-        return JSON.stringify({
-          error: error instanceof Error ? error.message : "Unknown error",
-        });
       }
+
+      return run() as unknown as void;
     },
     args: [params],
   });

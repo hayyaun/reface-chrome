@@ -1,5 +1,7 @@
-export async function getReadableContent(tab: chrome.tabs.Tab): Promise<string> {
-  const results = await chrome.scripting.executeScript({
+import api from "@/shared/api";
+
+export async function getReadableContent(tab: browser.tabs.Tab): Promise<string> {
+  const results = await api.scripting.executeScript({
     target: { tabId: tab.id! },
     func: () => {
       // Selectors for elements to remove (navigation, ads, etc.)
@@ -116,15 +118,17 @@ export async function getReadableContent(tab: chrome.tabs.Tab): Promise<string> 
         return text;
       }
 
-      const rawText = extractText(contentRoot);
+      function run() {
+        const rawText = extractText(contentRoot);
+        // Clean up excessive whitespace and newlines
+        const cleanText = rawText
+          .replace(/\n{3,}/g, "\n\n")
+          .replace(/ {2,}/g, " ")
+          .trim();
+        return cleanText || "No readable content found on this page.";
+      }
 
-      // Clean up excessive whitespace and newlines
-      const cleanText = rawText
-        .replace(/\n{3,}/g, "\n\n")
-        .replace(/ {2,}/g, " ")
-        .trim();
-
-      return cleanText || "No readable content found on this page.";
+      return run() as unknown as void;
     },
   });
 
