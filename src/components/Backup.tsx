@@ -3,15 +3,16 @@ import { RiDownload2Line, RiUpload2Line } from "react-icons/ri";
 import Label from "./Label";
 
 export default function Backup() {
-  const onExport = () => {
+  const onExport = async () => {
     if (import.meta.env.DEV) return;
-    api.storage.local.get(null).then((data) => {
-      const blob = new Blob([JSON.stringify(data)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      api.downloads.download({ url, filename: "reface.backup.json" });
+    const data = await (typeof api === typeof browser
+      ? api.storage.local.get(null)
+      : new Promise((resolve) => api.storage.local.get(null, resolve)));
+    const blob = new Blob([JSON.stringify(data)], {
+      type: "application/json",
     });
+    const url = URL.createObjectURL(blob);
+    api.downloads.download({ url, filename: "reface.backup.json" });
   };
   const onImport = () => {
     const input = document.createElement("input");

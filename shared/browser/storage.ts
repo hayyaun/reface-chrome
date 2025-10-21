@@ -1,23 +1,36 @@
 import api from "@/shared/api";
+import type { StateStorage } from "zustand/middleware";
 
-export const chromeLocalStorage = {
+export const chromeLocalStorage: StateStorage = {
   getItem: (key: string) =>
-    new Promise<string | null>((resolve) =>
-      api.storage.local.get([key]).then((result) => resolve(result[key] ?? null)),
-    ),
+    typeof api === typeof browser
+      ? browser.storage.local.get([key]).then((result) => result[key])
+      : new Promise<string | null>((resolve) =>
+          chrome.storage.local.get([key], (result) => resolve(result[key])),
+        ),
   setItem: (key: string, value: string) =>
-    new Promise<void>((resolve) => api.storage.local.set({ [key]: value }).then(resolve)),
+    typeof api === typeof browser
+      ? browser.storage.local.set({ [key]: value })
+      : new Promise<void>((resolve) => chrome.storage.local.set({ [key]: value }, resolve)),
   removeItem: (key: string) =>
-    new Promise<void>((resolve) => api.storage.local.remove([key]).then(resolve)),
+    typeof api === typeof browser
+      ? browser.storage.local.remove([key])
+      : new Promise<void>((resolve) => chrome.storage.local.remove([key], resolve)),
 };
 
-export const chromeSyncStorage = {
+export const chromeSyncStorage: StateStorage = {
   getItem: (key: string) =>
-    new Promise<string | null>((resolve) =>
-      api.storage.sync.get([key]).then((result) => resolve(result[key] ?? null)),
-    ),
+    typeof api === typeof browser
+      ? browser.storage.sync.get([key]).then((result) => result[key])
+      : new Promise<string | null>((resolve) =>
+          chrome.storage.sync.get([key]).then((result) => resolve(result[key])),
+        ),
   setItem: (key: string, value: string) =>
-    new Promise<void>((resolve) => api.storage.sync.set({ [key]: value }).then(resolve)),
+    typeof api === typeof browser
+      ? api.storage.sync.set({ [key]: value })
+      : new Promise<void>((resolve) => api.storage.sync.set({ [key]: value }, resolve)),
   removeItem: (key: string) =>
-    new Promise<void>((resolve) => api.storage.sync.remove([key]).then(resolve)),
+    typeof api === typeof browser
+      ? api.storage.sync.remove([key])
+      : new Promise<void>((resolve) => api.storage.sync.remove([key], resolve)),
 };

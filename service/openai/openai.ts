@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import api from "@/shared/api";
+import { getActiveTab } from "@/shared/browser/utils";
 import _ from "lodash";
 import { OpenAI } from "openai";
 import type {
@@ -25,11 +25,7 @@ const systemContent = [
 
 export async function ask(_messages: ChatCompletionMessageParam[]): Promise<string> {
   try {
-    const [tab] = await api.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-
+    const tab = await getActiveTab();
     if (!tab) return "No active tab found!";
 
     const config = state.service.config["openai"];

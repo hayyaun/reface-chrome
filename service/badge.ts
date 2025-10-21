@@ -1,4 +1,5 @@
 import api from "@/shared/api";
+import { getActiveTab } from "@/shared/browser/utils";
 import { findApplicablePatches } from "./patch";
 import { state } from "./state";
 
@@ -28,11 +29,10 @@ export function updateBadgeForTab(tab: browser.tabs.Tab, count: number) {
   updateBadge(count, tab.id);
 }
 
-export function updateBadgeForActiveTab() {
+export async function updateBadgeForActiveTab() {
   if (!state.prefs.showBadge) return clearBadge();
-  api.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-    if (!tabs.length || !tabs[0]) return;
-    const applicable = findApplicablePatches(tabs[0]);
-    updateBadgeForTab(tabs[0], applicable.length);
-  });
+  const activeTab = await getActiveTab();
+  if (!activeTab) return;
+  const applicable = findApplicablePatches(activeTab);
+  updateBadgeForTab(activeTab, applicable.length);
 }

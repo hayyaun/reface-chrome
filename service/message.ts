@@ -1,4 +1,5 @@
 import api from "@/shared/api";
+import { getActiveTab } from "@/shared/browser/utils";
 import { useService } from "@/shared/store";
 import db from "@/shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
@@ -12,10 +13,9 @@ export function addMessageListener() {
   api.runtime.onMessage.addListener(async (msg: Message) => {
     switch (msg.to) {
       case "content": {
-        api.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-          if (!tabs.length) return;
-          api.tabs.sendMessage(tabs[0].id!, msg);
-        });
+        const activeTab = await getActiveTab();
+        if (!activeTab) return;
+        api.tabs.sendMessage(activeTab.id!, msg);
         break;
       }
       case "background": {

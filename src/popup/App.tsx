@@ -1,4 +1,4 @@
-import api from "@/shared/api";
+import { getActiveTab } from "@/shared/browser/utils";
 import { useService } from "@/shared/store";
 import { useEffect, useMemo, useState } from "react";
 import { RiCheckboxCircleFill } from "react-icons/ri";
@@ -11,12 +11,13 @@ export default function App() {
 
   useEffect(() => {
     if (import.meta.env.DEV) return;
-    api.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      const activeTab = tabs[0];
+    async function init() {
+      const activeTab = await getActiveTab();
       if (!activeTab) return;
       const url = new URL(activeTab.url!);
       set(url.hostname);
-    });
+    }
+    init();
   }, []);
 
   const active = useMemo(
