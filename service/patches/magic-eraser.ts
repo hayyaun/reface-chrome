@@ -1,5 +1,5 @@
+import { getElementByXPath, getElementXPath } from "@/service/utils?magic-eraser";
 import type { MagicEraserConfigData, Message } from "@/shared/types";
-import { getElementByXPath, getElementXPath } from "../utils/dom";
 
 // Selection Mode
 
