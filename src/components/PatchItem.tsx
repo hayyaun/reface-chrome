@@ -1,7 +1,13 @@
 import clsx from "clsx";
 import { memo } from "react";
 import { CiCoffeeCup } from "react-icons/ci";
-import { RiAddFill, RiCheckDoubleFill, RiCloseFill, RiDeleteBinFill, RiSettings2Line } from "react-icons/ri";
+import {
+  RiAddFill,
+  RiCheckDoubleFill,
+  RiCloseFill,
+  RiDeleteBinFill,
+  RiSettings2Line,
+} from "react-icons/ri";
 import { reloadActiveTab } from "@/shared/chrome/utils";
 import { categories, icons } from "@/shared/mapping";
 import patches from "@/shared/patches";
@@ -56,7 +62,10 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
         style={{ backgroundColor: patch.bgcolor }}
       />
       {Icon && (
-        <div className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75" style={{ backgroundColor: patch.bgcolor }}>
+        <div
+          className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75"
+          style={{ backgroundColor: patch.bgcolor }}
+        >
           {typeof profile.logo !== "string" ? (
             <Icon className="size-5" style={{ color: patch.color }} />
           ) : (
@@ -105,13 +114,22 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
             if (autoReload) setTimeout(reloadActiveTab, 150);
           }}
         >
-          {!enabledGlobally ? <RiCheckDoubleFill className="icon-zoom" /> : <RiCloseFill className="icon-zoom" />}
+          {!enabledGlobally ? (
+            <RiCheckDoubleFill className="icon-zoom" />
+          ) : (
+            <RiCloseFill className="icon-zoom" />
+          )}
         </div>
       )}
       {typeof hostname !== "undefined" && !neutral && (
         <div
-          title={enabledGlobally ? (!excluded ? "Exclude" : "Include") : enabled ? "Remove" : "Apply"}
-          className={clsx("tiny-btn group/icon", (enabledGlobally ? !excluded : enabled) ? "btn-red" : "btn-green")}
+          title={
+            enabledGlobally ? (!excluded ? "Exclude" : "Include") : enabled ? "Remove" : "Apply"
+          }
+          className={clsx(
+            "tiny-btn group/icon",
+            (enabledGlobally ? !excluded : enabled) ? "btn-red" : "btn-green",
+          )}
           onClick={() => {
             if (enabledGlobally) {
               if (!excluded) excludePatch(hostname, patchKey);

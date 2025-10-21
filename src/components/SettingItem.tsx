@@ -53,7 +53,11 @@ export default function SettingItem<T>({ title, details, value, onChange, option
         />
       )}
       {Array.isArray(options) && (
-        <Dropdown value={value as string} onChange={(option) => onChange(option.value as T)} options={options} />
+        <Dropdown
+          value={value as string}
+          onChange={(option) => onChange(option.value as T)}
+          options={options}
+        />
       )}
       {isRecord(value) &&
         Object.keys(value).map((k, i) => (

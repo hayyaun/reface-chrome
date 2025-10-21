@@ -19,7 +19,10 @@ export default function App() {
   }, []);
 
   const active = useMemo(
-    () => Object.keys(hostnames).find((item) => activeTabHostname.includes(item) && !!hostnames[item]!.enabled.length),
+    () =>
+      Object.keys(hostnames).find(
+        (item) => activeTabHostname.includes(item) && !!hostnames[item]!.enabled.length,
+      ),
     [activeTabHostname, hostnames],
   );
 

@@ -16,7 +16,9 @@ export default function App() {
   const deferredQuery = useDeferredValue(query);
   const relevantItems = useMemo(() => {
     const enabledHostnames = _.pickBy(hostnames, (hn) => hn && hn.enabled.length > 0);
-    const keys = Object.keys(Object.assign({}, enabledOnly ? {} : entireHostnames, enabledHostnames));
+    const keys = Object.keys(
+      Object.assign({}, enabledOnly ? {} : entireHostnames, enabledHostnames),
+    );
     return _.sortBy(keys).filter((k) => k.includes(deferredQuery));
   }, [deferredQuery, enabledOnly, hostnames]);
   return (
@@ -38,7 +40,12 @@ export default function App() {
               onClick={() => setSelected(null)}
             />
             {relevantItems.map((hostname, i) => (
-              <ListItem key={i} title={hostname} active={selected === hostname} onClick={() => setSelected(hostname)} />
+              <ListItem
+                key={i}
+                title={hostname}
+                active={selected === hostname}
+                onClick={() => setSelected(hostname)}
+              />
             ))}
           </div>
           <div aria-label="Searchbox" className="flex items-center gap-1 p-2">
@@ -71,7 +78,15 @@ export default function App() {
   );
 }
 
-function ListItem({ title, active, onClick }: { title: ReactNode; active: boolean; onClick: () => void }) {
+function ListItem({
+  title,
+  active,
+  onClick,
+}: {
+  title: ReactNode;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
     <div
       className={clsx("cursor-pointer p-2 even:bg-white/2 hover:bg-white/5", {

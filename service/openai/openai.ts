@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from "lodash";
 import { OpenAI } from "openai";
-import type { ChatCompletionCreateParamsNonStreaming, ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import type {
+  ChatCompletionCreateParamsNonStreaming,
+  ChatCompletionMessageParam,
+} from "openai/resources/index.mjs";
 import { updateAiThinking } from "../message";
 import { state } from "../state";
 import { proceedToolCall } from "./toolcall";
@@ -43,7 +46,10 @@ export async function ask(_messages: ChatCompletionMessageParam[]): Promise<stri
       temperature: (config?.["temperature"] as number) ?? 1.0,
     };
 
-    const messages: ChatCompletionMessageParam[] = [{ role: "system", content: systemContent }, ..._messages];
+    const messages: ChatCompletionMessageParam[] = [
+      { role: "system", content: systemContent },
+      ..._messages,
+    ];
 
     const thinking = { iter: -1 };
 
@@ -57,7 +63,12 @@ export async function ask(_messages: ChatCompletionMessageParam[]): Promise<stri
         tool_choice: "auto",
       });
 
-      console.debug("Response", messages.length, { messages, response }, JSON.stringify(messages).length);
+      console.debug(
+        "Response",
+        messages.length,
+        { messages, response },
+        JSON.stringify(messages).length,
+      );
 
       const responseMessage = response.choices[0].message;
 

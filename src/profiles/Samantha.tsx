@@ -69,7 +69,10 @@ export default function Samantha() {
 
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
-      <div ref={scrollbox} className="relative flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8">
+      <div
+        ref={scrollbox}
+        className="relative flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8"
+      >
         {messages
           ?.filter((v) => v.role !== "system")
           .map((msg, i) => (
@@ -77,7 +80,10 @@ export default function Samantha() {
           ))}
         {thinking && (
           <div
-            className={clsx("max-w-4/5 animate-pulse rounded-md p-3 px-4 leading-[150%]", "self-start bg-red-200/5")}
+            className={clsx(
+              "max-w-4/5 animate-pulse rounded-md p-3 px-4 leading-[150%]",
+              "self-start bg-red-200/5",
+            )}
           >
             {thinking.content} {thinking.iter ? `(${thinking.iter})` : ""}
           </div>
@@ -107,7 +113,11 @@ export default function Samantha() {
       </form>
 
       {!!messages?.length && (
-        <button aria-label="Clear button" className="icon-btn btn-red group/icon absolute top-0 left-4" onClick={clear}>
+        <button
+          aria-label="Clear button"
+          className="icon-btn btn-red group/icon absolute top-0 left-4"
+          onClick={clear}
+        >
           <RiDeleteBinFill className="icon-zoom" />
         </button>
       )}

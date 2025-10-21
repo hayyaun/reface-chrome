@@ -3,7 +3,9 @@
 const config = window.__rc_config["wikipedia-focus"];
 
 if (config["remove-donation"] as boolean) {
-  document.querySelector<HTMLDivElement>("#siteNotice, #pt-sitesupport-2")?.style.setProperty("display", "none");
+  document
+    .querySelector<HTMLDivElement>("#siteNotice, #pt-sitesupport-2")
+    ?.style.setProperty("display", "none");
 }
 
 // Remove vote banner

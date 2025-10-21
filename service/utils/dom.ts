@@ -46,6 +46,12 @@ export function getElementXPath(el: Element): string {
 }
 
 export function getElementByXPath(xpath: string): Element | null {
-  const result = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+  const result = document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null,
+  );
   return result.singleNodeValue as Element;
 }

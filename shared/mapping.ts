@@ -1,5 +1,11 @@
 import type { IconType } from "react-icons";
-import { RiPaletteLine, RiProhibitedLine, RiPuzzleLine, RiShiningLine, RiToolsLine } from "react-icons/ri";
+import {
+  RiPaletteLine,
+  RiProhibitedLine,
+  RiPuzzleLine,
+  RiShiningLine,
+  RiToolsLine,
+} from "react-icons/ri";
 
 export const categories = {
   all: "all",

@@ -1,9 +1,15 @@
 const config = window.__rc_config["github-stats"];
 
 const reserved = ["topics", "users", "orgs", "collections", "contact"];
-const excludes = ["#code-tab", ".AppHeader-context-item", '[data-pjax="#repo-content-pjax-container"]'];
+const excludes = [
+  "#code-tab",
+  ".AppHeader-context-item",
+  '[data-pjax="#repo-content-pjax-container"]',
+];
 
-const links = document.querySelectorAll<HTMLAnchorElement>("a" + excludes.map((q) => `:not(${q})`).join(""));
+const links = document.querySelectorAll<HTMLAnchorElement>(
+  "a" + excludes.map((q) => `:not(${q})`).join(""),
+);
 
 links.forEach(async (link) => {
   const rawHref = link.getAttribute("href");

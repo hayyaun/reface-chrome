@@ -21,7 +21,13 @@ export async function searchDOM(tab: chrome.tabs.Tab, params: SearchDOMParams): 
   const results = await chrome.scripting.executeScript({
     target: { tabId: tab.id! },
     func: (args) => {
-      const { selector, selectorType = "css", includeChildren = false, includeText = true, maxResults = 10 } = args;
+      const {
+        selector,
+        selectorType = "css",
+        includeChildren = false,
+        includeText = true,
+        maxResults = 10,
+      } = args;
 
       function getElementPath(element: Element): string {
         const path: string[] = [];
@@ -83,7 +89,13 @@ export async function searchDOM(tab: chrome.tabs.Tab, params: SearchDOMParams): 
         let elements: Element[];
 
         if (selectorType === "xpath") {
-          const xpathResult = document.evaluate(selector, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+          const xpathResult = document.evaluate(
+            selector,
+            document,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null,
+          );
           elements = [];
           for (let i = 0; i < Math.min(xpathResult.snapshotLength, maxResults); i++) {
             const node = xpathResult.snapshotItem(i);
