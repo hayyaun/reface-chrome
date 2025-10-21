@@ -26,5 +26,10 @@
     "scripts": ["background.js"]
   },
   "permissions": ["tabs", "webNavigation", "storage", "downloads", "bookmarks", "<all_urls>"],
-  "web_accessible_resources": ["images/*"]
+  "web_accessible_resources": ["images/*"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "reface@reface.com"
+    }
+  }
 }
