@@ -1,4 +1,3 @@
-import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import type { PatchMessage } from "./patch";
 
 export {};
@@ -88,7 +87,4 @@ export interface BaseMessage<TO extends Entity, ACT extends string, T> {
   data: T;
 }
 
-export type Message =
-  | BaseMessage<"background", "updateBadge", number>
-  | BaseMessage<"background", "openai_ask", ChatCompletionMessageParam[]>
-  | PatchMessage;
+export type Message = BaseMessage<"background", "updateBadge", number> | PatchMessage;

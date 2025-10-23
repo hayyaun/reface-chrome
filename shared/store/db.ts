@@ -3,7 +3,7 @@ import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import type { MagicEraserDBItem } from "../types";
 
 const db = new Dexie("SharedDatabase") as Dexie & {
-  openai: EntityTable<ChatCompletionMessageParam, never>;
+  samantha: EntityTable<ChatCompletionMessageParam, never>;
   magic_eraser: EntityTable<MagicEraserDBItem, "hostname">;
 };
 
@@ -13,7 +13,7 @@ const db = new Dexie("SharedDatabase") as Dexie & {
  */
 
 db.version(1).stores({
-  openai: "++id, role",
+  samantha: "++id, role",
   magic_eraser: "hostname",
 });
 

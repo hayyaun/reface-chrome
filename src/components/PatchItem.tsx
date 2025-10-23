@@ -55,7 +55,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
         "group/item relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5",
         { "cursor-pointer": modal },
       )}
-      onClick={modal && openConfig}
+      onClick={modal && openProfile}
     >
       <div
         aria-label="Bg shade"

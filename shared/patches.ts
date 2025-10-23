@@ -1,5 +1,5 @@
 import authors from "./authors";
-import { AI_THINKING_DEPTH_DEFAULT, AI_THINKING_DEPTH_MAX, PRIMARY_COLOR_DARK } from "./constants";
+import { PRIMARY_COLOR_DARK } from "./constants";
 import { categories } from "./mapping";
 import type { HostnameConfig, Patch } from "./types";
 
@@ -32,11 +32,6 @@ const patches: { [key: string]: Patch } = {
         name: "API Key",
         defaultValue: "",
         details: "Your OpenAI api key",
-      },
-      thinkingDepth: {
-        name: "Thinking depth",
-        defaultValue: AI_THINKING_DEPTH_DEFAULT,
-        details: `The amount of time and effort to put on deep searching and thinking through the document. (Maximum depth: ${AI_THINKING_DEPTH_MAX})`,
       },
       temperature: {
         name: "Temperature",

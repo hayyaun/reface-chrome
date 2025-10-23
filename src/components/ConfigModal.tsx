@@ -1,11 +1,11 @@
+import { reloadActiveTab } from "@/shared/browser/utils";
+import patches from "@/shared/patches";
+import { usePrefs, useService } from "@/shared/store";
+import { extractDefaultConfigData } from "@/shared/utils";
 import { produce } from "immer";
 import _ from "lodash";
 import { useMemo, useState } from "react";
 import { RiResetLeftLine } from "react-icons/ri";
-import patches from "@/shared/patches";
-import { reloadActiveTab } from "@/shared/browser/utils";
-import { usePrefs, useService } from "@/shared/store";
-import { extractDefaultConfigData } from "@/shared/utils";
 import SettingItem from "./SettingItem";
 
 interface Props {
@@ -35,7 +35,7 @@ export default function ConfigModal({ patchKey, close }: Props) {
     <>
       <div className="flex flex-1 flex-col overflow-y-auto">
         {Object.keys(data)
-          .filter((key) => !patch.config![key].hidden)
+          .filter((key) => typeof patch.config![key] !== "undefined" && !patch.config![key].hidden) // filter out removed or hidden items
           .map((key, i) => (
             <SettingItem
               key={i}

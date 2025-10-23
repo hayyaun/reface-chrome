@@ -1,3 +1,4 @@
+import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import type { BaseMessage } from "../types";
 
 export {};
@@ -20,7 +21,8 @@ export interface MagicEraserDBItem {
 }
 
 export type PatchMessage =
-  | BaseMessage<"popup", "openai_thinking", OpenaiThinkingMessageData>
+  | BaseMessage<"background", "samantha_ask", ChatCompletionMessageParam[]>
+  | BaseMessage<"popup", "samantha_thinking", OpenaiThinkingMessageData>
   | BaseMessage<"content", "magic_eraser_selection_mode", boolean>
   | BaseMessage<"background", "magic_eraser_on_select", MagicEraserOnSelectMessageData>
   | BaseMessage<"background", "magic_eraser_get_item", string>;

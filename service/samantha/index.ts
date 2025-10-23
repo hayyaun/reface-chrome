@@ -28,7 +28,7 @@ export async function ask(_messages: ChatCompletionMessageParam[]): Promise<stri
     const tab = await getActiveTab();
     if (!tab) return "No active tab found!";
 
-    const config = state.service.config["openai"];
+    const config = state.service.config["samantha"];
     let apiKey = config?.["apiKey"] as string;
 
     // let the service-worker load and rehydrate once

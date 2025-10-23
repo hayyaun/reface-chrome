@@ -2,7 +2,7 @@ import api from "@/shared/api";
 import db from "@/shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import { updateBadge } from "./badge";
-import { ask } from "./openai/openai";
+import { ask } from "./samantha";
 
 export function addMessageListener() {
   api.runtime.onMessage.addListener(async (msg: Message) => {
@@ -13,10 +13,10 @@ export function addMessageListener() {
         break;
       }
       // patches ---
-      case "openai_ask": {
+      case "samantha_ask": {
         const answer = await ask(msg.data);
         // Respond back to popup
-        await db.openai.add({ role: "assistant", content: answer });
+        await db.samantha.add({ role: "assistant", content: answer });
         break;
       }
       case "magic_eraser_on_select": {
@@ -40,7 +40,7 @@ export function addMessageListener() {
 export function updateAiThinking(message: OpenaiThinkingMessageData) {
   api.runtime.sendMessage({
     to: "popup",
-    action: "openai_thinking",
+    action: "samantha_thinking",
     data: message,
   });
 }

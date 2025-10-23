@@ -17,8 +17,8 @@ const hints = [
 ];
 
 export default function Samantha() {
-  const messages = useLiveQuery(() => db.openai.toArray());
-  const clear = useCallback(() => db.openai.clear(), []);
+  const messages = useLiveQuery(() => db.samantha.toArray());
+  const clear = useCallback(() => db.samantha.clear(), []);
 
   const [message, set] = useState("");
   const [thinking, setThinking] = useState<OpenaiThinkingMessageData>(null);
@@ -28,7 +28,7 @@ export default function Samantha() {
     if (import.meta.env.DEV) return;
     async function listener(msg: Message) {
       if (msg.to !== "popup") return;
-      if (msg.action !== "openai_thinking") return;
+      if (msg.action !== "samantha_thinking") return;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setThinking(msg.data as any);
     }
@@ -50,10 +50,10 @@ export default function Samantha() {
       role: "user",
       content: message,
     };
-    await db.openai.add(newMessage);
+    await db.samantha.add(newMessage);
     await api.runtime.sendMessage({
       to: "background",
-      action: "openai_ask",
+      action: "samantha_ask",
       data: [...messages, newMessage],
     } as Message);
     set("");
