@@ -1,6 +1,6 @@
 import api from "@/shared/api";
 import db from "@/shared/store/db";
-import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
+import type { Message, SamanthaThinkingMessageData } from "@/shared/types";
 import { updateBadge } from "./badge";
 import { ask } from "./samantha";
 
@@ -37,7 +37,7 @@ export function addMessageListener() {
   });
 }
 
-export function updateAiThinking(message: OpenaiThinkingMessageData) {
+export function updateAiThinking(message: SamanthaThinkingMessageData) {
   api.runtime.sendMessage({
     to: "popup",
     action: "samantha_thinking",

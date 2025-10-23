@@ -19,3 +19,9 @@ Follow these steps:
 - For message support, ticket an issue.
 
 > Patches with script file take longer to review, please use css format for themes only!
+
+# Maintainers
+
+- `background.js` should NOT have imports after build.
+- Patch content scripts should NOT have imports after build.
+- Minimize usage of global polyfill definition as much as possible.

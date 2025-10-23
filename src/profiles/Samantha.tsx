@@ -1,6 +1,6 @@
 import api from "@/shared/api";
 import db from "@/shared/store/db";
-import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
+import type { Message, SamanthaThinkingMessageData } from "@/shared/types";
 import clsx from "clsx";
 import { useLiveQuery } from "dexie-react-hooks";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -21,7 +21,7 @@ export default function Samantha() {
   const clear = useCallback(() => db.samantha.clear(), []);
 
   const [message, set] = useState("");
-  const [thinking, setThinking] = useState<OpenaiThinkingMessageData>(null);
+  const [thinking, setThinking] = useState<SamanthaThinkingMessageData>(null);
 
   // thinking
   useEffect(() => {
