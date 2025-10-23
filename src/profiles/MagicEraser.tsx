@@ -1,3 +1,4 @@
+import api from "@/shared/api";
 import type { Message } from "@/shared/types";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
@@ -11,11 +12,11 @@ export default function MagicEraser() {
   // Trigger selection mode on content (activeTab)
   useEffect(() => {
     if (!import.meta.env.PROD) return;
-    chrome.runtime.sendMessage<Message>({
+    api.runtime.sendMessage({
       to: "content",
       action: "magic_eraser_selection_mode",
       data: selectionMode,
-    });
+    } as Message);
   }, [selectionMode]);
 
   return (

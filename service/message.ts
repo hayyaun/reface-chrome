@@ -1,3 +1,5 @@
+import api from "@/shared/api";
+import { getActiveTab } from "@/shared/browser/utils";
 import { useService } from "@/shared/store";
 import db from "@/shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
@@ -8,13 +10,12 @@ import { updateBadge } from "./badge";
 import { ask } from "./openai/openai";
 
 export function addMessageListener() {
-  chrome.runtime.onMessage.addListener(async (msg: Message) => {
+  api.runtime.onMessage.addListener(async (msg: Message) => {
     switch (msg.to) {
       case "content": {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (!tabs.length) return;
-          chrome.tabs.sendMessage(tabs[0].id!, msg);
-        });
+        const activeTab = await getActiveTab();
+        if (!activeTab) return;
+        api.tabs.sendMessage(activeTab.id!, msg);
         break;
       }
       case "background": {
@@ -51,9 +52,9 @@ export function addMessageListener() {
 }
 
 export function updateAiThinking(message: OpenaiThinkingMessageData) {
-  chrome.runtime.sendMessage<Message>({
+  api.runtime.sendMessage({
     to: "popup",
     action: "openai_thinking",
     data: message,
-  });
+  } as Message);
 }

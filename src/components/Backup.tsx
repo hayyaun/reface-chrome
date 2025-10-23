@@ -1,16 +1,18 @@
+import api from "@/shared/api";
 import { RiDownload2Line, RiUpload2Line } from "react-icons/ri";
 import Label from "./Label";
 
 export default function Backup() {
-  const onExport = () => {
+  const onExport = async () => {
     if (import.meta.env.DEV) return;
-    chrome.storage.local.get(null, (data) => {
-      const blob = new Blob([JSON.stringify(data)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      chrome.downloads.download({ url, filename: "reface.backup.json" });
+    const data = await (typeof browser !== "undefined"
+      ? browser.storage.local.get(null)
+      : new Promise((resolve) => chrome.storage.local.get(null, resolve)));
+    const blob = new Blob([JSON.stringify(data)], {
+      type: "application/json",
     });
+    const url = URL.createObjectURL(blob);
+    api.downloads.download({ url, filename: "reface.backup.json" });
   };
   const onImport = () => {
     const input = document.createElement("input");
@@ -26,7 +28,7 @@ export default function Backup() {
         if (!content) return;
         const data: { [k: string]: unknown } = JSON.parse(content?.toString());
         if (import.meta.env.PROD) {
-          chrome.storage.local.set(data);
+          api.storage.local.set(data);
         } else {
           for (const key in data) {
             localStorage.setItem(key, data[key] as string);

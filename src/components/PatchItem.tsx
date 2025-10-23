@@ -1,3 +1,8 @@
+import api from "@/shared/api";
+import { reloadActiveTab } from "@/shared/browser/utils";
+import { categories, icons } from "@/shared/mapping";
+import patches from "@/shared/patches";
+import { usePrefs, useService } from "@/shared/store";
 import clsx from "clsx";
 import { memo } from "react";
 import { CiCoffeeCup } from "react-icons/ci";
@@ -8,10 +13,6 @@ import {
   RiDeleteBinFill,
   RiSettings2Line,
 } from "react-icons/ri";
-import { reloadActiveTab } from "@/shared/chrome/utils";
-import { categories, icons } from "@/shared/mapping";
-import patches from "@/shared/patches";
-import { usePrefs, useService } from "@/shared/store";
 import { useUIActions } from "../hooks/ui";
 import profiles from "../profiles";
 import Label from "./Label";
@@ -71,7 +72,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           ) : (
             <img
               alt={patch.name}
-              src={import.meta.env.PROD ? chrome.runtime.getURL(profile.logo) : profile.logo}
+              src={import.meta.env.PROD ? api.runtime.getURL(profile.logo) : profile.logo}
               className="size-5 object-contain"
             />
           )}

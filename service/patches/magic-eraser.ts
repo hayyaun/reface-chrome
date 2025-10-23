@@ -1,4 +1,5 @@
 import { getElementByXPath, getElementXPath } from "@/service/utils?magic-eraser";
+import api from "@/shared/api?magic-eraser";
 import type { MagicEraserConfigData, Message } from "@/shared/types";
 
 // Selection Mode
@@ -9,14 +10,14 @@ function onClick(ev: MouseEvent) {
   onBlur(ev as PointerEvent);
   const el = ev.target as HTMLElement;
   el.style.display = "none";
-  chrome.runtime.sendMessage<Message>({
+  api.runtime.sendMessage({
     to: "background",
     action: "magic_eraser_on_select",
     data: {
       hostname: window.location.hostname,
       selector: getElementXPath(el),
     },
-  });
+  } as Message);
 }
 
 function onHover(ev: PointerEvent) {
@@ -68,7 +69,7 @@ function stopSelectionMode() {
   });
 }
 
-chrome.runtime.onMessage.addListener(async (msg: Message) => {
+api.runtime.onMessage.addListener(async (msg: Message) => {
   if (msg.to !== "content") return;
   if (msg.action === "magic_eraser_selection_mode") {
     if (msg.data) beginSelectionMode();

@@ -24,7 +24,7 @@
   },
   "background": {
     "service_worker": "background.js",
-    "type": "module"
+    "scripts": ["background.js"]
   },
   "permissions": ["tabs", "webNavigation", "storage", "scripting", "downloads", "bookmarks"],
   "host_permissions": ["<all_urls>"],

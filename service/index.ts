@@ -1,3 +1,5 @@
+import api from "@/shared/api";
+import { getTab } from "@/shared/browser/utils";
 import { setBadgeStateActive, updateBadgeForTab } from "./badge";
 import { afterFadeIn, beforeFadeIn } from "./effects";
 import { addMessageListener } from "./message";
@@ -6,11 +8,11 @@ import { state } from "./state";
 
 // Tabs
 
-chrome.webNavigation.onCompleted.addListener(async (details) => {
+api.webNavigation.onCompleted.addListener(async (details) => {
   if (details.frameId !== 0) return;
   if (!state.service.hostnames) return;
   const tabId = details.tabId;
-  const tab = await chrome.tabs.get(tabId);
+  const tab = await getTab(tabId);
   console.debug("update", tabId, tab, details);
   if (!tab.url) return;
   const toApply = findApplicablePatches(tab);
@@ -25,11 +27,11 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
   setBadgeStateActive();
 });
 
-chrome.webNavigation.onCommitted.addListener(async (details) => {
+api.webNavigation.onCommitted.addListener(async (details) => {
   if (details.frameId !== 0) return;
   console.debug("loading", details.tabId); // load or reload
   clearPatches(details.tabId);
-  const tab = await chrome.tabs.get(details.tabId);
+  const tab = await getTab(details.tabId);
   const applicable = findApplicablePatches(tab);
   // only apply fade-in when there's a thing to apply
   if (!applicable.length) return;
@@ -37,14 +39,14 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
   beforeFadeIn(details.tabId);
 });
 
-chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
+api.tabs.onRemoved.addListener((tabId, removeInfo) => {
   console.debug("remove", tabId, removeInfo);
   clearPatches(tabId);
 });
 
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
+api.tabs.onActivated.addListener(async (activeInfo) => {
   // activeInfo.tabId and activeInfo.windowId
-  const tab = await chrome.tabs.get(activeInfo.tabId);
+  const tab = await getTab(activeInfo.tabId);
   const applicable = findApplicablePatches(tab);
   updateBadgeForTab(tab, applicable.length);
 });
