@@ -1,4 +1,4 @@
-import type { BaseMessage, PatchConfigData } from "../types";
+import type { BaseMessage } from "../types";
 
 export {};
 
@@ -7,17 +7,20 @@ export type OpenaiThinkingMessageData = {
   content: string;
 } | null;
 
-export interface MagicEraserConfigData extends PatchConfigData {
-  persist: boolean;
-  storage: { [hostname: string]: string[] };
-}
-
 export interface MagicEraserOnSelectMessageData {
   hostname: string;
   selector: string;
 }
 
+export interface MagicEraserDBItem {
+  hostname: string; // primary-key
+  scrollBody: boolean;
+  selectors: string[];
+  watch: boolean;
+}
+
 export type PatchMessage =
   | BaseMessage<"popup", "openai_thinking", OpenaiThinkingMessageData>
   | BaseMessage<"content", "magic_eraser_selection_mode", boolean>
-  | BaseMessage<"background", "magic_eraser_on_select", MagicEraserOnSelectMessageData>;
+  | BaseMessage<"background", "magic_eraser_on_select", MagicEraserOnSelectMessageData>
+  | BaseMessage<"background", "magic_eraser_get_item", string>;

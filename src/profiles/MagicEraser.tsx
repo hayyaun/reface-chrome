@@ -1,5 +1,4 @@
-import api from "@/shared/api";
-import type { Message } from "@/shared/types";
+import { runtime } from "@/shared/api";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { RiFocusLine, RiHand } from "react-icons/ri";
@@ -12,11 +11,11 @@ export default function MagicEraser() {
   // Trigger selection mode on content (activeTab)
   useEffect(() => {
     if (!import.meta.env.PROD) return;
-    api.runtime.sendMessage({
+    runtime.sendMessage({
       to: "content",
       action: "magic_eraser_selection_mode",
       data: selectionMode,
-    } as Message);
+    });
   }, [selectionMode]);
 
   return (

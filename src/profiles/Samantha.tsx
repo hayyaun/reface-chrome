@@ -1,4 +1,4 @@
-import api from "@/shared/api";
+import { runtime } from "@/shared/api";
 import db from "@/shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import clsx from "clsx";
@@ -32,9 +32,9 @@ export default function Samantha() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setThinking(msg.data as any);
     }
-    api.runtime.onMessage.addListener(listener);
+    runtime.onMessage.addListener(listener);
     return () => {
-      api.runtime.onMessage.removeListener(listener);
+      runtime.onMessage.removeListener(listener);
     };
   }, []);
 
@@ -51,7 +51,7 @@ export default function Samantha() {
       content: message,
     };
     await db.openai.add(newMessage);
-    await api.runtime.sendMessage({
+    await runtime.sendMessage({
       to: "background",
       action: "openai_ask",
       data: [...messages, newMessage],

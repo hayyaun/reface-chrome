@@ -52,18 +52,6 @@ const patches: { [key: string]: Patch } = {
     hostnames: ["*"],
     global: false, // not necessary
     color: "#ff8095",
-    config: {
-      persist: {
-        name: "Persist",
-        details: "Keep your changes in memory",
-        defaultValue: true,
-      },
-      storage: {
-        name: "Websites",
-        details: "List of persisted website settings",
-        defaultValue: {},
-      },
-    },
   },
   "read-time": {
     name: "Reading Time",

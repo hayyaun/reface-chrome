@@ -1,6 +1,6 @@
 import { getElementByXPath, getElementXPath } from "@/service/utils?magic-eraser";
-import api from "@/shared/api?magic-eraser";
-import type { MagicEraserConfigData, Message } from "@/shared/types";
+import { runtime } from "@/shared/api?magic-eraser";
+import type { MagicEraserDBItem } from "@/shared/types";
 
 // Selection Mode
 
@@ -10,14 +10,14 @@ function onClick(ev: MouseEvent) {
   onBlur(ev as PointerEvent);
   const el = ev.target as HTMLElement;
   el.style.display = "none";
-  api.runtime.sendMessage({
+  runtime.sendMessage({
     to: "background",
     action: "magic_eraser_on_select",
     data: {
       hostname: window.location.hostname,
       selector: getElementXPath(el),
     },
-  } as Message);
+  });
 }
 
 function onHover(ev: PointerEvent) {
@@ -69,7 +69,7 @@ function stopSelectionMode() {
   });
 }
 
-api.runtime.onMessage.addListener(async (msg: Message) => {
+runtime.onMessage.addListener(async (msg) => {
   if (msg.to !== "content") return;
   if (msg.action === "magic_eraser_selection_mode") {
     if (msg.data) beginSelectionMode();
@@ -79,22 +79,19 @@ api.runtime.onMessage.addListener(async (msg: Message) => {
 
 // Persist Mode
 
-const config = window.__rc_config["magic-eraser"] as MagicEraserConfigData;
-
-function applyPersisted() {
-  const storage = config["storage"];
-  for (const hostname in storage) {
-    if (hostname !== window.location.hostname) continue;
-    for (const selector of storage[hostname]) {
-      const el = getElementByXPath(selector);
-      if (!el || !(el instanceof HTMLElement)) continue;
-      el.style.display = "none";
-    }
-    break;
+async function apply() {
+  const item = await runtime.sendMessage<MagicEraserDBItem>({
+    to: "background",
+    action: "magic_eraser_get_item",
+    data: window.location.hostname,
+  });
+  if (!item) return;
+  for (const selector of item.selectors) {
+    const el = getElementByXPath(selector);
+    if (!el || !(el instanceof HTMLElement)) continue;
+    el.style.display = "none";
   }
 }
 
-if (config["persist"]) {
-  applyPersisted();
-  setTimeout(applyPersisted, 1500); // double-check
-}
+apply();
+setTimeout(apply, 1500); // double-check
