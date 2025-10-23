@@ -1,7 +1,7 @@
+import type { Option } from "@/shared/types";
 import clsx from "clsx";
 import { useState } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
-import type { Option } from "@/shared/types";
 
 interface Props {
   placeholder?: string;
@@ -25,7 +25,7 @@ export default function Dropdown({
         onClick={() => setHidden((s) => !s)}
       >
         <span>{title}</span>
-        <RiArrowDownSLine className="-my-2 size-5 text-white/15 group-hover/icon:-my-0" />
+        <RiArrowDownSLine className="-my-2 size-5 text-white/15" />
       </button>
 
       <ul
