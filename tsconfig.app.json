@@ -26,7 +26,13 @@
 
     /* Path Alias */
     "baseUrl": ".",
-    "paths": { "@/*": ["*"] }
+    "paths": {
+      "@/shared/guard?*": ["./shared/guard.ts"],
+      "webextension-polyfill?*": [
+        "node_modules/webextension-polyfill/dist/browser-polyfill.js"
+      ],
+      "@/*": ["*"]
+    }
   },
   "include": ["src", "service", "shared"]
 }

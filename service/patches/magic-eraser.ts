@@ -1,7 +1,7 @@
+import { isMessage } from "@/shared/guard?patch";
 import type { Message } from "@/shared/types";
-import browser from "webextension-polyfill";
+import browser from "webextension-polyfill?patch";
 import { getElementByXPath, getElementXPath } from "../utils/dom";
-import { isMessage } from "../../shared/guard";
 
 // Selection Mode
 

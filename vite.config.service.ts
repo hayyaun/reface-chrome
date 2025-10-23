@@ -19,7 +19,12 @@ const patchFiles = fs
 
 export default defineConfig({
   plugins: [dynamicDirCopyPlugin("service/patches", "patches", [".css"])],
-  resolve: { alias: { "@": resolve(__dirname) } },
+  resolve: {
+    alias: {
+      "@": resolve(__dirname),
+      "webextension-polyfill?patch": "webextension-polyfill",
+    },
+  },
   build: {
     outDir: "dist",
     emptyOutDir: false,
