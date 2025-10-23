@@ -1,11 +1,11 @@
-import { runtime } from "@/shared/api";
+import api from "@/shared/api";
 import db from "@/shared/store/db";
 import type { Message, OpenaiThinkingMessageData } from "@/shared/types";
 import { updateBadge } from "./badge";
 import { ask } from "./openai/openai";
 
 export function addMessageListener() {
-  runtime.onMessage.addListener(async (msg: Message) => {
+  api.runtime.onMessage.addListener(async (msg: Message) => {
     if (msg.to !== "background") return;
     switch (msg.action) {
       case "updateBadge": {
@@ -38,7 +38,7 @@ export function addMessageListener() {
 }
 
 export function updateAiThinking(message: OpenaiThinkingMessageData) {
-  runtime.sendMessage({
+  api.runtime.sendMessage({
     to: "popup",
     action: "openai_thinking",
     data: message,

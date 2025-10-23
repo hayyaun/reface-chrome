@@ -22,14 +22,14 @@ interface ElementInfo {
 export async function searchDOM(tab: browser.tabs.Tab, params: SearchDOMParams): Promise<string> {
   const results = await api.scripting.executeScript({
     target: { tabId: tab.id! },
-    func: (args) => {
+    func: (params) => {
       const {
         selector,
         selectorType = "css",
         includeChildren = false,
         includeText = true,
         maxResults = 10,
-      } = args;
+      } = params;
 
       function getElementPath(element: Element): string {
         const path: string[] = [];
@@ -121,7 +121,7 @@ export async function searchDOM(tab: browser.tabs.Tab, params: SearchDOMParams):
         }
       }
 
-      return run() as unknown as void;
+      return run();
     },
     args: [params],
   });

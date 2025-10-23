@@ -2,12 +2,12 @@ import api from "@/shared/api";
 import { RiDownload2Line, RiUpload2Line } from "react-icons/ri";
 import Label from "./Label";
 
+// TODO add sync storage and indexed db too
+
 export default function Backup() {
   const onExport = async () => {
     if (import.meta.env.DEV) return;
-    const data = await (typeof browser !== "undefined"
-      ? browser.storage.local.get(null)
-      : new Promise((resolve) => chrome.storage.local.get(null, resolve)));
+    const data = await browser.storage.local.get(null);
     const blob = new Blob([JSON.stringify(data)], {
       type: "application/json",
     });

@@ -1,12 +1,10 @@
 import type { StateStorage } from "zustand/middleware";
+import api from "../api";
+
+// DO NOT IM
 
 export const chromeLocalStorage: StateStorage = {
-  getItem: (key: string) =>
-    typeof browser !== "undefined"
-      ? browser.storage.local.get([key]).then((result) => result[key])
-      : new Promise<string | null>((resolve) =>
-          chrome.storage.local.get([key], (result) => resolve(result[key])),
-        ),
+  getItem: (key: string) => api.storage.local.get([key]).then((result) => result[key]),
   setItem: (key: string, value: string) =>
     typeof browser !== "undefined"
       ? browser.storage.local.set({ [key]: value })
@@ -18,12 +16,7 @@ export const chromeLocalStorage: StateStorage = {
 };
 
 export const chromeSyncStorage: StateStorage = {
-  getItem: (key: string) =>
-    typeof browser !== "undefined"
-      ? browser.storage.sync.get([key]).then((result) => result[key])
-      : new Promise<string | null>((resolve) =>
-          chrome.storage.sync.get([key]).then((result) => resolve(result[key])),
-        ),
+  getItem: (key: string) => api.storage.sync.get([key]).then((result) => result[key]),
   setItem: (key: string, value: string) =>
     typeof browser !== "undefined"
       ? browser.storage.sync.set({ [key]: value })

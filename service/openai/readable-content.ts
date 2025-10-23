@@ -128,7 +128,7 @@ export async function getReadableContent(tab: browser.tabs.Tab): Promise<string>
         return cleanText || "No readable content found on this page.";
       }
 
-      return run() as unknown as void;
+      return run();
     },
   });
 
