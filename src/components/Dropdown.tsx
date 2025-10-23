@@ -3,19 +3,19 @@ import clsx from "clsx";
 import { useState } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
 
-interface Props {
+interface Props<T> {
   placeholder?: string;
-  options: Option[];
-  value: Option["value"] | null;
-  onChange: (option: Option) => void;
+  options: Option<T>[];
+  value: T | null;
+  onChange: (option: Option<T>) => void;
 }
 
-export default function Dropdown({
+export default function Dropdown<T>({
   placeholder = "Select option",
   options,
   value,
   onChange,
-}: Props) {
+}: Props<T>) {
   const [hidden, setHidden] = useState(true);
   const title = options.find((o) => o.value === value)?.name ?? placeholder;
   return (

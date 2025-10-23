@@ -10,14 +10,14 @@ type Props<T> = {
   details: string;
   value: T;
   onChange: (v: T) => void;
-  options?: Option[];
+  options?: Option<T>[];
 };
 
 export default function SettingItem<T>({ title, details, value, onChange, options }: Props<T>) {
   return (
     <li className="odd-color flex flex-wrap items-center justify-between gap-2 p-2 pl-4 transition select-none">
       <Label name={title} details={details} lines={0} />
-      {typeof value === "boolean" ? (
+      {!Array.isArray(options) && typeof value === "boolean" ? (
         <div
           aria-label="Toggle Button"
           className={clsx(
@@ -33,7 +33,7 @@ export default function SettingItem<T>({ title, details, value, onChange, option
           )}
         </div>
       ) : null}
-      {typeof value === "number" && (
+      {!Array.isArray(options) && typeof value === "number" && (
         <input
           aria-label="Number Input"
           className="w-24 rounded-md bg-white/5 p-1.5 px-2"
@@ -43,7 +43,7 @@ export default function SettingItem<T>({ title, details, value, onChange, option
           onChange={(ev) => onChange(Number(ev.target.value) as T)}
         />
       )}
-      {typeof value === "string" && !Array.isArray(options) && (
+      {!Array.isArray(options) && typeof value === "string" && (
         <input
           aria-label="Text Input"
           className="w-full rounded-md bg-white/5 p-1.5 px-2"
@@ -53,11 +53,7 @@ export default function SettingItem<T>({ title, details, value, onChange, option
         />
       )}
       {Array.isArray(options) && (
-        <Dropdown
-          value={value as string}
-          onChange={(option) => onChange(option.value as T)}
-          options={options}
-        />
+        <Dropdown value={value} onChange={(option) => onChange(option.value)} options={options} />
       )}
       {isRecord(value) &&
         Object.keys(value).map((k, i) => (

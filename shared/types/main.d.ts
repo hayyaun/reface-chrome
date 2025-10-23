@@ -2,9 +2,9 @@ import type { PatchMessage } from "./patch";
 
 export {};
 
-export interface Option {
+export interface Option<T> {
   name: string;
-  value: string;
+  value: T;
 }
 
 export type ConfigValue = string | number | boolean | object;
