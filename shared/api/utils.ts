@@ -1,4 +1,4 @@
-import api from "@/shared/api";
+import api, { type Tab } from ".";
 
 export async function reloadActiveTab() {
   if (!import.meta.env.PROD) return;
@@ -9,7 +9,7 @@ export async function reloadActiveTab() {
   await api.tabs.reload(activeTab.id);
 }
 
-export async function getActiveTab(): Promise<browser.tabs.Tab | undefined> {
+export async function getActiveTab(): Promise<Tab | undefined> {
   if (typeof browser !== "undefined") {
     const tabs = await browser.tabs.query({ active: true, currentWindow: true });
     if (!tabs.length || !tabs[0]) return;

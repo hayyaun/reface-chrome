@@ -1,6 +1,6 @@
-import api from "@/shared/api";
+import api, { type Tab } from "@/shared/api";
 
-export async function getRawHTML(tab: browser.tabs.Tab): Promise<string> {
+export async function getRawHTML(tab: Tab): Promise<string> {
   const results = await api.scripting.executeScript({
     target: { tabId: tab.id! },
     func: () => document.body.innerHTML,

@@ -1,4 +1,4 @@
-import { reloadActiveTab } from "@/shared/browser/utils";
+import { reloadActiveTab } from "@/shared/api/utils";
 import patches from "@/shared/patches";
 import { usePrefs, useService } from "@/shared/store";
 import { extractDefaultConfigData } from "@/shared/utils";

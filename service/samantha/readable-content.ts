@@ -1,6 +1,6 @@
-import api from "@/shared/api";
+import api, { type Tab } from "@/shared/api";
 
-export async function getReadableContent(tab: browser.tabs.Tab): Promise<string> {
+export async function getReadableContent(tab: Tab): Promise<string> {
   const results = await api.scripting.executeScript({
     target: { tabId: tab.id! },
     func: () => {

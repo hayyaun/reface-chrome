@@ -7,7 +7,7 @@ import Label from "./Label";
 export default function Backup() {
   const onExport = async () => {
     if (import.meta.env.DEV) return;
-    const data = await browser.storage.local.get(null);
+    const data = await api.storage.local.get(null);
     const blob = new Blob([JSON.stringify(data)], {
       type: "application/json",
     });

@@ -1,11 +1,11 @@
-import api from "@/shared/api";
+import api, { type Tab } from "@/shared/api";
 import patches from "@/shared/patches";
 import { extractDefaultConfigData, match } from "@/shared/utils";
 import { state } from "./state";
 
 const applied: { [tabId: number]: string[] } = {};
 
-export function findApplicablePatches(tab: browser.tabs.Tab) {
+export function findApplicablePatches(tab: Tab) {
   if (!tab.url) return [];
   const hostname = new URL(tab.url).hostname;
   const applicable: string[] = [];

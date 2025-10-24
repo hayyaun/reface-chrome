@@ -1,4 +1,4 @@
-import type { Message } from "./types";
+import type { Message } from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const _api = typeof chrome !== "undefined" ? chrome : browser;
@@ -89,3 +89,5 @@ const api = {
 };
 
 export default api;
+
+export type Tab = browser.tabs.Tab;

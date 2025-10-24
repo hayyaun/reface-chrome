@@ -1,7 +1,5 @@
 import type { StateStorage } from "zustand/middleware";
-import api from "../api";
-
-// DO NOT IM
+import api from ".";
 
 export const chromeLocalStorage: StateStorage = {
   getItem: (key: string) => api.storage.local.get([key]).then((result) => result[key]),

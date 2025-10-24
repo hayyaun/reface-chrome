@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import api from "@/shared/api";
+import api, { type Tab } from "@/shared/api";
 import type { ChatCompletionMessageToolCall } from "openai/resources/index.mjs";
 import { getRawHTML } from "./html";
 import { getReadableContent } from "./readable-content";
@@ -7,7 +7,7 @@ import { searchDOM } from "./search-dom";
 
 export async function proceedToolCall(
   toolCall: ChatCompletionMessageToolCall,
-  tab: browser.tabs.Tab,
+  tab: Tab,
 ): Promise<object | string> {
   try {
     if (toolCall.type === "function") {

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { chromeSyncStorage } from "../browser/storage";
+import { chromeSyncStorage } from "../api/storage";
 
 export const PREFS_KEY = "prefs";
 

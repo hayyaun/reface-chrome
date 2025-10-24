@@ -1,5 +1,5 @@
-import api from "@/shared/api";
-import { getActiveTab } from "@/shared/browser/utils";
+import api, { type Tab } from "@/shared/api";
+import { getActiveTab } from "@/shared/api/utils";
 import { findApplicablePatches } from "./patch";
 import { state } from "./state";
 
@@ -23,7 +23,7 @@ export function clearBadge(tabId?: number) {
   api.action.setBadgeText({ text: "", tabId });
 }
 
-export function updateBadgeForTab(tab: browser.tabs.Tab, count: number) {
+export function updateBadgeForTab(tab: Tab, count: number) {
   if (!state.prefs.showBadge) return clearBadge(tab.id);
   if (!count) return;
   updateBadge(count, tab.id);

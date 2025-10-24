@@ -1,4 +1,4 @@
-import api from "@/shared/api";
+import api, { type Tab } from "@/shared/api";
 
 interface SearchDOMParams {
   selector: string;
@@ -19,7 +19,7 @@ interface ElementInfo {
   path: string;
 }
 
-export async function searchDOM(tab: browser.tabs.Tab, params: SearchDOMParams): Promise<string> {
+export async function searchDOM(tab: Tab, params: SearchDOMParams): Promise<string> {
   const results = await api.scripting.executeScript({
     target: { tabId: tab.id! },
     func: (params) => {

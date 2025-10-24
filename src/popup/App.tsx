@@ -1,4 +1,4 @@
-import { getActiveTab } from "@/shared/browser/utils";
+import { getActiveTab } from "@/shared/api/utils";
 import { useService } from "@/shared/store";
 import { useEffect, useMemo, useState } from "react";
 import { RiCheckboxCircleFill } from "react-icons/ri";

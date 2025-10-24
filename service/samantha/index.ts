@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getActiveTab } from "@/shared/browser/utils";
+import { getActiveTab } from "@/shared/api/utils";
 import _ from "lodash";
 import { OpenAI } from "openai";
 import type {

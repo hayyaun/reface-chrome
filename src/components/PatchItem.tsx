@@ -1,5 +1,5 @@
 import api from "@/shared/api";
-import { reloadActiveTab } from "@/shared/browser/utils";
+import { reloadActiveTab } from "@/shared/api/utils";
 import { categories, icons } from "@/shared/mapping";
 import patches from "@/shared/patches";
 import { usePrefs, useService } from "@/shared/store";
