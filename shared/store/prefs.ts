@@ -25,7 +25,7 @@ interface Prefs {
 export const usePrefs = create(
   persist(
     immer<Prefs>((set) => ({
-      fadeIn: true,
+      fadeIn: false,
       setFadeIn: (fadeIn) => set({ fadeIn }),
       showBadge: true,
       setShowBadge: (showBadge) => set({ showBadge }),

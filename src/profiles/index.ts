@@ -1,5 +1,7 @@
+import type { Profile } from "@/shared/types";
 import { lazy } from "react";
 import {
+  RiArtboardLine,
   RiBookOpenFill,
   RiEraserLine,
   RiExternalLinkFill,
@@ -8,7 +10,6 @@ import {
   RiRobot2Fill,
   RiSpeedUpFill,
 } from "react-icons/ri";
-import type { Profile } from "../types";
 
 // lazy components
 
@@ -33,6 +34,9 @@ const profiles: { [k: string]: Profile } = {
       icon: RiFocusLine,
       title: "Magic Eraser",
     },
+  },
+  whiteboard: {
+    logo: RiArtboardLine,
   },
   "read-time": {
     logo: RiBookOpenFill,

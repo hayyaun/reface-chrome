@@ -3,6 +3,7 @@ import { reloadActiveTab } from "@/shared/api/utils";
 import { categories, icons } from "@/shared/mapping";
 import patches from "@/shared/patches";
 import { usePrefs, useService } from "@/shared/store";
+import type { Patch, Profile } from "@/shared/types";
 import clsx from "clsx";
 import { memo } from "react";
 import { CiCoffeeCup } from "react-icons/ci";
@@ -35,19 +36,19 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
 
   const { openConfig, openProfile } = useUIActions(patchKey);
 
-  const patch = patches[patchKey];
-  const profile = profiles[patchKey];
+  const patch: Patch | undefined = patches[patchKey];
+  const profile: Profile | undefined = profiles[patchKey];
   const enabledGlobally = global.includes(patchKey);
   const enabled = !!hostname && hostnames[hostname]?.enabled.includes(patchKey);
   const excluded = !!hostname && hostnames[hostname]?.excluded.includes(patchKey);
-  const Icon = !profile.logo
+  const Icon = !profile?.logo
     ? icons[patch.keywords[0] ?? categories.all]
     : typeof profile.logo !== "string"
       ? profile.logo
       : null;
 
   const neutral = !patch.css && patch.noJS;
-  const modal = neutral || enabled ? profile.modal : undefined;
+  const modal = neutral || enabled ? profile?.modal : undefined;
 
   return (
     <div
@@ -68,7 +69,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           className="mr-2 shrink-0 rounded-lg bg-white/10 p-1.75"
           style={{ backgroundColor: patch.bgcolor }}
         >
-          {typeof profile.logo !== "string" ? (
+          {typeof profile?.logo !== "string" ? (
             <Icon className="size-5" style={{ color: patch.color }} />
           ) : (
             <img

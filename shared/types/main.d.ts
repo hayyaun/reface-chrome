@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import type { IconType } from "react-icons";
 import type { PatchMessage } from "./patch";
 
 export {};
@@ -20,10 +22,6 @@ interface PatchConfigItem<T> {
 }
 
 export type PatchConfigData = Record<string, ConfigValue>;
-
-export interface ModalProps {
-  close: () => void;
-}
 
 export interface HostnameConfig {
   enabled: string[];
@@ -77,6 +75,24 @@ export interface Patch<T extends PatchConfigData = unknown> {
    * @summary You can access it from `window.__rc_config["patch-name"]["config-key"]`
    */
   config?: Record<string, PatchConfigItem<T>>;
+}
+
+export interface ModalProps {
+  close: () => void;
+}
+
+export interface Profile {
+  /** Logo file location */
+  logo?: IconType | string;
+
+  /** Popup menu profile page modal
+   * @see config for retrieving params and variables
+   */
+  modal?: {
+    icon: IconType;
+    title: string;
+    Component: (props: ModalProps) => ReactNode;
+  };
 }
 
 type Entity = "background" | "content" | "popup" | "options";

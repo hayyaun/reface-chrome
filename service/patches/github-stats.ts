@@ -21,7 +21,7 @@ links.forEach(async (link) => {
     if (args.length !== 3) return;
     if (reserved.includes(args[1])) return;
     const stats = document.createElement("span");
-    stats.classList.add("rc-github-stats-box");
+    stats.classList.add("reface__github-stats-box");
     const items: string[] = [];
     async function addItem(key: string): Promise<number> {
       try {
@@ -41,7 +41,7 @@ links.forEach(async (link) => {
     if (config.stars) {
       const value = await addItem("stars");
       if (value > (config.threshold as number)) {
-        stats.classList.add("rc-github-stats-threshold");
+        stats.classList.add("reface__github-stats-threshold");
       }
     }
     if (config.forks) await addItem("forks");

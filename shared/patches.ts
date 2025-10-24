@@ -40,6 +40,14 @@ const patches: { [key: string]: Patch } = {
       },
     },
   },
+  "read-time": {
+    name: "Reading Time",
+    details: "Adds minutes read time to Articles",
+    keywords: [categories.feature, "time", "read", "wikipedia"],
+    hostnames: ["*wikipedia.org"],
+    global: true,
+    color: "#82d7ff",
+  },
   "magic-eraser": {
     name: "Magic Eraser",
     details: "Remove elements you hate from a website",
@@ -48,13 +56,14 @@ const patches: { [key: string]: Patch } = {
     global: false, // not necessary
     color: "#ff8095",
   },
-  "read-time": {
-    name: "Reading Time",
-    details: "Adds minutes read time to Articles",
-    keywords: [categories.feature, "time", "read", "wikipedia"],
-    hostnames: ["*wikipedia.org"],
-    global: true,
-    color: "#82d7ff",
+  whiteboard: {
+    name: "Whiteboard",
+    details: "Creates a scrollable canvas to draw on, on any page",
+    keywords: [categories.feature, "draw", "whiteboard"],
+    hostnames: ["*"],
+    global: false, // no necessary
+    color: "#80ff95",
+    css: { "/*": "main" },
   },
   "show-fps": {
     name: "Show FPS",
