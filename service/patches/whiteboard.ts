@@ -192,7 +192,7 @@ function init() {
   state.pickerBtn.appendChild(colorDot);
   // -- Typing mode
   state.typingBtn = document.createElement("div");
-  state.typingBtn.classList.add("reface__whiteboard-btn");
+  state.typingBtn.classList.add("reface__whiteboard-btn", "reface__whiteboard-typing-btn");
   state.typingBtn.textContent = "T";
   state.typingBtn.addEventListener("click", beginTypingMode);
   state.panel.appendChild(state.typingBtn);
