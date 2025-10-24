@@ -33,5 +33,13 @@
       "resources": ["images/*"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "applications": {
+    "gecko": {
+      "id": "reface@chrome.com"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
 }

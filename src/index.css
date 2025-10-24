@@ -74,6 +74,10 @@
     font-size: 100% !important;
   }
 
+  body.popup {
+    @apply !h-[600px];
+  }
+
   h1 {
     @apply text-4xl;
   }
