@@ -1,6 +1,7 @@
 import { reloadActiveTab } from "@/shared/api/utils";
 import patches from "@/shared/patches";
 import { usePrefs, useService } from "@/shared/store";
+import type { ConfigValue } from "@/shared/types";
 import { extractDefaultConfigData } from "@/shared/utils";
 import { produce } from "immer";
 import _ from "lodash";
@@ -45,7 +46,7 @@ export default function ConfigModal({ patchKey, close }: Props) {
               onChange={(v) => {
                 set(
                   produce((state) => {
-                    state[key] = v;
+                    state[key] = v as ConfigValue;
                   }),
                 );
               }}

@@ -16,7 +16,7 @@ interface PatchConfigItem<T> {
   details: string;
   defaultValue: T;
   /** dropdown menu options */
-  options?: Option[];
+  options?: Option<T>[];
   /** not shown in ui - used as state */
   hidden?: boolean;
 }

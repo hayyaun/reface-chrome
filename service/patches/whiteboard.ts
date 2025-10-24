@@ -1,3 +1,8 @@
+const config = window.__rc_config["whiteboard"];
+const scale = (config["scale"] ?? 0.5) as number;
+
+const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
+
 interface State {
   mode: "draw" | "work";
   canvas: HTMLCanvasElement;
@@ -15,7 +20,7 @@ const state: State = {
   modeBtn: null!,
   pickerBtn: null!,
   color: "#ff0000",
-  thickness: 5,
+  thickness: 5 * scale,
 };
 
 function addDrawListener() {
@@ -27,11 +32,13 @@ function addDrawListener() {
     ctx.beginPath();
     ctx.strokeStyle = state.color;
     ctx.lineWidth = state.thickness;
-    ctx.moveTo(e.offsetX, e.offsetY);
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.moveTo(e.offsetX * scale, e.offsetY * scale);
   });
   state.canvas.addEventListener("mousemove", (e) => {
     if (!drawing) return;
-    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.lineTo(e.offsetX * scale, e.offsetY * scale);
     ctx.stroke();
   });
   state.canvas.addEventListener("mouseup", () => (drawing = false));
@@ -58,9 +65,9 @@ function updateColor(color: string) {
 function init() {
   // create and insert a canvas into the document
   state.canvas = document.createElement("canvas");
-  state.canvas.width = document.body.scrollWidth;
-  state.canvas.height = document.body.scrollHeight;
-  state.canvas.style.height = `${document.body.scrollHeight}px`;
+  state.canvas.width = canvasSize[0] * scale;
+  state.canvas.height = canvasSize[1] * scale;
+  state.canvas.style.height = `${canvasSize[1]}px`;
   state.canvas.classList.add("reface__whiteboard-canvas");
   document.body.appendChild(state.canvas);
 

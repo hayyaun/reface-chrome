@@ -64,6 +64,20 @@ const patches: { [key: string]: Patch } = {
     global: false, // no necessary
     color: "#80ff95",
     css: { "/*": "main" },
+    config: {
+      scale: {
+        name: "Resolution",
+        details: "Higher resolution leads to better quality but more lags on older systems",
+        defaultValue: 0.5,
+        options: [
+          { name: "Lowest", value: 0.25 },
+          { name: "Low", value: 0.5 },
+          { name: "Medium", value: 1 },
+          { name: "High", value: 2 },
+          { name: "Highest", value: 3 },
+        ],
+      },
+    },
   },
   "show-fps": {
     name: "Show FPS",
