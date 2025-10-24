@@ -15,7 +15,7 @@ canvas.reface__whiteboard-canvas {
   padding: 8px;
   gap: 6px;
   backdrop-filter: blur(20px);
-  box-shadow: 0 0 0 1px #fff4;
+  box-shadow: 0 0 0 2px #fff2;
   background-color: #0002;
   border-radius: 14px;
 }
@@ -25,7 +25,7 @@ canvas.reface__whiteboard-canvas {
   cursor: pointer;
   padding: 4px 12px;
   color: white;
-  box-shadow: 0 0 0 1px #fff4;
+  box-shadow: 0 0 0 2px #fff2;
   background-color: #0005;
   border-radius: 12px;
   display: flex;

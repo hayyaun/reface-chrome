@@ -35,10 +35,12 @@ const state: State = {
   fontSize: 48,
 };
 
+// TODO add undo/redo at least for 1 step
+
 const getModeText = () => {
   if (state.mode === "draw") return "Draw mode";
   if (state.mode === "type") return "Type mode";
-  return "Neutral";
+  return "Normal";
 };
 
 function setMode(mode: State["mode"]) {
