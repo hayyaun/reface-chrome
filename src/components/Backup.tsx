@@ -1,13 +1,15 @@
 import api from "@/shared/api";
+import { exportDatabase, importDatabase } from "@/shared/store/db";
 import { RiDownload2Line, RiUpload2Line } from "react-icons/ri";
 import Label from "./Label";
-
-// TODO add sync storage and indexed db too
 
 export default function Backup() {
   const onExport = async () => {
     if (import.meta.env.DEV) return;
-    const data = await api.storage.local.get(null);
+    const local = await api.storage.local.get(null);
+    const sync = await api.storage.local.get(null);
+    const db = await exportDatabase();
+    const data = { local, sync, db };
     const blob = new Blob([JSON.stringify(data)], {
       type: "application/json",
     });
@@ -24,16 +26,22 @@ export default function Backup() {
       reader.readAsText(file, "UTF-8");
       reader.onload = (readerEvent) => {
         const content = readerEvent.target?.result;
-        console.log(content);
+        console.debug(content);
         if (!content) return;
-        const data: { [k: string]: unknown } = JSON.parse(content?.toString());
+        const data: {
+          local: { [k: string]: unknown };
+          sync: { [k: string]: unknown };
+          db: { [k: string]: unknown[] };
+        } = JSON.parse(content?.toString());
         if (import.meta.env.PROD) {
-          api.storage.local.set(data);
+          api.storage.local.set(data.local);
+          api.storage.sync.set(data.sync);
         } else {
-          for (const key in data) {
-            localStorage.setItem(key, data[key] as string);
+          for (const key in data.local) {
+            localStorage.setItem(key, data.local[key] as string);
           }
         }
+        importDatabase(data.db);
       };
     };
     input.click();
