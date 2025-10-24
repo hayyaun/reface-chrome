@@ -11,6 +11,8 @@ interface State {
   pickerBtn: HTMLLabelElement;
   color: string;
   thickness: number;
+  fontFamily: string;
+  fontSize: number;
 }
 
 const state: State = {
@@ -21,6 +23,8 @@ const state: State = {
   pickerBtn: null!,
   color: "#ff0000",
   thickness: 5 * scale,
+  fontFamily: "Roboto",
+  fontSize: 48,
 };
 
 const getModeText = () => {
@@ -51,7 +55,7 @@ function addDrawListeners(ctx: CanvasRenderingContext2D) {
     if (state.mode !== "draw") return;
     drawing = true;
     ctx.beginPath();
-    ctx.lineWidth = state.thickness; // TODO move
+    ctx.lineWidth = state.thickness; // TODO update
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.moveTo(ev.offsetX * scale, ev.offsetY * scale);
@@ -85,7 +89,7 @@ function addTypingListeners(ctx: CanvasRenderingContext2D) {
       stopPropagation(ev);
       if (ev.key === "Enter") {
         // Set font style and size
-        ctx.font = `${48 * scale}px Roboto`; // TODO move
+        ctx.font = `${state.fontSize * scale}px ${state.fontFamily}`; // TODO update
         ctx.fillText(text, pos[0], pos[1]);
         // reset
         text = "";
