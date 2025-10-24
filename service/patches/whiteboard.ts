@@ -3,12 +3,18 @@ const scale = (config["scale"] ?? 0.5) as number;
 
 const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 
+type Pos = [x: number, y: number];
+
 interface State {
   mode: "draw" | "type" | "work";
+  // ui
   canvas: HTMLCanvasElement;
   panel: HTMLDivElement;
   modeBtn: HTMLDivElement;
   pickerBtn: HTMLLabelElement;
+  typingBtn: HTMLDivElement;
+  textPreview: HTMLDivElement;
+  // config
   color: string;
   thickness: number;
   fontFamily: string;
@@ -21,6 +27,8 @@ const state: State = {
   panel: null!,
   modeBtn: null!,
   pickerBtn: null!,
+  typingBtn: null!,
+  textPreview: null!,
   color: "#ff0000",
   thickness: 5 * scale,
   fontFamily: "Roboto",
@@ -69,12 +77,28 @@ function addDrawListeners(ctx: CanvasRenderingContext2D) {
   state.canvas.addEventListener("mouseout", () => (drawing = false));
 }
 
+let pos: Pos = [0, 0];
+
+function updateTextPreview(text?: string) {
+  if (typeof text === "undefined") {
+    state.textPreview.style.display = "none";
+    return;
+  }
+  state.textPreview.textContent = text || ".";
+  state.textPreview.style.display = "block";
+  state.textPreview.style.color = state.color;
+  state.textPreview.style.fontSize = state.fontSize + "px";
+  state.textPreview.style.fontFamily = state.fontFamily;
+  state.textPreview.style.left = pos[0] + "px";
+  state.textPreview.style.top = pos[1] + "px";
+}
+
 function addTypingListeners(ctx: CanvasRenderingContext2D) {
-  let pos = [0, 0];
   let text = "";
   state.canvas.addEventListener("click", (ev) => {
-    setMode("type");
-    pos = [ev.offsetX * scale, ev.offsetY * scale];
+    if (state.mode !== "type") return;
+    pos = [ev.offsetX, ev.offsetY];
+    updateTextPreview(text);
   });
   function stopPropagation(ev: KeyboardEvent) {
     if (state.mode !== "type") return;
@@ -90,28 +114,36 @@ function addTypingListeners(ctx: CanvasRenderingContext2D) {
       if (ev.key === "Enter") {
         // Set font style and size
         ctx.font = `${state.fontSize * scale}px ${state.fontFamily}`; // TODO update
-        ctx.fillText(text, pos[0], pos[1]);
+        ctx.fillText(text, pos[0] * scale, pos[1] * scale);
         // reset
         text = "";
         setMode("draw");
-        // TODO hide prerendered text
+        updateTextPreview(undefined);
         return;
       }
-
       // Fill text
       if (ev.key === "Backspace") {
         text = text.slice(0, -1);
       } else if (ev.key.length === 1) {
         text += ev.key;
       }
-
-      // TODO show a prerendered text
+      updateTextPreview(text);
     },
     true,
   );
   // Avoid
   window.addEventListener("keypress", stopPropagation, true);
   window.addEventListener("keyup", stopPropagation, true);
+}
+
+function beginTypingMode() {
+  if (state.mode === "type") return;
+  setMode("type");
+  pos = [
+    window.scrollX + window.innerWidth / 2, //
+    window.scrollY + window.innerHeight / 2,
+  ];
+  updateTextPreview("");
 }
 
 function init() {
@@ -158,6 +190,16 @@ function init() {
   const colorDot = document.createElement("div");
   colorDot.classList.add("reface__whiteboard-picker");
   state.pickerBtn.appendChild(colorDot);
+  // -- Typing mode
+  state.typingBtn = document.createElement("div");
+  state.typingBtn.classList.add("reface__whiteboard-btn");
+  state.typingBtn.textContent = "T";
+  state.typingBtn.addEventListener("click", beginTypingMode);
+  state.panel.appendChild(state.typingBtn);
+  // ---- Text preview
+  state.textPreview = document.createElement("div");
+  state.textPreview.classList.add("reface__whiteboard-text-preview");
+  document.body.appendChild(state.textPreview);
 
   // Initialization
   setMode("draw");

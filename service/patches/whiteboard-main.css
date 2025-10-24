@@ -15,7 +15,7 @@ canvas.reface__whiteboard-canvas {
   padding: 8px;
   gap: 6px;
   backdrop-filter: blur(20px);
-  box-shadow: 0 0 1px #fff8;
+  box-shadow: 0 0 0 1px #fff4;
   background-color: #0002;
   border-radius: 14px;
 }
@@ -25,7 +25,7 @@ canvas.reface__whiteboard-canvas {
   cursor: pointer;
   padding: 4px 12px;
   color: white;
-  box-shadow: 0 0 1px #fff8;
+  box-shadow: 0 0 0 1px #fff4;
   background-color: #0005;
   border-radius: 12px;
   display: flex;
@@ -38,4 +38,28 @@ canvas.reface__whiteboard-canvas {
   width: 8px;
   height: 8px;
   border-radius: 100%;
+}
+
+.reface__whiteboard-typing-btn {
+  font-family: Roboto;
+  font-size: 12px;
+}
+
+.reface__whiteboard-text-preview {
+  position: absolute;
+  display: none;
+  transform: translateY(-100%); /* same as canvas text */
+  line-height: 0.75;
+  animation: typing 1s ease alternate infinite;
+  transition: all ease 0.5s;
+  padding-right: 6px;
+}
+
+@keyframes typing {
+  from {
+    border-right: 1px solid #fffc;
+  }
+  to {
+    border-right: 1px solid #fff2;
+  }
 }
