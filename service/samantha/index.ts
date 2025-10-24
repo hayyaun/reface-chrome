@@ -36,7 +36,7 @@ export async function ask(_messages: ChatCompletionMessageParam[]): Promise<stri
     apiKey = config?.["apiKey"] as string;
 
     if (!apiKey) return "Please add an API key in config";
-    if (!openai) openai = new OpenAI({ apiKey });
+    if (!openai) openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 
     const chatConfig: Omit<ChatCompletionCreateParamsNonStreaming, "messages"> = {
       model: (config?.["model"] as string) ?? "gpt-5-mini",

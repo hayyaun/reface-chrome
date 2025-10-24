@@ -51,6 +51,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
 
   return (
     <div
+      aria-label="Patch"
       className={clsx(
         "group/item relative flex items-center gap-1.5 p-2 transition select-none even:bg-white/1 hover:bg-white/5",
         { "cursor-pointer": modal },
@@ -87,6 +88,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
           className="tiny-btn group/icon bg-zinc-400/3 text-zinc-400 hover:bg-yellow-600/10 hover:text-yellow-600 active:bg-yellow-600/20"
           target="_blank"
           href={patch.author.donation}
+          onClick={(ev) => ev.stopPropagation()}
         >
           <CiCoffeeCup className="icon-zoom" />
         </a>
@@ -109,7 +111,8 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
         <div
           title={!enabledGlobally ? "Enable Globally" : "Disable Globally"}
           className={clsx("tiny-btn group/icon", !enabledGlobally ? "btn-green" : "btn-red")}
-          onClick={() => {
+          onClick={(ev) => {
+            ev.stopPropagation();
             if (!enabledGlobally) addGlobal(patchKey, hostname);
             else removeGlobal(patchKey, hostname);
             if (autoReload) setTimeout(reloadActiveTab, 150);
@@ -131,7 +134,8 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
             "tiny-btn group/icon",
             (enabledGlobally ? !excluded : enabled) ? "btn-red" : "btn-green",
           )}
-          onClick={() => {
+          onClick={(ev) => {
+            ev.stopPropagation();
             if (enabledGlobally) {
               if (!excluded) excludePatch(hostname, patchKey);
               else includePatch(hostname, patchKey);

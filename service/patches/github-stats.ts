@@ -50,7 +50,7 @@ links.forEach(async (link) => {
     if (!items.length) return;
     link.appendChild(stats);
     stats.textContent = `(${items.join("/")})`;
-  } catch {
-    console.debug("Invalid", link);
+  } catch (err) {
+    console.debug("ERR:GITHUB_STATS", { link, err });
   }
 });
