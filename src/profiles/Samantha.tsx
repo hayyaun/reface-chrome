@@ -50,12 +50,13 @@ export default function Samantha() {
       role: "user",
       content: message,
     };
+    const data = [...messages, newMessage];
     await db.samantha.add(newMessage);
     await api.runtime.sendMessage({
       to: "background",
       action: "samantha_ask",
-      data: [...messages, newMessage],
-    } as Message);
+      data,
+    });
     set("");
   };
 
