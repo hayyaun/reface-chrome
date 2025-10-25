@@ -1,5 +1,13 @@
 {
   "plugins": ["prettier-plugin-tailwindcss"],
   "tailwindFunctions": ["clsx", "cn", "twmerge", "cva"],
-  "printWidth": 100
+  "printWidth": 100,
+  "overrides": [
+    {
+      "files": "*.d.ts",
+      "options": {
+        "printWidth": 180
+      }
+    }
+  ]
 }

@@ -9,29 +9,16 @@ interface BaseMessage<TO extends Entity, ACT extends string, T> {
   data: T;
 }
 
-type BaseMessageCallback<TO extends Entity, ACT extends string, T, R> = (
-  msg: BaseMessage<TO, ACT, T>,
-  sender: browser.runtime.MessageSender,
-) => Promise<R>;
+type BaseMessageCallback<TO extends Entity, ACT extends string, T, R> = (msg: BaseMessage<TO, ACT, T>, sender: browser.runtime.MessageSender) => Promise<R>;
 
 export type MessageCallback =
   | BaseMessageCallback<"background", "updateBadge", number, void>
   | BaseMessageCallback<"background", "samantha_ask", ChatCompletionMessageParam[], void>
   | BaseMessageCallback<"popup", "samantha_thinking", SamanthaThinkingMessageData, void>
-  | BaseMessageCallback<"content", "magic_eraser_selection_mode", boolean, void>
-  | BaseMessageCallback<
-      "background",
-      "magic_eraser_on_select",
-      MagicEraserOnSelectMessageData,
-      string
-    >
-  | BaseMessageCallback<
-      "background",
-      "magic_eraser_get_item",
-      string,
-      MagicEraserDBItem | undefined
-    >
-  | BaseMessageCallback<"background", "whiteboard_set_item", WhiteboardDBItem, string>
+  | BaseMessageCallback<"content", "magic_eraser_selection_mode", boolean, string | undefined>
+  | BaseMessageCallback<"background", "magic_eraser_on_select", MagicEraserOnSelectMessageData, string>
+  | BaseMessageCallback<"background", "magic_eraser_get_item", string, MagicEraserDBItem | undefined>
+  | BaseMessageCallback<"background", "whiteboard_set_item", WhiteboardDBItem, string | undefined>
   | BaseMessageCallback<"background", "whiteboard_get_item", string, WhiteboardDBItem | undefined>;
 
 export type Message = Parameters<MessageCallback>[0];

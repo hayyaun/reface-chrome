@@ -159,7 +159,7 @@ function Panel() {
       <div
         aria-label="Mode button"
         className="reface--whiteboard-btn"
-        style={{ fontSize: 16, padding: "4px 12px" }}
+        style={{ fontSize: 16, padding: "4px 12px", aspectRatio: "auto" }}
         onClick={() => (mode.value = fallbackMode)}
       >
         {getModeText(mode.value)}
