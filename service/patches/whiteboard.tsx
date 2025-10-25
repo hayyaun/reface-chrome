@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
 import clsx from "clsx";
 import { render } from "preact";
@@ -82,7 +81,7 @@ function UI() {
       _canvas.current.removeEventListener("mouseup", reset);
       _canvas.current.removeEventListener("mouseout", reset);
     };
-  }, [color, mode, thickness, scale]);
+  }, [color, mode, thickness]);
 
   const _text = useRef("");
   useEffect(() => {
@@ -135,12 +134,12 @@ function UI() {
       window.removeEventListener("keypress", stopPropagation, true);
       window.removeEventListener("keyup", stopPropagation, true);
     };
-  }, [mode, pos, color, fontFamily, fontSize, scale]);
+  }, [mode, pos, color, fontFamily, fontSize]);
 
   const modeText = useMemo(() => getModeText(mode), [mode]);
 
   return (
-    <div aria-label="UI" className="reface--whiteboard-ui">
+    <>
       <canvas
         ref={_canvas}
         width={canvasSize[0] * scale}
@@ -223,11 +222,12 @@ function UI() {
           {text || "."}
         </div>
       )}
-    </div>
+    </>
   );
 }
 
 // Create UI
 const uiRoot = document.createElement("div");
+uiRoot.classList.add("reface--whiteboard-ui");
 document.body.appendChild(uiRoot);
 render(<UI />, uiRoot);
