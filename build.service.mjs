@@ -79,18 +79,10 @@ async function buildServiceFiles() {
           },
         }),
         terser({
-          mangle: {
-            toplevel: true,
-            nth_identifier: {
-              get: (n) => `rc_${crypto.randomUUID().split("-")[0]}_${n}`,
-            },
-          },
-        }),
-        terser({
           module: false,
           compress: false,
           mangle: {
-            toplevel: false,
+            toplevel: true,
           },
         }),
       ],
