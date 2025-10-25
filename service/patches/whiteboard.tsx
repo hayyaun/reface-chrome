@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
+import api from "@/shared/api";
 import { signal } from "@preact/signals";
 import clsx from "clsx";
 import { render } from "preact";
@@ -18,7 +19,7 @@ const fallbackMode: Mode = "work";
 
 // Signals
 const color = signal("#ff0000");
-const mode = signal<Mode>(fallbackMode);
+const mode = signal<Mode>("draw");
 const thickness = signal(6);
 const fontFamily = signal(_fontFamily);
 const fontSize = signal(48);
@@ -32,7 +33,10 @@ color.subscribe((value) => {
 });
 
 mode.subscribe((value) => {
-  if (value !== "type") return;
+  if (value !== "type") {
+    pos.value = null;
+    return;
+  }
   pos.value = [
     window.scrollX + window.innerWidth / 2, //
     window.scrollY + window.innerHeight / 2,
@@ -155,7 +159,7 @@ function Panel() {
       <div
         aria-label="Mode button"
         className="reface--whiteboard-btn"
-        style={{ fontSize: 16 }}
+        style={{ fontSize: 16, padding: "4px 12px" }}
         onClick={() => (mode.value = fallbackMode)}
       >
         {getModeText(mode.value)}
@@ -187,6 +191,23 @@ function Panel() {
         onClick={() => (settingsOpen.value = !settingsOpen.value)}
       >
         <img src={chrome.runtime.getURL("images/icons/Settings3Line.svg")} />
+      </div>
+      <div
+        aria-label="Save button"
+        className={clsx("reface--whiteboard-btn", {
+          "reface--whiteboard-btn-active": false, // TODO
+        })}
+        onClick={() => {
+          const data = ctx.value?.canvas.toDataURL();
+          if (!data) return alert("Cannot save canvas");
+          api.runtime.sendMessage({
+            to: "background",
+            action: "whiteboard_set_item",
+            data: { url: window.location.href, data },
+          });
+        }}
+      >
+        <img src={chrome.runtime.getURL("images/icons/SaveLine.svg")} />
       </div>
     </div>
   );

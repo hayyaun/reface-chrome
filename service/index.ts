@@ -4,6 +4,9 @@ import { afterFadeIn, beforeFadeIn } from "./effects";
 import { addMessageListener } from "./message";
 import { applyPatch, clearPatches, findApplicablePatches } from "./patch";
 import { state } from "./state";
+import { watchStorage } from "./storage";
+
+watchStorage();
 
 // Tabs
 

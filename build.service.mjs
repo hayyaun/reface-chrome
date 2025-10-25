@@ -88,12 +88,14 @@ async function buildServiceFiles() {
       ],
     });
 
-    await bundle.write({
+    const output = await bundle.write({
       file: `dist/${key}.js`,
       format: "iife",
       inlineDynamicImports: true,
       compact: false
     });
+
+    console.log(`${output.output[0].fileName}`)
   }
 
   // Copy CSS files

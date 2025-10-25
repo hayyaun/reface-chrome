@@ -1,10 +1,11 @@
 import Dexie, { type EntityTable, type Table } from "dexie";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import type { MagicEraserDBItem } from "../types";
+import type { MagicEraserDBItem, WhiteboardDBItem } from "../types";
 
 const db = new Dexie("SharedDatabase") as Dexie & {
   samantha: EntityTable<ChatCompletionMessageParam, never>;
   magic_eraser: EntityTable<MagicEraserDBItem, "hostname">;
+  whiteboard: EntityTable<WhiteboardDBItem, "url">;
 };
 
 /**
@@ -15,6 +16,7 @@ const db = new Dexie("SharedDatabase") as Dexie & {
 db.version(1).stores({
   samantha: "++id, role",
   magic_eraser: "hostname",
+  whiteboard: "url",
 });
 
 export default db;

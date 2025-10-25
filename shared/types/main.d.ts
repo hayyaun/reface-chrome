@@ -1,8 +1,5 @@
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
-import type { PatchMessage } from "./patch";
-
-export {};
 
 export interface Option<T> {
   name: string;
@@ -94,13 +91,3 @@ export interface Profile {
     Component: (props: ModalProps) => ReactNode;
   };
 }
-
-type Entity = "background" | "content" | "popup" | "options";
-
-export interface BaseMessage<TO extends Entity, ACT extends string, T> {
-  to: TO;
-  action: ACT;
-  data: T;
-}
-
-export type Message = BaseMessage<"background", "updateBadge", number> | PatchMessage;
