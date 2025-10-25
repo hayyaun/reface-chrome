@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { Plugin } from "vite";
+import type { Plugin } from "vite";
 
 export function dynamicDirCopyPlugin(
   dir: string,
@@ -9,7 +9,7 @@ export function dynamicDirCopyPlugin(
   replacements?: [string, string][],
 ): Plugin {
   return {
-    name: "dynamic-dur-copy",
+    name: "dynamic-dir-copy",
     buildStart() {
       const cssDir = path.resolve(process.cwd(), dir);
       const files = fs.readdirSync(cssDir).filter((f) => exts.some((ext) => f.endsWith(ext)));

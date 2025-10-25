@@ -1,5 +1,5 @@
-import { getElementByXPath, getElementXPath } from "@/service/utils?magic-eraser";
-import api from "@/shared/api?magic-eraser";
+import { getElementByXPath, getElementXPath } from "@/service/utils";
+import api from "@/shared/api";
 import type { MagicEraserDBItem } from "@/shared/types";
 
 // Selection Mode

@@ -26,11 +26,7 @@
 
     /* Path Alias */
     "baseUrl": ".",
-    "paths": {
-      "@/shared/api?*": ["./shared/api"],
-      "@/service/utils?*": ["./service/utils"],
-      "@/*": ["*"]
-    }
+    "paths": { "@/*": ["*"] }
   },
   "include": ["src", "service", "shared"]
 }

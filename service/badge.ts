@@ -1,7 +1,5 @@
-import api, { type Tab } from "@/shared/api";
-import { getActiveTab } from "@/shared/api/utils";
-import { findApplicablePatches } from "./patch";
-import { state } from "./state";
+import type { Tab } from "@/shared/api";
+import api from "@/shared/api";
 
 export function resetBadgeState() {
   api.action.setBadgeBackgroundColor({ color: "#000000" });
@@ -24,15 +22,6 @@ export function clearBadge(tabId?: number) {
 }
 
 export function updateBadgeForTab(tab: Tab, count: number) {
-  if (!state.prefs.showBadge) return clearBadge(tab.id);
   if (!count) return;
   updateBadge(count, tab.id);
-}
-
-export async function updateBadgeForActiveTab() {
-  if (!state.prefs.showBadge) return clearBadge();
-  const activeTab = await getActiveTab();
-  if (!activeTab) return;
-  const applicable = findApplicablePatches(activeTab);
-  updateBadgeForTab(activeTab, applicable.length);
 }

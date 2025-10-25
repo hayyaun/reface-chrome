@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import api from "@/shared/api";
 import { getActiveTab } from "@/shared/api/utils";
+import type { SamanthaThinkingMessageData } from "@/shared/types";
 import _ from "lodash";
 import { OpenAI } from "openai";
 import type {
   ChatCompletionCreateParamsNonStreaming,
   ChatCompletionMessageParam,
 } from "openai/resources/index.mjs";
-import { updateAiThinking } from "../message";
 import { state } from "../state";
 import { proceedToolCall } from "./toolcall";
 import { tools } from "./tools";
@@ -22,6 +23,14 @@ const systemContent = [
   "Notice: Can't modify the root bookmark folders.",
   "If there's more than 128 tool-calls in a single message, split and send the extra in the next message.",
 ].join("\n");
+
+export function updateAiThinking(message: SamanthaThinkingMessageData) {
+  api.runtime.sendMessage({
+    to: "popup",
+    action: "samantha_thinking",
+    data: message,
+  });
+}
 
 export async function ask(_messages: ChatCompletionMessageParam[]): Promise<string> {
   try {

@@ -1,4 +1,5 @@
-import api, { type Tab } from "@/shared/api";
+import type { Tab } from "@/shared/api";
+import api from "@/shared/api";
 import patches from "@/shared/patches";
 import { extractDefaultConfigData, match } from "@/shared/utils";
 import { state } from "./state";

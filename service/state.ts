@@ -1,6 +1,8 @@
 import api from "@/shared/api";
+import { getActiveTab } from "@/shared/api/utils";
 import { PREFS_KEY, STORE_KEY, usePrefs, useService } from "@/shared/store";
-import { updateBadgeForActiveTab } from "./badge";
+import { clearBadge, updateBadgeForTab } from "./badge";
+import { findApplicablePatches } from "./patch";
 
 // State
 
@@ -8,6 +10,14 @@ export const state = {
   service: useService.getInitialState(),
   prefs: usePrefs.getInitialState(),
 };
+
+async function updateBadgeForActiveTab() {
+  if (!state.prefs.showBadge) return clearBadge();
+  const activeTab = await getActiveTab();
+  if (!activeTab) return;
+  const applicable = findApplicablePatches(activeTab);
+  updateBadgeForTab(activeTab, applicable.length);
+}
 
 // Storage
 

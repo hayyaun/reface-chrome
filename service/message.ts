@@ -1,6 +1,6 @@
 import api from "@/shared/api";
 import db from "@/shared/store/db";
-import type { Message, SamanthaThinkingMessageData } from "@/shared/types";
+import type { Message } from "@/shared/types";
 import { updateBadge } from "./badge";
 import { ask } from "./samantha";
 
@@ -34,13 +34,5 @@ export function addMessageListener() {
         return await db.magic_eraser.get(msg.data);
       }
     }
-  });
-}
-
-export function updateAiThinking(message: SamanthaThinkingMessageData) {
-  api.runtime.sendMessage({
-    to: "popup",
-    action: "samantha_thinking",
-    data: message,
   });
 }
