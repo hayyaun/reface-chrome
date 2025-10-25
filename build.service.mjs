@@ -37,7 +37,6 @@ async function buildServiceFiles() {
       input,
       treeshake: { moduleSideEffects: true },
       plugins: [
-        // dynamicDirCopyPlugin("service/patches", "patches", [".css"]),
         alias({
           entries: [{ find: "@", replacement: path.resolve(__dirname) }],
         }),
@@ -50,7 +49,7 @@ async function buildServiceFiles() {
           preventAssignment: true,
         }),
         resolve({
-          extensions: [".ts", ".js"],
+          extensions: [".ts", '.tsx', ".js"],
           browser: true,
           preferBuiltins: false,
         }),
