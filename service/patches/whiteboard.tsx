@@ -148,7 +148,6 @@ function UI() {
         ref={_canvas}
         width={canvasSize[0] * scale}
         height={canvasSize[1] * scale}
-        className="reface--whiteboard-canvas"
         style={{
           height: `${canvasSize[1]}px`,
           pointerEvents: mode === "work" ? "none" : "all",
@@ -209,11 +208,11 @@ function Panel({
         })}
         onClick={() => setMode("draw")}
       >
-        <div className="reface--whiteboard-dot reface--whiteboard-color" />
+        <div className="reface--whiteboard-dot" />
       </div>
       <div
         aria-label="Typing button"
-        className={clsx("reface--whiteboard-btn", "reface--whiteboard-typing-btn", {
+        className={clsx("reface--whiteboard-btn", {
           "reface--whiteboard-btn-active": mode === "type",
         })}
         onClick={() => setMode("type")}
@@ -222,7 +221,7 @@ function Panel({
       </div>
       <div
         aria-label="Settings button"
-        className={clsx("reface--whiteboard-btn", "reface--whiteboard-settings-btn", {
+        className={clsx("reface--whiteboard-btn", {
           "reface--whiteboard-btn-active": settingsOpen,
         })}
         onClick={() => setSettingsOpen(!settingsOpen)}
@@ -267,7 +266,7 @@ function Settings({
           <p>Select color</p>
           <div className="reface--whiteboard-flex-center" style={{ width: 20, height: 20 }}>
             <div
-              className="reface--whiteboard-dot reface--whiteboard-color"
+              className="reface--whiteboard-dot"
               style={{ width: thickness, height: thickness }}
             />
           </div>
@@ -303,6 +302,6 @@ function Settings({
 
 // Create UI
 const uiRoot = document.createElement("div");
-uiRoot.classList.add("reface--whiteboard-ui");
+uiRoot.classList.add("reface--whiteboard");
 document.body.appendChild(uiRoot);
 render(<UI />, uiRoot);

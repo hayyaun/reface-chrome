@@ -1,13 +1,15 @@
-.reface--whiteboard-ui {
+.reface--whiteboard {
   pointer-events: none;
   position: absolute;
   height: 100%;
   width: 100%;
   top: 0;
   left: 0;
+  font-family: Roboto;
+  font-size: 16px;
 }
 
-canvas.reface--whiteboard-canvas {
+.reface--whiteboard > canvas {
   position: absolute;
   top: 0;
   left: 0;
@@ -23,7 +25,7 @@ canvas.reface--whiteboard-canvas {
   transform: translateX(-50%);
   display: flex;
   padding: 8px;
-  gap: 6px;
+  gap: 9px;
   backdrop-filter: blur(20px);
   box-shadow: 0 0 0 2px #fff2;
   background-color: #0002;
@@ -47,14 +49,6 @@ canvas.reface--whiteboard-canvas {
   border-radius: 14px 14px 0 0;
 }
 
-.reface--whiteboard-hidden {
-  display: none;
-}
-
-.reface--whiteboard-color {
-  color: var(--reface--whiteboard-color);
-}
-
 .reface--whiteboard-btn {
   position: relative;
   cursor: pointer;
@@ -68,22 +62,23 @@ canvas.reface--whiteboard-canvas {
   align-items: center;
 }
 
+.reface--whiteboard-btn > img {
+  width: 18px;
+  height: 18px;
+}
+
 .reface--whiteboard-btn-active {
   box-shadow: 0 0 0 2px #fff9;
   background-color: #fff2;
 }
 
 .reface--whiteboard-dot {
+  color: var(--reface--whiteboard-color);
   flex: 0 0 auto;
   background-color: currentColor;
   width: 8px;
   height: 8px;
   border-radius: 100%;
-}
-
-.reface--whiteboard-typing-btn {
-  font-family: Roboto;
-  font-size: 16px;
 }
 
 .reface--whiteboard-text-preview {
@@ -95,16 +90,13 @@ canvas.reface--whiteboard-canvas {
   padding-right: 6px;
 }
 
-.reface--whiteboard-settings-btn > img {
-  width: 18px;
-  height: 18px;
-}
+/* global */
 
 .reface--whiteboard-row {
   display: flex;
-  gap: 12px;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .reface--whiteboard-flex-center {
@@ -112,6 +104,12 @@ canvas.reface--whiteboard-canvas {
   justify-content: center;
   align-items: center;
 }
+
+.reface--whiteboard-hidden {
+  display: none;
+}
+
+/* Animations */
 
 @keyframes typing {
   from {
