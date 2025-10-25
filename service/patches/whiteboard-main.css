@@ -1,4 +1,4 @@
-canvas.reface__whiteboard-canvas {
+canvas.reface--whiteboard-canvas {
   position: absolute;
   top: 0;
   left: 0;
@@ -6,7 +6,7 @@ canvas.reface__whiteboard-canvas {
   width: 100%;
 }
 
-.reface__whiteboard-panel {
+.reface--whiteboard-panel {
   position: fixed;
   bottom: 24px;
   left: 50%;
@@ -20,7 +20,31 @@ canvas.reface__whiteboard-canvas {
   border-radius: 14px;
 }
 
-.reface__whiteboard-btn {
+.reface--whiteboard-settings {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  bottom: 74px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  padding: 8px;
+  gap: 6px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 0 2px #fff2;
+  background-color: #0002;
+  border-radius: 14px 14px 0 0;
+}
+
+.reface--whiteboard-hidden {
+  display: none;
+}
+
+.reface--whiteboard-color {
+  color: var(--reface--whiteboard-color);
+}
+
+.reface--whiteboard-btn {
   position: relative;
   cursor: pointer;
   padding: 4px 12px;
@@ -33,19 +57,24 @@ canvas.reface__whiteboard-canvas {
   align-items: center;
 }
 
-.reface__whiteboard-picker {
+.reface--whiteboard-btn-active {
+  box-shadow: 0 0 0 2px #fff9;
+  background-color: #fff2;
+}
+
+.reface--whiteboard-picker {
   background-color: currentColor;
   width: 8px;
   height: 8px;
   border-radius: 100%;
 }
 
-.reface__whiteboard-typing-btn {
+.reface--whiteboard-typing-btn {
   font-family: Roboto;
   font-size: 16px;
 }
 
-.reface__whiteboard-text-preview {
+.reface--whiteboard-text-preview {
   position: absolute;
   display: none;
   transform: translateY(-100%); /* same as canvas text */
@@ -53,6 +82,11 @@ canvas.reface__whiteboard-canvas {
   animation: typing 1s ease alternate infinite;
   transition: all ease 0.5s;
   padding-right: 6px;
+}
+
+.reface--whiteboard-settings-btn > img {
+  width: 18px;
+  height: 18px;
 }
 
 @keyframes typing {

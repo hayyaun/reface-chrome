@@ -1,10 +1,10 @@
-.reface__github-stats-box {
+.reface--github-stats-box {
   display: inline-block;
   color: #fcda03;
   margin-left: 0.25em;
   text-decoration: none !important;
 }
 
-.reface__github-stats-threshold {
+.reface--github-stats-threshold {
   color: #ffa500;
 }

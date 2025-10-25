@@ -77,6 +77,23 @@ const patches: { [key: string]: Patch } = {
           { name: "Highest", value: 3 },
         ],
       },
+      "font-family": {
+        name: "Font Family",
+        details: "Default font fammily for typing mode",
+        defaultValue: "Roboto",
+        options: [
+          { name: "Roboto", value: "Roboto, sans-serif" },
+          { name: "Arial", value: "Arial, sans-serif" },
+          { name: "Helvetica", value: "Helvetica, sans-serif" },
+          { name: "Times New Roman", value: "'Times New Roman', serif" },
+          { name: "Georgia", value: "Georgia, serif" },
+          { name: "Courier New", value: "'Courier New', monospace" },
+          { name: "Verdana", value: "Verdana, sans-serif" },
+          { name: "Tahoma", value: "Tahoma, sans-serif" },
+          { name: "Trebuchet MS", value: "'Trebuchet MS', sans-serif" },
+          { name: "Impact", value: "Impact, sans-serif" },
+        ],
+      },
     },
   },
   "show-fps": {

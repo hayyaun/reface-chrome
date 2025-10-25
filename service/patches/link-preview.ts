@@ -8,10 +8,10 @@ const IFRAME_SIZE = [480, 320];
 
 const iframe = document.createElement("iframe");
 const closeBtn = document.createElement("span");
-closeBtn.classList.add("reface__link-preview-close-btn");
+closeBtn.classList.add("reface--link-preview-close-btn");
 closeBtn.textContent = "x";
 const root = document.createElement("div");
-root.classList.add("reface__link-preview");
+root.classList.add("reface--link-preview");
 root.appendChild(iframe);
 root.appendChild(closeBtn);
 document.body.appendChild(root);
@@ -66,7 +66,7 @@ requestAnimationFrame(animate);
 document.body.addEventListener("pointermove", (ev) => {
   const el = document.elementFromPoint(ev.clientX, ev.clientY);
   if (el?.tagName.toLowerCase() === "iframe") return;
-  if (el?.classList.contains("reface__link-preview")) return;
+  if (el?.classList.contains("reface--link-preview")) return;
   if (el?.classList.contains("close-btn")) return;
 
   cursor.x = ev.clientX;

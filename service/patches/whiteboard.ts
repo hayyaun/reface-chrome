@@ -1,19 +1,22 @@
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] ?? 0.5) as number;
+const fontFamily = (config["font-family"] ?? "Roboto") as string;
 
 const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 
-type Pos = [x: number, y: number];
+// TODO add undo/redo at least for 1 step
 
 interface State {
-  mode: "draw" | "type" | "work";
+  mode: "draw" | "type" | "settings" | "work";
   // ui
   canvas: HTMLCanvasElement;
   panel: HTMLDivElement;
   modeBtn: HTMLDivElement;
-  pickerBtn: HTMLLabelElement;
+  drawBtn: HTMLLabelElement;
   typingBtn: HTMLDivElement;
+  settingsBtn: HTMLDivElement;
   textPreview: HTMLDivElement;
+  settings: HTMLDivElement;
   // config
   color: string;
   thickness: number;
@@ -21,41 +24,71 @@ interface State {
   fontSize: number;
 }
 
+const fallbackMode: State["mode"] = "work";
+
 const state: State = {
-  mode: "draw",
+  mode: fallbackMode,
   canvas: null!,
   panel: null!,
   modeBtn: null!,
-  pickerBtn: null!,
+  drawBtn: null!,
   typingBtn: null!,
+  settingsBtn: null!,
   textPreview: null!,
+  settings: null!,
   color: "#ff0000",
   thickness: 5 * scale,
-  fontFamily: "Roboto",
+  fontFamily,
   fontSize: 48,
 };
 
-// TODO add undo/redo at least for 1 step
+let pos: [x: number, y: number] = [0, 0];
 
 const getModeText = () => {
   if (state.mode === "draw") return "Draw mode";
   if (state.mode === "type") return "Type mode";
+  if (state.mode === "settings") return "Settings";
   return "Normal";
 };
 
-function setMode(mode: State["mode"]) {
+function setMode(_mode: State["mode"]) {
+  let mode = _mode;
+  if (state.mode === _mode) mode = fallbackMode; // fallback toggler
+
   state.mode = mode;
   state.canvas.style.pointerEvents = mode === "work" ? "none" : "auto";
   state.modeBtn.textContent = getModeText();
+
+  if (mode === "draw") {
+    state.drawBtn.classList.add("reface--whiteboard-btn-active");
+  } else {
+    state.drawBtn.classList.remove("reface--whiteboard-btn-active");
+  }
+
+  if (mode === "type") {
+    state.typingBtn.classList.add("reface--whiteboard-btn-active");
+    // update
+    pos = [
+      window.scrollX + window.innerWidth / 2, //
+      window.scrollY + window.innerHeight / 2,
+    ];
+    updateTextPreview("");
+  } else {
+    state.typingBtn.classList.remove("reface--whiteboard-btn-active");
+  }
+
+  if (mode === "settings") {
+    state.settingsBtn.classList.add("reface--whiteboard-btn-active");
+    state.settings.classList.remove("reface--whiteboard-hidden");
+  } else {
+    state.settingsBtn.classList.remove("reface--whiteboard-btn-active");
+    state.settings.classList.add("reface--whiteboard-hidden");
+  }
 }
 
-function updateColor(ctx: CanvasRenderingContext2D, color: string) {
+function updateColor(color: string) {
   state.color = color;
-  // ui
-  state.pickerBtn.style.color = state.color;
-  // ctx
-  ctx.strokeStyle = state.color;
-  ctx.fillStyle = state.color;
+  document.body.style.setProperty("--reface--whiteboard-color", state.color);
 }
 
 function addDrawListeners(ctx: CanvasRenderingContext2D) {
@@ -65,6 +98,7 @@ function addDrawListeners(ctx: CanvasRenderingContext2D) {
     if (state.mode !== "draw") return;
     drawing = true;
     ctx.beginPath();
+    ctx.strokeStyle = state.color;
     ctx.lineWidth = state.thickness; // TODO update
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
@@ -78,8 +112,6 @@ function addDrawListeners(ctx: CanvasRenderingContext2D) {
   state.canvas.addEventListener("mouseup", () => (drawing = false));
   state.canvas.addEventListener("mouseout", () => (drawing = false));
 }
-
-let pos: Pos = [0, 0];
 
 function updateTextPreview(text?: string) {
   if (typeof text === "undefined") {
@@ -97,115 +129,133 @@ function updateTextPreview(text?: string) {
 
 function addTypingListeners(ctx: CanvasRenderingContext2D) {
   let text = "";
-  state.canvas.addEventListener("click", (ev) => {
-    if (state.mode !== "type") return;
-    pos = [ev.offsetX, ev.offsetY];
-    updateTextPreview(text);
-  });
   function stopPropagation(ev: KeyboardEvent) {
     if (state.mode !== "type") return;
     ev.stopImmediatePropagation();
     ev.stopPropagation();
     ev.preventDefault();
   }
-  window.addEventListener(
-    "keydown",
-    (ev) => {
-      if (state.mode !== "type") return;
-      stopPropagation(ev);
-      if (ev.key === "Enter") {
-        // Set font style and size
-        ctx.font = `${state.fontSize * scale}px ${state.fontFamily}`; // TODO update
-        ctx.fillText(text, pos[0] * scale, pos[1] * scale);
-        // reset
-        text = "";
-        setMode("draw");
-        updateTextPreview(undefined);
-        return;
-      }
-      // Fill text
-      if (ev.key === "Backspace") {
-        text = text.slice(0, -1);
-      } else if (ev.key.length === 1) {
-        text += ev.key;
-      }
-      updateTextPreview(text);
-    },
-    true,
-  );
-  // Avoid
+  function onKeydown(ev: KeyboardEvent) {
+    if (state.mode !== "type") return;
+    stopPropagation(ev);
+    if (ev.key === "Enter") {
+      // Set font style and size
+      ctx.fillStyle = state.color;
+      ctx.font = `${state.fontSize * scale}px ${state.fontFamily}`;
+      ctx.fillText(text, pos[0] * scale, pos[1] * scale);
+      // reset
+      text = "";
+      setMode(fallbackMode);
+      updateTextPreview(undefined);
+      return;
+    }
+    // Fill text
+    if (ev.key === "Backspace") {
+      text = text.slice(0, -1);
+    } else if (ev.key.length === 1) {
+      text += ev.key;
+    }
+    updateTextPreview(text);
+  }
+  state.canvas.addEventListener("click", (ev) => {
+    // free positioning for users
+    if (state.mode !== "type") return;
+    pos = [ev.offsetX, ev.offsetY];
+    updateTextPreview(text);
+  });
+  window.addEventListener("keydown", onKeydown, true);
   window.addEventListener("keypress", stopPropagation, true);
   window.addEventListener("keyup", stopPropagation, true);
 }
 
-function beginTypingMode() {
-  if (state.mode === "type") return;
-  setMode("type");
-  pos = [
-    window.scrollX + window.innerWidth / 2, //
-    window.scrollY + window.innerHeight / 2,
-  ];
-  updateTextPreview("");
-}
-
-function init() {
-  // Create canvas
-  state.canvas = document.createElement("canvas");
-  state.canvas.width = canvasSize[0] * scale;
-  state.canvas.height = canvasSize[1] * scale;
-  state.canvas.style.height = `${canvasSize[1]}px`;
-  state.canvas.classList.add("reface__whiteboard-canvas");
-  document.body.appendChild(state.canvas);
-
-  const ctx = state.canvas.getContext("2d")!;
-  addDrawListeners(ctx);
-  addTypingListeners(ctx);
-
-  // Create panel
-  state.panel = document.createElement("div");
-  state.panel.classList.add("reface__whiteboard-panel");
-  document.body.appendChild(state.panel);
-
-  // Create panel buttons
+function createPanelButtons() {
   // -- Mode
   state.modeBtn = document.createElement("div");
-  state.modeBtn.classList.add("reface__whiteboard-btn");
-  state.modeBtn.textContent = getModeText();
-  state.modeBtn.addEventListener("click", () => setMode(state.mode === "work" ? "draw" : "work"));
   state.panel.appendChild(state.modeBtn);
-  // -- Color Picker
+  state.modeBtn.classList.add("reface--whiteboard-btn");
+  state.modeBtn.textContent = getModeText();
+  state.modeBtn.addEventListener("click", () => setMode(fallbackMode));
+
+  // -- Draw mode
+  state.drawBtn = document.createElement("label");
+  state.panel.appendChild(state.drawBtn);
+  state.drawBtn.classList.add("reface--whiteboard-btn");
+  state.drawBtn.addEventListener("click", () => setMode("draw"));
+
+  const colorDot = document.createElement("div");
+  state.drawBtn.appendChild(colorDot);
+  colorDot.classList.add("reface--whiteboard-picker", "reface--whiteboard-color");
+
+  // -- Typing mode
+  state.typingBtn = document.createElement("div");
+  state.panel.appendChild(state.typingBtn);
+  state.typingBtn.addEventListener("click", () => setMode("type"));
+  state.typingBtn.classList.add("reface--whiteboard-btn", "reface--whiteboard-typing-btn");
+  state.typingBtn.textContent = "T";
+
+  // -- Settings
+  state.settingsBtn = document.createElement("div");
+  state.panel.appendChild(state.settingsBtn);
+  state.settingsBtn.addEventListener("click", () => setMode("settings"));
+  state.settingsBtn.classList.add("reface--whiteboard-btn", "reface--whiteboard-settings-btn");
+
+  const settingsIcon = document.createElement("img");
+  state.settingsBtn.appendChild(settingsIcon);
+  settingsIcon.src = chrome.runtime.getURL("images/icons/Settings3Line.svg");
+}
+
+function createSettingsMenu() {
+  const colorDot = document.createElement("label");
+  state.settings.appendChild(colorDot);
+  colorDot.classList.add("reface--whiteboard-picker", "reface--whiteboard-color");
+
+  const colorPickerId = "reface--whiteboard-color-picker";
+  colorDot.htmlFor = colorPickerId;
   const colorPicker = document.createElement("input");
-  colorPicker.id = "reface__whiteboard-color-picker";
+  colorDot.appendChild(colorPicker);
+  colorPicker.id = colorPickerId;
   colorPicker.type = "color";
   colorPicker.style.display = "none";
   colorPicker.value = state.color;
   colorPicker.addEventListener("input", (ev) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    updateColor(ctx, (ev.target as any).value as string);
+    updateColor((ev.target as any).value as string);
   });
-  state.pickerBtn = document.createElement("label");
-  state.pickerBtn.htmlFor = colorPicker.id;
-  state.pickerBtn.classList.add("reface__whiteboard-btn");
-  state.pickerBtn.style.color = state.color;
-  state.pickerBtn.appendChild(colorPicker);
-  state.panel.appendChild(state.pickerBtn);
-  const colorDot = document.createElement("div");
-  colorDot.classList.add("reface__whiteboard-picker");
-  state.pickerBtn.appendChild(colorDot);
-  // -- Typing mode
-  state.typingBtn = document.createElement("div");
-  state.typingBtn.classList.add("reface__whiteboard-btn", "reface__whiteboard-typing-btn");
-  state.typingBtn.textContent = "T";
-  state.typingBtn.addEventListener("click", beginTypingMode);
-  state.panel.appendChild(state.typingBtn);
-  // ---- Text preview
+}
+
+function init() {
+  // 1. Create canvas
+  state.canvas = document.createElement("canvas");
+  document.body.appendChild(state.canvas);
+  state.canvas.width = canvasSize[0] * scale;
+  state.canvas.height = canvasSize[1] * scale;
+  state.canvas.style.height = `${canvasSize[1]}px`;
+  state.canvas.classList.add("reface--whiteboard-canvas");
+
+  const ctx = state.canvas.getContext("2d")!;
+  addDrawListeners(ctx);
+  addTypingListeners(ctx);
+
+  // 2. Create panel
+  state.panel = document.createElement("div");
+  document.body.appendChild(state.panel);
+  state.panel.classList.add("reface--whiteboard-panel");
+  createPanelButtons();
+
+  // 3. Settings
+  state.settings = document.createElement("div");
+  document.body.appendChild(state.settings);
+  state.settings.classList.add("reface--whiteboard-settings");
+  createSettingsMenu();
+
+  // 4. Text preview
   state.textPreview = document.createElement("div");
-  state.textPreview.classList.add("reface__whiteboard-text-preview");
   document.body.appendChild(state.textPreview);
+  state.textPreview.classList.add("reface--whiteboard-text-preview");
 
   // Initialization
-  setMode("draw");
-  updateColor(ctx, state.color);
+  setMode("work");
+  updateColor(state.color);
 }
 
 init();

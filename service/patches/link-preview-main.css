@@ -1,4 +1,4 @@
-.reface__link-preview {
+.reface--link-preview {
   display: none;
   position: fixed;
   width: 480px;
@@ -17,7 +17,7 @@
   z-index: 999;
 }
 
-.reface__link-preview iframe {
+.reface--link-preview iframe {
   height: 100%;
   width: 100%;
   border: none;
@@ -26,11 +26,11 @@
   scrollbar-width: none; /* Firefox */
 }
 
-.reface__link-preview iframe::-webkit-scrollbar {
+.reface--link-preview iframe::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
 
-.reface__link-preview .reface__link-preview-close-btn {
+.reface--link-preview .reface--link-preview-close-btn {
   position: absolute;
   top: 8px;
   left: 8px;

@@ -2,12 +2,12 @@ let last = performance.now();
 let frames = 0;
 
 function showUI(fps: number) {
-  let text = document.querySelector("span.reface__fps-indicator-root");
+  let text = document.querySelector("span.reface--fps-indicator-root");
   if (!text) {
     text = document.createElement("span");
-    text.classList.add("reface__fps-indicator-root");
+    text.classList.add("reface--fps-indicator-root");
     const root = document.createElement("div");
-    root.classList.add("reface__fps-indicator");
+    root.classList.add("reface--fps-indicator");
     root.onclick = () => {
       root.style.display = "none";
     };
