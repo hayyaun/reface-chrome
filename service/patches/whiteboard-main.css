@@ -91,6 +91,7 @@
 }
 
 .reface--whiteboard-text-preview {
+  line-height: 1;
   position: absolute;
   transform: translateY(-100%); /* same as canvas text */
   animation: typing 1s ease alternate infinite;

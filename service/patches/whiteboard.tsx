@@ -9,17 +9,18 @@ type Mode = "draw" | "type" | "work";
 
 type Pos = [x: number, y: number];
 
-// TODO add undo/redo button
 // TODO add eraser button
-// TODO add clean button
 
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] as number) ?? 0.5;
 const _fontFamily = (config["font-family"] as string) ?? "Roboto";
+
 const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 const fallbackMode: Mode = "work";
 
 // Signals
+const ctx = signal<CanvasRenderingContext2D | null>(null);
+const buffer = signal<string | undefined>(undefined);
 const color = signal("#ff0000");
 const mode = signal<Mode>("draw");
 const thickness = signal(6);
@@ -28,7 +29,6 @@ const fontSize = signal(48);
 const pos = signal<Pos | null>(null);
 const text = signal("");
 const settingsOpen = signal(false);
-const ctx = signal<CanvasRenderingContext2D | null>(null);
 
 color.subscribe((value) => {
   document.body.style.setProperty("--reface--whiteboard-color", value);
@@ -51,6 +51,18 @@ const getModeText = (mode: Mode) => {
   return "Normal";
 };
 
+const drawData = async (dataURL: string) => {
+  await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = dataURL;
+    img.onload = () => {
+      ctx.value?.drawImage(img, 0, 0);
+      resolve(null);
+    };
+    img.onerror = reject;
+  });
+};
+
 const loadData = async () => {
   const res = await api.runtime.sendMessage({
     to: "background",
@@ -58,15 +70,11 @@ const loadData = async () => {
     data: window.location.href,
   });
   if (!res?.data) return;
-  await new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = res.data;
-    img.onload = () => {
-      ctx.value?.drawImage(img, 0, 0);
-      resolve(null);
-    };
-    img.onerror = reject;
-  });
+  drawData(res.data);
+};
+
+const clearCanvas = () => {
+  ctx.value?.clearRect(0, 0, ctx.value?.canvas.width, ctx.value?.canvas.height);
 };
 
 function UI() {
@@ -182,7 +190,7 @@ function Panel() {
   return (
     <div aria-label="Panel" className="reface--whiteboard-panel">
       <div
-        aria-label="Mode button"
+        aria-label="Mode"
         className="reface--whiteboard-btn"
         style={{ padding: "4px 12px", aspectRatio: "auto" }}
         onClick={() => (mode.value = fallbackMode)}
@@ -190,7 +198,7 @@ function Panel() {
         {getModeText(mode.value)}
       </div>
       <div
-        aria-label="Draw button"
+        title="Draw"
         className={clsx("reface--whiteboard-btn", {
           "reface--whiteboard-btn-active": mode.value === "draw",
         })}
@@ -199,7 +207,7 @@ function Panel() {
         <div className="reface--whiteboard-dot" />
       </div>
       <div
-        aria-label="Typing button"
+        title="Type"
         className={clsx("reface--whiteboard-btn", {
           "reface--whiteboard-btn-active": mode.value === "type",
         })}
@@ -209,19 +217,17 @@ function Panel() {
         T
       </div>
       <div
-        aria-label="Settings button"
+        title="Settings"
         className={clsx("reface--whiteboard-btn", {
           "reface--whiteboard-btn-active": settingsOpen.value,
         })}
         onClick={() => (settingsOpen.value = !settingsOpen.value)}
       >
-        <img src={chrome.runtime.getURL("images/icons/Settings3Line.svg")} />
+        <img src={chrome.runtime.getURL("images/icons/RiSettings3Line.svg")} />
       </div>
       <div
-        aria-label="Save button"
-        className={clsx("reface--whiteboard-btn", {
-          "reface--whiteboard-btn-active": false, // TODO
-        })}
+        title="Save"
+        className={clsx("reface--whiteboard-btn", {})}
         onClick={() => {
           const data = ctx.value?.canvas.toDataURL();
           if (!data) return alert("Cannot save canvas");
@@ -232,7 +238,37 @@ function Panel() {
           });
         }}
       >
-        <img src={chrome.runtime.getURL("images/icons/SaveLine.svg")} />
+        <img src={chrome.runtime.getURL("images/icons/RiSaveLine.svg")} />
+      </div>
+      <div
+        title="Clear"
+        className={clsx("reface--whiteboard-btn", {})}
+        onClick={() => clearCanvas()}
+      >
+        <img src={chrome.runtime.getURL("images/icons/RiDeleteBin.svg")} />
+      </div>
+      <div
+        title={buffer.value ? "Redo" : "Undo"}
+        className={clsx("reface--whiteboard-btn", {})}
+        onClick={() => {
+          if (!buffer.value) {
+            // undo
+            const data = ctx.value?.canvas.toDataURL();
+            buffer.value = data;
+            clearCanvas();
+            loadData(); // if saved
+            return;
+          }
+          // redo
+          clearCanvas();
+          drawData(buffer.value);
+          buffer.value = undefined;
+        }}
+      >
+        <img
+          src={chrome.runtime.getURL("images/icons/RiGoBackLine.svg")}
+          style={{ transform: buffer.value ? "rotateY(180deg)" : undefined }}
+        />
       </div>
     </div>
   );
@@ -254,7 +290,7 @@ function Settings() {
           className="reface--whiteboard-row"
           style={{ cursor: "pointer" }}
         >
-          <p>Select color</p>
+          <div>Select color</div>
           <div className="reface--whiteboard-flex-center" style={{ width: 20, height: 20 }}>
             <div
               className="reface--whiteboard-dot"

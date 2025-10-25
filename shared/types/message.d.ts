@@ -25,6 +25,8 @@ export type Message = Parameters<MessageCallback>[0];
 
 type ExtractCallback<T extends Message> = Extract<MessageCallback, BaseMessageCallback<T["to"], T["action"], T["data"], unknown>>;
 
+// Patches
+
 export type SamanthaThinkingMessageData = {
   iter: number;
   content: string;
