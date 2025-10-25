@@ -10,6 +10,7 @@ type Mode = "draw" | "type" | "work";
 type Pos = [x: number, y: number];
 
 // TODO add eraser button
+// TODO add shapes button
 
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] as number) ?? 0.5;
@@ -211,7 +212,7 @@ function Panel() {
         className={clsx("reface--whiteboard-btn", {
           "reface--whiteboard-btn-active": mode.value === "type",
         })}
-        style={{ fontFamily: "Roboto" }}
+        style={{ fontFamily: "Roboto", fontSize: 16 }}
         onClick={() => (mode.value = "type")}
       >
         T
