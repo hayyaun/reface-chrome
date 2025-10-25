@@ -1,3 +1,12 @@
+.reface--whiteboard-ui {
+  pointer-events: none;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
 canvas.reface--whiteboard-canvas {
   position: absolute;
   top: 0;
@@ -7,6 +16,7 @@ canvas.reface--whiteboard-canvas {
 }
 
 .reface--whiteboard-panel {
+  pointer-events: all;
   position: fixed;
   bottom: 24px;
   left: 50%;
@@ -21,6 +31,7 @@ canvas.reface--whiteboard-canvas {
 }
 
 .reface--whiteboard-settings {
+  pointer-events: all;
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -76,7 +87,6 @@ canvas.reface--whiteboard-canvas {
 
 .reface--whiteboard-text-preview {
   position: absolute;
-  display: none;
   transform: translateY(-100%); /* same as canvas text */
   line-height: 0.75;
   animation: typing 1s ease alternate infinite;
