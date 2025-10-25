@@ -1,27 +1,43 @@
 /* eslint-disable react-refresh/only-export-components */
+import { signal } from "@preact/signals";
 import clsx from "clsx";
 import { render } from "preact";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type Dispatch,
-  type StateUpdater,
-} from "preact/hooks";
-
-// TODO add undo/redo at least for 1 step
-
-const config = window.__rc_config["whiteboard"];
-const scale = (config["scale"] ?? 0.5) as number;
-const _fontFamily = (config["font-family"] ?? "Roboto") as string;
-const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
+import { useEffect, useRef } from "preact/hooks";
 
 type Mode = "draw" | "type" | "work";
 
 type Pos = [x: number, y: number];
 
+// TODO add undo/redo at least for 1 step
+
+const config = window.__rc_config["whiteboard"];
+const scale = (config["scale"] as number) ?? 0.5;
+const _fontFamily = (config["font-family"] as string) ?? "Roboto";
+const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 const fallbackMode: Mode = "work";
+
+// Signals
+const color = signal("#ff0000");
+const mode = signal<Mode>(fallbackMode);
+const thickness = signal(6);
+const fontFamily = signal(_fontFamily);
+const fontSize = signal(48);
+const pos = signal<Pos | null>(null);
+const text = signal("");
+const settingsOpen = signal(false);
+const ctx = signal<CanvasRenderingContext2D | null>(null);
+
+color.subscribe((value) => {
+  document.body.style.setProperty("--reface--whiteboard-color", value);
+});
+
+mode.subscribe((value) => {
+  if (value !== "type") return;
+  pos.value = [
+    window.scrollX + window.innerWidth / 2, //
+    window.scrollY + window.innerHeight / 2,
+  ];
+});
 
 const getModeText = (mode: Mode) => {
   if (mode === "draw") return "Draw mode";
@@ -30,51 +46,28 @@ const getModeText = (mode: Mode) => {
 };
 
 function UI() {
-  const [color, setColor] = useState("#ff0000");
-  const [mode, setMode] = useState(fallbackMode);
-  const [thickness, setThickness] = useState(6);
-  const [fontFamily] = useState(_fontFamily);
-  const [fontSize, setFontSize] = useState(48);
-  const [pos, setPosition] = useState<Pos | null>(null);
-  const [text, setText] = useState("");
-  const [settingsOpen, setSettingsOpen] = useState(false);
-
   const _canvas = useRef<HTMLCanvasElement>(null!);
-  const ctx = useRef<CanvasRenderingContext2D>(null!);
-
-  useEffect(() => {
-    ctx.current = _canvas.current.getContext("2d")!;
-  }, []);
-
-  useEffect(() => {
-    document.body.style.setProperty("--reface--whiteboard-color", color);
-  }, [color]);
-
-  useEffect(() => {
-    if (mode !== "type") return;
-    setPosition([
-      window.scrollX + window.innerWidth / 2, //
-      window.scrollY + window.innerHeight / 2,
-    ]);
-  }, [mode]);
 
   // Draw effects
   useEffect(() => {
     let drawing = false;
+    ctx.value = _canvas.current.getContext("2d")!;
     function onMouseDown(ev: MouseEvent) {
-      if (mode !== "draw") return;
+      if (!ctx.value) return;
+      if (mode.value !== "draw") return;
       drawing = true;
-      ctx.current.beginPath();
-      ctx.current.strokeStyle = color;
-      ctx.current.lineWidth = thickness * scale;
-      ctx.current.lineJoin = "round";
-      ctx.current.lineCap = "round";
-      ctx.current.moveTo(ev.offsetX * scale, ev.offsetY * scale);
+      ctx.value.beginPath();
+      ctx.value.strokeStyle = color.value;
+      ctx.value.lineWidth = thickness.value * scale;
+      ctx.value.lineJoin = "round";
+      ctx.value.lineCap = "round";
+      ctx.value.moveTo(ev.offsetX * scale, ev.offsetY * scale);
     }
     function onMouseMove(ev: MouseEvent) {
+      if (!ctx.value) return;
       if (!drawing) return;
-      ctx.current.lineTo(ev.offsetX * scale, ev.offsetY * scale);
-      ctx.current.stroke();
+      ctx.value.lineTo(ev.offsetX * scale, ev.offsetY * scale);
+      ctx.value.stroke();
     }
     const reset = () => (drawing = false);
     _canvas.current.addEventListener("mousedown", onMouseDown);
@@ -87,48 +80,44 @@ function UI() {
       _canvas.current.removeEventListener("mouseup", reset);
       _canvas.current.removeEventListener("mouseout", reset);
     };
-  }, [color, mode, thickness]);
-
-  const _text = useRef("");
-  useEffect(() => {
-    _text.current = text;
-  }, [text]);
+  }, []);
 
   // Typing effects
   useEffect(() => {
     function stopPropagation(ev: KeyboardEvent) {
-      if (mode !== "type") return;
+      if (mode.value !== "type") return;
       ev.stopImmediatePropagation();
       ev.stopPropagation();
       ev.preventDefault();
     }
     function onKeydown(ev: KeyboardEvent) {
-      if (mode !== "type") return;
+      if (!ctx.value) return;
+      if (mode.value !== "type") return;
       stopPropagation(ev);
       if (ev.key === "Enter") {
         // Set font style and size
-        ctx.current.fillStyle = color;
-        ctx.current.font = `${fontSize * scale}px ${fontFamily}`;
-        if (pos) {
-          ctx.current.fillText(_text.current, pos[0] * scale, pos[1] * scale);
+        ctx.value.fillStyle = color.value;
+        ctx.value.font = `${fontSize.value * scale}px ${fontFamily.value}`;
+        if (pos.value) {
+          ctx.value.fillText(text.value, pos.value[0] * scale, pos.value[1] * scale);
         }
         // reset
-        setText("");
-        setMode(fallbackMode);
-        setPosition(null);
+        text.value = "";
+        mode.value = fallbackMode;
+        pos.value = null;
         return;
       }
       // Fill text
       if (ev.key === "Backspace") {
-        setText(_text.current.slice(0, -1));
+        text.value = text.value.slice(0, -1);
       } else if (ev.key.length === 1) {
-        setText(_text.current + ev.key);
+        text.value = text.value + ev.key;
       }
     }
     function reposition(ev: MouseEvent) {
       // free positioning for users
-      if (mode !== "type") return;
-      setPosition([ev.offsetX, ev.offsetY]);
+      if (mode.value !== "type") return;
+      pos.value = [ev.offsetX, ev.offsetY];
     }
     _canvas.current.addEventListener("click", reposition);
     window.addEventListener("keydown", onKeydown, true);
@@ -140,7 +129,7 @@ function UI() {
       window.removeEventListener("keypress", stopPropagation, true);
       window.removeEventListener("keyup", stopPropagation, true);
     };
-  }, [mode, pos, color, fontFamily, fontSize]);
+  }, []);
 
   return (
     <>
@@ -150,27 +139,20 @@ function UI() {
         height={canvasSize[1] * scale}
         style={{
           height: `${canvasSize[1]}px`,
-          pointerEvents: mode === "work" ? "none" : "all",
+          pointerEvents: mode.value === "work" ? "none" : "all",
         }}
       />
-      <Panel
-        mode={mode}
-        setMode={setMode}
-        settingsOpen={settingsOpen}
-        setSettingsOpen={setSettingsOpen}
-      />
-      {settingsOpen && (
-        <Settings {...{ mode, color, setColor, thickness, setThickness, fontSize, setFontSize }} />
-      )}
-      {pos && (
+      <Panel />
+      {settingsOpen.value && <Settings />}
+      {pos.value && (
         <div
           className="reface--whiteboard-text-preview"
           style={{
-            color: color,
-            fontSize: fontSize + "px",
-            fontFamily: fontFamily,
-            left: pos[0] + "px",
-            top: pos[1] + "px",
+            color: color.value,
+            fontSize: fontSize.value + "px",
+            fontFamily: fontFamily.value,
+            left: pos.value[0] + "px",
+            top: pos.value[1] + "px",
           }}
         >
           {text || "."}
@@ -180,51 +162,42 @@ function UI() {
   );
 }
 
-function Panel({
-  mode,
-  setMode,
-  settingsOpen,
-  setSettingsOpen,
-}: {
-  mode: Mode;
-  setMode: Dispatch<StateUpdater<Mode>>;
-  settingsOpen: boolean;
-  setSettingsOpen: Dispatch<StateUpdater<boolean>>;
-}) {
-  const modeText = useMemo(() => getModeText(mode), [mode]);
+function Panel() {
   return (
     <div aria-label="Panel" className="reface--whiteboard-panel">
       <div
         aria-label="Mode button"
         className="reface--whiteboard-btn"
-        onClick={() => setMode(fallbackMode)}
+        style={{ fontSize: 16 }}
+        onClick={() => (mode.value = fallbackMode)}
       >
-        {modeText}
+        {getModeText(mode.value)}
       </div>
       <div
         aria-label="Draw button"
         className={clsx("reface--whiteboard-btn", {
-          "reface--whiteboard-btn-active": mode === "draw",
+          "reface--whiteboard-btn-active": mode.value === "draw",
         })}
-        onClick={() => setMode("draw")}
+        onClick={() => (mode.value = "draw")}
       >
         <div className="reface--whiteboard-dot" />
       </div>
       <div
         aria-label="Typing button"
         className={clsx("reface--whiteboard-btn", {
-          "reface--whiteboard-btn-active": mode === "type",
+          "reface--whiteboard-btn-active": mode.value === "type",
         })}
-        onClick={() => setMode("type")}
+        style={{ fontFamily: "Roboto" }}
+        onClick={() => (mode.value = "type")}
       >
         T
       </div>
       <div
         aria-label="Settings button"
         className={clsx("reface--whiteboard-btn", {
-          "reface--whiteboard-btn-active": settingsOpen,
+          "reface--whiteboard-btn-active": settingsOpen.value,
         })}
-        onClick={() => setSettingsOpen(!settingsOpen)}
+        onClick={() => (settingsOpen.value = !settingsOpen.value)}
       >
         <img src={chrome.runtime.getURL("images/icons/Settings3Line.svg")} />
       </div>
@@ -232,22 +205,7 @@ function Panel({
   );
 }
 
-function Settings({
-  color,
-  setColor,
-  thickness,
-  setThickness,
-  fontSize,
-  setFontSize,
-}: {
-  mode: Mode;
-  color: string;
-  setColor: Dispatch<StateUpdater<string>>;
-  thickness: number;
-  setThickness: Dispatch<StateUpdater<number>>;
-  fontSize: number;
-  setFontSize: Dispatch<StateUpdater<number>>;
-}) {
+function Settings() {
   return (
     <div aria-label="Settings" className="reface--whiteboard-settings">
       <div aria-label="Color picker">
@@ -256,7 +214,7 @@ function Settings({
           type="color"
           style={{ display: "none" }}
           value={color}
-          onInput={(ev) => setColor(ev.currentTarget.value)}
+          onInput={(ev) => (color.value = ev.currentTarget.value)}
         />
         <label
           htmlFor="reface--whiteboard--color-picker"
@@ -267,7 +225,7 @@ function Settings({
           <div className="reface--whiteboard-flex-center" style={{ width: 20, height: 20 }}>
             <div
               className="reface--whiteboard-dot"
-              style={{ width: thickness, height: thickness }}
+              style={{ width: thickness.value, height: thickness.value }}
             />
           </div>
         </label>
@@ -281,7 +239,7 @@ function Settings({
           min={1}
           max={20}
           value={thickness}
-          onInput={(ev) => setThickness(parseFloat(ev.currentTarget.value))}
+          onInput={(ev) => (thickness.value = parseFloat(ev.currentTarget.value))}
         />
       </div>
       <div aria-label="Font size" className="reface--whiteboard-row">
@@ -293,7 +251,7 @@ function Settings({
           min={8}
           max={128}
           value={fontSize}
-          onInput={(ev) => setFontSize(parseFloat(ev.currentTarget.value))}
+          onInput={(ev) => (fontSize.value = parseFloat(ev.currentTarget.value))}
         />
       </div>
     </div>
