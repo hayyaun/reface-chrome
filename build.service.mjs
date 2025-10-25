@@ -3,6 +3,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import swc from "@rollup/plugin-swc";
 import terser from "@rollup/plugin-terser";
+import replace from "@rollup/plugin-replace";
 import fs from "fs";
 import path, { dirname } from "path";
 import { rollup } from "rollup";
@@ -30,6 +31,7 @@ const allScriptFiles = {
 };
 
 async function buildServiceFiles() {
+  // Build background and scripts
   for (const [key, input] of Object.entries(allScriptFiles)) {
     const bundle = await rollup({
       input,
@@ -39,6 +41,14 @@ async function buildServiceFiles() {
         alias({
           entries: [{ find: "@", replacement: path.resolve(__dirname) }],
         }),
+        replace({
+          'process.env.NODE_ENV': JSON.stringify('production'),
+          'import.meta.env.DEV': JSON.stringify(false),
+          'import.meta.env.PROD': JSON.stringify(true),
+          'import.meta.DEV': JSON.stringify(false),
+          'import.meta.PROD': JSON.stringify(true),
+          preventAssignment: true,
+        }),
         resolve({
           extensions: [".ts", ".js"],
           browser: true,
@@ -47,7 +57,7 @@ async function buildServiceFiles() {
         commonjs({
           include: /node_modules/,
           requireReturnsDefault: "auto",
-          esmExternals: true,
+          // esmExternals: true,
           transformMixedEsModules: true,
         }),
         swc({
@@ -80,8 +90,9 @@ async function buildServiceFiles() {
 
     await bundle.write({
       file: `dist/${key}.js`,
-      format: "es",
+      format: "iife",
       inlineDynamicImports: true,
+      compact: false
     });
   }
 
@@ -97,7 +108,6 @@ async function buildServiceFiles() {
       path.join(patchesDir, cssFile),
       path.join(patchesDistDir, cssFile)
     );
-    console.log(`Copied ${cssFile}`);
   }
 }
 

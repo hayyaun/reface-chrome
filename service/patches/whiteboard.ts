@@ -1,5 +1,3 @@
-import html from "nanohtml";
-
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] ?? 0.5) as number;
 const fontFamily = (config["font-family"] ?? "Roboto") as string;
@@ -227,15 +225,12 @@ function createSettingsMenu() {
 
 function init() {
   // 1. Create canvas
-  state.canvas = html`
-    <canvas
-      class="reface--whiteboard-canvas"
-      width="${canvasSize[0] * scale}"
-      height="${canvasSize[1] * scale}"
-      style="height: ${canvasSize[1]}px"
-    ></canvas>
-  ` as HTMLCanvasElement;
+  state.canvas = document.createElement("canvas");
   document.body.appendChild(state.canvas);
+  state.canvas.width = canvasSize[0] * scale;
+  state.canvas.height = canvasSize[1] * scale;
+  state.canvas.style.height = `${canvasSize[1]}px`;
+  state.canvas.classList.add("reface--whiteboard-canvas");
 
   const ctx = state.canvas.getContext("2d")!;
   addDrawListeners(ctx);
