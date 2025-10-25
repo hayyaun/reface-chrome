@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { render } from "preact";
 
 const config = window.__rc_config["whiteboard"];
@@ -225,24 +226,26 @@ function createSettingsMenu() {
   });
 }
 
+function UI() {
+  return <div>Hi</div>;
+}
+
 function init() {
   // 1. Create canvas
-  function Canvas() {
-    return (
-      <canvas
-        className="reface--whiteboard-canvas"
-        width={canvasSize[0] * scale}
-        height={canvasSize[1] * scale}
-        style={{ height: `${canvasSize[1]}px` }}
-      />
-    );
-  }
-
-  render(<Canvas />, document.body);
+  state.canvas = document.createElement("canvas");
+  document.body.appendChild(state.canvas);
+  state.canvas.width = canvasSize[0] * scale;
+  state.canvas.height = canvasSize[1] * scale;
+  state.canvas.style.height = `${canvasSize[1]}px`;
+  state.canvas.classList.add("reface--whiteboard-canvas");
 
   const ctx = state.canvas.getContext("2d")!;
   addDrawListeners(ctx);
   addTypingListeners(ctx);
+
+  const uiRoot = document.createElement("div");
+  document.body.appendChild(uiRoot);
+  render(<UI />, uiRoot);
 
   // 2. Create panel
   state.panel = document.createElement("div");

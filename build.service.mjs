@@ -72,7 +72,7 @@ async function buildServiceFiles() {
                 react: {
                   pragma: "h",
                   pragmaFrag: "Fragment",
-                  runtime: "classic",
+                  runtime: "automatic",
                   importSource: "preact"
                 }
               },
