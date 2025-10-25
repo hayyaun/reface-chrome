@@ -9,7 +9,9 @@ type Mode = "draw" | "type" | "work";
 
 type Pos = [x: number, y: number];
 
-// TODO add undo/redo at least for 1 step
+// TODO add undo/redo button
+// TODO add eraser button
+// TODO add clean button
 
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] as number) ?? 0.5;
@@ -49,12 +51,35 @@ const getModeText = (mode: Mode) => {
   return "Normal";
 };
 
+const loadData = async () => {
+  const res = await api.runtime.sendMessage({
+    to: "background",
+    action: "whiteboard_get_item",
+    data: window.location.href,
+  });
+  if (!res?.data) return;
+  await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = res.data;
+    img.onload = () => {
+      ctx.value?.drawImage(img, 0, 0);
+      resolve(null);
+    };
+    img.onerror = reject;
+  });
+};
+
 function UI() {
   const _canvas = useRef<HTMLCanvasElement>(null!);
 
-  // Draw effects
+  // Load
   useEffect(() => {
     ctx.value = _canvas.current.getContext("2d")!;
+    loadData();
+  }, []);
+
+  // Draw effects
+  useEffect(() => {
     let drawing = false;
     function onMouseDown(ev: MouseEvent) {
       if (!ctx.value) return;
@@ -159,7 +184,7 @@ function Panel() {
       <div
         aria-label="Mode button"
         className="reface--whiteboard-btn"
-        style={{ fontSize: 16, padding: "4px 12px", aspectRatio: "auto" }}
+        style={{ padding: "4px 12px", aspectRatio: "auto" }}
         onClick={() => (mode.value = fallbackMode)}
       >
         {getModeText(mode.value)}

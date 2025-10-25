@@ -50,6 +50,7 @@
 }
 
 .reface--whiteboard-btn {
+  height: 32px;
   aspect-ratio: 1;
   position: relative;
   cursor: pointer;
@@ -61,16 +62,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all ease 0.3s;
 }
-
-.reface--whiteboard-btn > img {
-  width: 18px;
-  height: 18px;
+.reface--whiteboard-btn:hover {
+  background-color: #fff1;
+}
+.reface--whiteboard-btn:active {
+  background-color: #fff2;
 }
 
 .reface--whiteboard-btn-active {
   box-shadow: 0 0 0 2px #fff9;
   background-color: #fff2;
+}
+
+.reface--whiteboard-btn > img {
+  width: 18px;
+  height: 18px;
 }
 
 .reface--whiteboard-dot {

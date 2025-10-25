@@ -1,4 +1,4 @@
-import type { MessageCallback } from "../types";
+import type { ExtractCallback, Message, MessageCallback } from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const _api = typeof chrome !== "undefined" ? chrome : browser;
@@ -11,12 +11,12 @@ const api = {
   ..._api,
   runtime: {
     ..._api.runtime,
-    sendMessage<T extends MessageCallback, R extends ReturnType<T>>(
-      msg: Parameters<T>[0],
-    ): Promise<R | undefined> {
-      return typeof browser !== "undefined"
-        ? browser.runtime.sendMessage(msg)
-        : new Promise((resolve) => chrome.runtime.sendMessage(msg, resolve));
+    sendMessage<T extends Message>(msg: T) {
+      return (
+        typeof browser !== "undefined"
+          ? browser.runtime.sendMessage(msg)
+          : new Promise((resolve) => chrome.runtime.sendMessage(msg, resolve))
+      ) as ReturnType<ExtractCallback<T>>;
     },
     onMessage: {
       ..._api.runtime.onMessage,
@@ -33,7 +33,6 @@ const api = {
               }
             });
       },
-
       removeListener<T extends MessageCallback>(cb: T) {
         return typeof browser !== "undefined"
           ? browser.runtime.onMessage.removeListener(cb)
