@@ -1,9 +1,9 @@
 import alias from "@rollup/plugin-alias";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
+import replace from "@rollup/plugin-replace";
 import swc from "@rollup/plugin-swc";
 import terser from "@rollup/plugin-terser";
-import replace from "@rollup/plugin-replace";
 import fs from "fs";
 import path, { dirname } from "path";
 import { rollup } from "rollup";
@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 const patchesDir = "service/patches";
 const patchFiles = fs
   .readdirSync(patchesDir)
-  .filter((f) => f.endsWith(".ts"))
+  .filter((f) => f.endsWith(".ts") || f.endsWith('.tsx'))
   .reduce(
     (acc, f) => {
       const name = path.parse(f).name;
@@ -65,9 +65,18 @@ async function buildServiceFiles() {
             jsc: {
               parser: {
                 syntax: "typescript",
+                tsx: true,  // Enable JSX
               },
               target: "es2020",
-            },
+              transform: {
+                react: {
+                  pragma: "h",
+                  pragmaFrag: "Fragment",
+                  runtime: "classic",
+                  importSource: "preact"
+                }
+              },
+            }
           },
         }),
         terser({

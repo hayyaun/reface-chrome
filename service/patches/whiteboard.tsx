@@ -1,3 +1,5 @@
+import { render } from "preact";
+
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] ?? 0.5) as number;
 const fontFamily = (config["font-family"] ?? "Roboto") as string;
@@ -225,12 +227,18 @@ function createSettingsMenu() {
 
 function init() {
   // 1. Create canvas
-  state.canvas = document.createElement("canvas");
-  document.body.appendChild(state.canvas);
-  state.canvas.width = canvasSize[0] * scale;
-  state.canvas.height = canvasSize[1] * scale;
-  state.canvas.style.height = `${canvasSize[1]}px`;
-  state.canvas.classList.add("reface--whiteboard-canvas");
+  function Canvas() {
+    return (
+      <canvas
+        className="reface--whiteboard-canvas"
+        width={canvasSize[0] * scale}
+        height={canvasSize[1] * scale}
+        style={{ height: `${canvasSize[1]}px` }}
+      />
+    );
+  }
+
+  render(<Canvas />, document.body);
 
   const ctx = state.canvas.getContext("2d")!;
   addDrawListeners(ctx);
