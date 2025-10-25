@@ -50,8 +50,8 @@ function UI() {
 
   // Draw effects
   useEffect(() => {
-    let drawing = false;
     ctx.value = _canvas.current.getContext("2d")!;
+    let drawing = false;
     function onMouseDown(ev: MouseEvent) {
       if (!ctx.value) return;
       if (mode.value !== "draw") return;
@@ -153,9 +153,10 @@ function UI() {
             fontFamily: fontFamily.value,
             left: pos.value[0] + "px",
             top: pos.value[1] + "px",
+            height: fontSize.value + "px",
           }}
         >
-          {text || "."}
+          {text}
         </div>
       )}
     </>

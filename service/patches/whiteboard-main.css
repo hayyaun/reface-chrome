@@ -83,7 +83,6 @@
 .reface--whiteboard-text-preview {
   position: absolute;
   transform: translateY(-100%); /* same as canvas text */
-  line-height: 0.75;
   animation: typing 1s ease alternate infinite;
   transition: all ease 0.5s;
   padding-right: 6px;
