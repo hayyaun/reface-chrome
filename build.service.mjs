@@ -14,16 +14,24 @@ const __dirname = dirname(__filename);
 
 const patchesDir = "service/patches";
 const patchFiles = fs
-  .readdirSync(patchesDir)
-  .filter((f) => f.endsWith(".ts") || f.endsWith('.tsx'))
-  .reduce(
-    (acc, f) => {
-      const name = path.parse(f).name;
-      acc[`patches/${name}`] = path.join(patchesDir, f);
-      return acc;
-    },
-    {},
-  );
+  .readdirSync(patchesDir, { withFileTypes: true })
+  .reduce((acc, dirent) => {
+    if (dirent.isFile() && (dirent.name.endsWith(".ts") || dirent.name.endsWith('.tsx'))) {
+      // Direct file: foo-bar.tsx
+      const name = path.parse(dirent.name).name;
+      acc[`patches/${name}`] = path.join(patchesDir, dirent.name);
+    } else if (dirent.isDirectory()) {
+      // Check for index.tsx or index.ts in subdirectory
+      const subDir = path.join(patchesDir, dirent.name);
+      const indexFile = ['index.tsx', 'index.ts'].find(f =>
+        fs.existsSync(path.join(subDir, f))
+      );
+      if (indexFile) {
+        acc[`patches/${dirent.name}`] = path.join(subDir, indexFile);
+      }
+    }
+    return acc;
+  }, {});
 
 const allScriptFiles = {
   background: "service/index.ts",
