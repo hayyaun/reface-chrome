@@ -3,15 +3,16 @@ import clsx from "clsx";
 import { render } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 
+// TODO add undo/redo at least for 1 step
+
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] ?? 0.5) as number;
 const _fontFamily = (config["font-family"] ?? "Roboto") as string;
-
 const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 
-// TODO add undo/redo at least for 1 step
-
 type Mode = "draw" | "type" | "settings" | "work";
+
+type Pos = [x: number, y: number];
 
 const fallbackMode: Mode = "work";
 
@@ -21,8 +22,6 @@ const getModeText = (mode: Mode) => {
   if (mode === "settings") return "Settings";
   return "Normal";
 };
-
-type Pos = [x: number, y: number];
 
 function UI() {
   const [color, setColor] = useState("#ff0000");
