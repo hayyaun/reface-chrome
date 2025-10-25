@@ -144,21 +144,7 @@ function UI() {
       />
       <Panel />
       {settingsOpen.value && <Settings />}
-      {pos.value && (
-        <div
-          className="reface--whiteboard-text-preview"
-          style={{
-            color: color.value,
-            fontSize: fontSize.value + "px",
-            fontFamily: fontFamily.value,
-            left: pos.value[0] + "px",
-            top: pos.value[1] + "px",
-            height: fontSize.value + "px",
-          }}
-        >
-          {text}
-        </div>
-      )}
+      <TextPreview />
     </>
   );
 }
@@ -255,6 +241,25 @@ function Settings() {
           onInput={(ev) => (fontSize.value = parseFloat(ev.currentTarget.value))}
         />
       </div>
+    </div>
+  );
+}
+
+function TextPreview() {
+  if (!pos.value) return;
+  return (
+    <div
+      className="reface--whiteboard-text-preview"
+      style={{
+        color: color.value,
+        fontSize: fontSize.value + "px",
+        fontFamily: fontFamily.value,
+        left: pos.value[0] + "px",
+        top: pos.value[1] + "px",
+        height: fontSize.value + "px",
+      }}
+    >
+      {text}
     </div>
   );
 }
