@@ -1,3 +1,3 @@
 - TODO add vite-compile-time back for simplicity of contribution, merging profile
 - TODO provide solution for script injection without refreshing
-- TODO update tsconfig: avoid using chrome. or browser. , separate dir configs
+- TODO update tsconfig: avoid using chrome. or browser.
