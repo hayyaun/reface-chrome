@@ -73,7 +73,8 @@ canvas.reface--whiteboard-canvas {
   background-color: #fff2;
 }
 
-.reface--whiteboard-picker {
+.reface--whiteboard-dot {
+  flex: 0 0 auto;
   background-color: currentColor;
   width: 8px;
   height: 8px;
@@ -97,6 +98,19 @@ canvas.reface--whiteboard-canvas {
 .reface--whiteboard-settings-btn > img {
   width: 18px;
   height: 18px;
+}
+
+.reface--whiteboard-row {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reface--whiteboard-flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes typing {

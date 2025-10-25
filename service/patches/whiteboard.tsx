@@ -1,7 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 import clsx from "clsx";
 import { render } from "preact";
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type StateUpdater,
+} from "preact/hooks";
 
 // TODO add undo/redo at least for 1 step
 
@@ -10,7 +17,7 @@ const scale = (config["scale"] ?? 0.5) as number;
 const _fontFamily = (config["font-family"] ?? "Roboto") as string;
 const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 
-type Mode = "draw" | "type" | "settings" | "work";
+type Mode = "draw" | "type" | "work";
 
 type Pos = [x: number, y: number];
 
@@ -19,18 +26,18 @@ const fallbackMode: Mode = "work";
 const getModeText = (mode: Mode) => {
   if (mode === "draw") return "Draw mode";
   if (mode === "type") return "Type mode";
-  if (mode === "settings") return "Settings";
   return "Normal";
 };
 
 function UI() {
   const [color, setColor] = useState("#ff0000");
   const [mode, setMode] = useState(fallbackMode);
-  const [thickness] = useState(5 * scale);
+  const [thickness, setThickness] = useState(6);
   const [fontFamily] = useState(_fontFamily);
-  const [fontSize] = useState(48);
+  const [fontSize, setFontSize] = useState(48);
   const [pos, setPosition] = useState<Pos | null>(null);
   const [text, setText] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const _canvas = useRef<HTMLCanvasElement>(null!);
   const ctx = useRef<CanvasRenderingContext2D>(null!);
@@ -59,7 +66,7 @@ function UI() {
       drawing = true;
       ctx.current.beginPath();
       ctx.current.strokeStyle = color;
-      ctx.current.lineWidth = thickness; // TODO update
+      ctx.current.lineWidth = thickness * scale;
       ctx.current.lineJoin = "round";
       ctx.current.lineCap = "round";
       ctx.current.moveTo(ev.offsetX * scale, ev.offsetY * scale);
@@ -135,78 +142,27 @@ function UI() {
     };
   }, [mode, pos, color, fontFamily, fontSize]);
 
-  const modeText = useMemo(() => getModeText(mode), [mode]);
-
   return (
     <>
       <canvas
         ref={_canvas}
         width={canvasSize[0] * scale}
         height={canvasSize[1] * scale}
+        className="reface--whiteboard-canvas"
         style={{
           height: `${canvasSize[1]}px`,
           pointerEvents: mode === "work" ? "none" : "all",
         }}
-        className="reface--whiteboard-canvas"
       />
-
-      <div aria-label="Panel" className="reface--whiteboard-panel">
-        <div
-          aria-label="Mode button"
-          className="reface--whiteboard-btn"
-          onClick={() => setMode(fallbackMode)}
-        >
-          {modeText}
-        </div>
-        <div
-          aria-label="Draw button"
-          className={clsx("reface--whiteboard-btn", {
-            "reface--whiteboard-btn-active": mode === "draw",
-          })}
-          onClick={() => setMode("draw")}
-        >
-          <div className="reface--whiteboard-picker reface--whiteboard-color" />
-        </div>
-        <div
-          aria-label="Typing button"
-          className={clsx("reface--whiteboard-btn", "reface--whiteboard-typing-btn", {
-            "reface--whiteboard-btn-active": mode === "type",
-          })}
-          onClick={() => setMode("type")}
-        >
-          T
-        </div>
-        <div
-          aria-label="Settings button"
-          className={clsx("reface--whiteboard-btn", "reface--whiteboard-settings-btn", {
-            "reface--whiteboard-btn-active": mode === "settings",
-          })}
-          onClick={() => setMode("settings")}
-        >
-          <img src={chrome.runtime.getURL("images/icons/Settings3Line.svg")} />
-        </div>
-      </div>
-
-      <div
-        aria-label="Settings"
-        className={clsx("reface--whiteboard-settings", {
-          "reface--whiteboard-hidden": mode !== "settings",
-        })}
-      >
-        <label
-          htmlFor="reface--whiteboard-color-picker"
-          className="reface--whiteboard-picker reface--whiteboard-color"
-        >
-          <input
-            id="reface--whiteboard-color-picker"
-            type="color"
-            style={{ display: "none" }}
-            value={color}
-            onInput={(e) => setColor(e.currentTarget.value)}
-          />
-        </label>
-      </div>
-
+      <Panel
+        mode={mode}
+        setMode={setMode}
+        settingsOpen={settingsOpen}
+        setSettingsOpen={setSettingsOpen}
+      />
+      {settingsOpen && (
+        <Settings {...{ mode, color, setColor, thickness, setThickness, fontSize, setFontSize }} />
+      )}
       {pos && (
         <div
           className="reface--whiteboard-text-preview"
@@ -222,6 +178,126 @@ function UI() {
         </div>
       )}
     </>
+  );
+}
+
+function Panel({
+  mode,
+  setMode,
+  settingsOpen,
+  setSettingsOpen,
+}: {
+  mode: Mode;
+  setMode: Dispatch<StateUpdater<Mode>>;
+  settingsOpen: boolean;
+  setSettingsOpen: Dispatch<StateUpdater<boolean>>;
+}) {
+  const modeText = useMemo(() => getModeText(mode), [mode]);
+  return (
+    <div aria-label="Panel" className="reface--whiteboard-panel">
+      <div
+        aria-label="Mode button"
+        className="reface--whiteboard-btn"
+        onClick={() => setMode(fallbackMode)}
+      >
+        {modeText}
+      </div>
+      <div
+        aria-label="Draw button"
+        className={clsx("reface--whiteboard-btn", {
+          "reface--whiteboard-btn-active": mode === "draw",
+        })}
+        onClick={() => setMode("draw")}
+      >
+        <div className="reface--whiteboard-dot reface--whiteboard-color" />
+      </div>
+      <div
+        aria-label="Typing button"
+        className={clsx("reface--whiteboard-btn", "reface--whiteboard-typing-btn", {
+          "reface--whiteboard-btn-active": mode === "type",
+        })}
+        onClick={() => setMode("type")}
+      >
+        T
+      </div>
+      <div
+        aria-label="Settings button"
+        className={clsx("reface--whiteboard-btn", "reface--whiteboard-settings-btn", {
+          "reface--whiteboard-btn-active": settingsOpen,
+        })}
+        onClick={() => setSettingsOpen(!settingsOpen)}
+      >
+        <img src={chrome.runtime.getURL("images/icons/Settings3Line.svg")} />
+      </div>
+    </div>
+  );
+}
+
+function Settings({
+  color,
+  setColor,
+  thickness,
+  setThickness,
+  fontSize,
+  setFontSize,
+}: {
+  mode: Mode;
+  color: string;
+  setColor: Dispatch<StateUpdater<string>>;
+  thickness: number;
+  setThickness: Dispatch<StateUpdater<number>>;
+  fontSize: number;
+  setFontSize: Dispatch<StateUpdater<number>>;
+}) {
+  return (
+    <div aria-label="Settings" className="reface--whiteboard-settings">
+      <div aria-label="Color picker">
+        <input
+          id="reface--whiteboard--color-picker"
+          type="color"
+          style={{ display: "none" }}
+          value={color}
+          onInput={(ev) => setColor(ev.currentTarget.value)}
+        />
+        <label
+          htmlFor="reface--whiteboard--color-picker"
+          className="reface--whiteboard-row"
+          style={{ cursor: "pointer" }}
+        >
+          <p>Select color</p>
+          <div className="reface--whiteboard-flex-center" style={{ width: 20, height: 20 }}>
+            <div
+              className="reface--whiteboard-dot reface--whiteboard-color"
+              style={{ width: thickness, height: thickness }}
+            />
+          </div>
+        </label>
+      </div>
+      <div aria-label="Thickness" className="reface--whiteboard-row">
+        <label htmlFor="reface--whiteboard--thickness">Thickness</label>
+        <input
+          type="range"
+          id="reface--whiteboard--thickness"
+          name="thickness"
+          min={1}
+          max={20}
+          value={thickness}
+          onInput={(ev) => setThickness(parseFloat(ev.currentTarget.value))}
+        />
+      </div>
+      <div aria-label="Font size" className="reface--whiteboard-row">
+        <label htmlFor="reface--whiteboard--font-size">Font Size</label>
+        <input
+          type="range"
+          id="reface--whiteboard--font-size"
+          name="font-size"
+          min={8}
+          max={128}
+          value={fontSize}
+          onInput={(ev) => setFontSize(parseFloat(ev.currentTarget.value))}
+        />
+      </div>
+    </div>
   );
 }
 
