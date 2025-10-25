@@ -65,7 +65,7 @@ async function buildServiceFiles() {
             jsc: {
               parser: {
                 syntax: "typescript",
-                tsx: true,  // Enable JSX
+                tsx: true,
               },
               target: "es2020",
               transform: {
