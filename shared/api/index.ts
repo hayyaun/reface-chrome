@@ -1,4 +1,4 @@
-import type { ExtractCallback, Message, MessageCallback } from "../types";
+import type { ExtractReturnType, Message } from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const _api = typeof chrome !== "undefined" ? chrome : browser;
@@ -16,38 +16,30 @@ const api = {
         typeof browser !== "undefined"
           ? browser.runtime.sendMessage(msg)
           : new Promise((resolve) => chrome.runtime.sendMessage(msg, resolve))
-      ) as ReturnType<ExtractCallback<T>>;
+      ) as ExtractReturnType<T>;
     },
     onMessage: {
       ..._api.runtime.onMessage,
-      addListener<T extends MessageCallback>(cb: T) {
+      addListener(cb: <T extends Message>(msg: T) => ExtractReturnType<T>) {
         return typeof browser !== "undefined"
           ? browser.runtime.onMessage.addListener(cb)
-          : chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-              const result = cb(msg, sender);
-              if (result instanceof Promise) {
-                result.then((value) => {
-                  if (value !== null) sendResponse(value);
-                });
-                return true; // keep channel open for async
-              } else if (result !== null) {
-                sendResponse(result);
-              }
+          : chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+              const result = cb(msg);
+              result.then((value) => {
+                if (value !== null) sendResponse(value);
+              });
+              return true; // keep channel open for async
             });
       },
-      removeListener<T extends MessageCallback>(cb: T) {
+      removeListener(cb: <T extends Message>(msg: T) => ExtractReturnType<T>) {
         return typeof browser !== "undefined"
           ? browser.runtime.onMessage.removeListener(cb)
-          : chrome.runtime.onMessage.removeListener((msg, sender, sendResponse) => {
-              const result = cb(msg, sender);
-              if (result instanceof Promise) {
-                result.then((value) => {
-                  if (value !== null) sendResponse(value);
-                });
-                return true; // keep channel open for async
-              } else if (result !== null) {
-                sendResponse(result);
-              }
+          : chrome.runtime.onMessage.removeListener((msg, _sender, sendResponse) => {
+              const result = cb(msg);
+              result.then((value) => {
+                if (value !== null) sendResponse(value);
+              });
+              return true; // keep channel open for async
             });
       },
     },

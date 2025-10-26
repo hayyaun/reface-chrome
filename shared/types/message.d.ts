@@ -12,18 +12,20 @@ interface BaseMessage<TO extends Entity, ACT extends string, T> {
 type BaseMessageCallback<TO extends Entity, ACT extends string, T, R> = (msg: BaseMessage<TO, ACT, T>, sender: browser.runtime.MessageSender) => Promise<R | null>;
 
 export type MessageCallback =
-  | BaseMessageCallback<"background", "updateBadge", number, void>
-  | BaseMessageCallback<"background", "samantha_ask", ChatCompletionMessageParam[], void>
-  | BaseMessageCallback<"popup", "samantha_thinking", SamanthaThinkingMessageData, void>
-  | BaseMessageCallback<"content", "magic_eraser_selection_mode", boolean, string | undefined>
+  | BaseMessageCallback<"background", "updateBadge", number, undefined>
+  | BaseMessageCallback<"background", "samantha_ask", ChatCompletionMessageParam[], undefined>
+  | BaseMessageCallback<"popup", "samantha_thinking", SamanthaThinkingMessageData, undefined>
+  | BaseMessageCallback<"content", "magic_eraser_selection_mode", boolean, undefined>
   | BaseMessageCallback<"background", "magic_eraser_on_select", MagicEraserOnSelectMessageData, string>
   | BaseMessageCallback<"background", "magic_eraser_get_item", string, MagicEraserDBItem | undefined>
-  | BaseMessageCallback<"background", "whiteboard_set_item", WhiteboardDBItem, string | undefined>
-  | BaseMessageCallback<"background", "whiteboard_get_item", string, WhiteboardDBItem | undefined>;
+  | BaseMessageCallback<"background", "whiteboard_set_item", WhiteboardDBItem, string>
+  | BaseMessageCallback<"background", "whiteboard_get_item", string, WhiteboardDBItem | undefined>
+  | BaseMessageCallback<never, never, never, Promise<null>>;
 
 export type Message = Parameters<MessageCallback>[0];
 
 type ExtractCallback<T extends Message> = Extract<MessageCallback, BaseMessageCallback<T["to"], T["action"], T["data"], unknown>>;
+type ExtractReturnType<T extends Message> = ReturnType<ExtractCallback<T>>;
 
 // Patches
 

@@ -27,10 +27,8 @@ export default function Samantha() {
   useEffect(() => {
     if (import.meta.env.DEV) return;
     async function listener(msg: Message) {
-      if (msg.to !== "popup") return;
-      if (msg.action !== "samantha_thinking") return;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setThinking(msg.data as any);
+      if (msg.to !== "popup" || msg.action !== "samantha_thinking") return null;
+      setThinking(msg.data);
     }
     api.runtime.onMessage.addListener(listener);
     return () => {

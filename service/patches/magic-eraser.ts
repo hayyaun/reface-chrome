@@ -1,6 +1,6 @@
 import { getElementByXPath, getElementXPath } from "@/service/utils";
 import api from "@/shared/api";
-import type { MagicEraserDBItem } from "@/shared/types";
+import type { Message } from "@/shared/types";
 
 // Selection Mode
 
@@ -70,17 +70,15 @@ function stopSelectionMode() {
 }
 
 api.runtime.onMessage.addListener(async (msg) => {
-  if (msg.to !== "content") return;
-  if (msg.action === "magic_eraser_selection_mode") {
-    if (msg.data) beginSelectionMode();
-    else stopSelectionMode();
-  }
+  if (msg.to !== "content" || msg.action !== "magic_eraser_selection_mode") return null;
+  if (msg.data) beginSelectionMode();
+  else stopSelectionMode();
 });
 
 // Persist Mode
 
 async function apply() {
-  const item = await api.runtime.sendMessage<MagicEraserDBItem>({
+  const item = await api.runtime.sendMessage({
     to: "background",
     action: "magic_eraser_get_item",
     data: window.location.hostname,
