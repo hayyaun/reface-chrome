@@ -9,7 +9,7 @@ interface BaseMessage<TO extends Entity, ACT extends string, T> {
   data: T;
 }
 
-type BaseMessageCallback<TO extends Entity, ACT extends string, T, R> = (msg: BaseMessage<TO, ACT, T>, sender: browser.runtime.MessageSender) => Promise<R>;
+type BaseMessageCallback<TO extends Entity, ACT extends string, T, R> = (msg: BaseMessage<TO, ACT, T>, sender: browser.runtime.MessageSender) => Promise<R | null>;
 
 export type MessageCallback =
   | BaseMessageCallback<"background", "updateBadge", number, void>

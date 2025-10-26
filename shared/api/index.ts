@@ -26,7 +26,9 @@ const api = {
           : chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
               const result = cb(msg, sender);
               if (result instanceof Promise) {
-                result.then(sendResponse);
+                result.then((value) => {
+                  if (value !== null) sendResponse(value);
+                });
                 return true; // keep channel open for async
               } else {
                 sendResponse(result);
@@ -39,7 +41,9 @@ const api = {
           : chrome.runtime.onMessage.removeListener((msg, sender, sendResponse) => {
               const result = cb(msg, sender);
               if (result instanceof Promise) {
-                result.then(sendResponse);
+                result.then((value) => {
+                  if (value !== null) sendResponse(value);
+                });
                 return true; // keep channel open for async
               } else {
                 sendResponse(result);

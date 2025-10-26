@@ -50,8 +50,8 @@ mode.subscribe((value) => {
 });
 
 const getModeText = (mode: Mode) => {
-  if (mode === "draw") return "Draw mode";
-  if (mode === "type") return "Type mode";
+  if (mode === "draw") return "Draw";
+  if (mode === "type") return "Type";
   return "Normal";
 };
 
@@ -107,13 +107,18 @@ const drawData = async (dataURL: string) => {
   });
 };
 
-const loadData = async () => {
+const initCanvasData = async () => {
   const res = await api.runtime.sendMessage({
     to: "background",
     action: "whiteboard_get_item",
     data: window.location.href,
   });
-  if (!res?.data) return;
+  console.debug({ saved: res });
+  if (!res?.data) {
+    saveData(); // initial state = empty
+    return;
+  }
+  // initial state = from storage
   addBuffer(res.data);
   drawData(res.data);
 };
@@ -138,8 +143,8 @@ const clearCanvas = (save = false) => {
 
 // Effects
 
-// Draw effects
 effect(() => {
+  // Draw effects
   if (!ctx.value) return;
   let drawing = false;
   function onMouseDown(ev: MouseEvent) {
@@ -176,8 +181,8 @@ effect(() => {
   };
 });
 
-// Typing effects
 effect(() => {
+  // Typing effects
   if (!ctx.value) return;
   function stopPropagation(ev: KeyboardEvent) {
     if (mode.value !== "type") return;
@@ -236,7 +241,7 @@ function UI() {
       <canvas
         ref={(canvas) => {
           ctx.value = canvas!.getContext("2d")!;
-          loadData();
+          initCanvasData();
         }}
         width={canvasSize[0] * scale}
         height={canvasSize[1] * scale}
