@@ -65,6 +65,11 @@ const patches: { [key: string]: Patch } = {
     color: "#80ff95",
     css: { "/*": "main" },
     config: {
+      "auto-save": {
+        name: "Auto Save",
+        details: "Automatically saves the canvas state, persistant over reloads",
+        defaultValue: true,
+      },
       scale: {
         name: "Resolution",
         details: "Higher resolution leads to better quality but more lags on older systems",
@@ -80,7 +85,7 @@ const patches: { [key: string]: Patch } = {
       "font-family": {
         name: "Font Family",
         details: "Default font fammily for typing mode",
-        defaultValue: "Roboto",
+        defaultValue: "Roboto, sans-serif",
         options: [
           { name: "Roboto", value: "Roboto, sans-serif" },
           { name: "Arial", value: "Arial, sans-serif" },

@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import api from "@/shared/api";
-import { signal } from "@preact/signals";
+import { computed, effect, signal } from "@preact/signals";
 import clsx from "clsx";
 import { render } from "preact";
 import { useEffect, useRef } from "preact/hooks";
@@ -14,14 +14,18 @@ type Pos = [x: number, y: number];
 
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] as number) ?? 0.5;
+const autoPersist = (config["auto-save"] as boolean) ?? false;
 const _fontFamily = (config["font-family"] as string) ?? "Roboto";
 
 const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 const fallbackMode: Mode = "work";
 
+const MAX_BUFFER_SIZE = 10;
+
 // Signals
 const ctx = signal<CanvasRenderingContext2D | null>(null);
-const buffer = signal<string | undefined>(undefined);
+const buffer = signal<string[]>([]);
+const shift = signal(0); // present
 const color = signal("#ff0000");
 const mode = signal<Mode>("draw");
 const thickness = signal(6);
@@ -52,6 +56,46 @@ const getModeText = (mode: Mode) => {
   return "Normal";
 };
 
+// Buffer
+
+const canUndo = computed(() => shift.value < buffer.value.length - 1);
+const canRedo = computed(() => shift.value > 0);
+const index = computed(() => buffer.value.length - 1 - shift.value);
+
+effect(() => {
+  console.debug("buffer", buffer.value.length, "shift", shift.value, "index", index.value);
+});
+
+const addBuffer = (dataURL: string) => {
+  const newBuffer = buffer.value.slice(); // clone
+  while (shift.value > 0) {
+    // make it present
+    newBuffer.pop();
+    shift.value--;
+  }
+  if (newBuffer.length >= MAX_BUFFER_SIZE) {
+    newBuffer.shift();
+  }
+  newBuffer.push(dataURL);
+  buffer.value = newBuffer; // triggers subscriptions
+};
+
+const undo = () => {
+  if (!canUndo.value) return;
+  shift.value++;
+  clearCanvas();
+  drawData(buffer.value[index.value]);
+};
+
+const redo = () => {
+  if (!canRedo.value) return;
+  shift.value--;
+  clearCanvas();
+  drawData(buffer.value[index.value]);
+};
+
+// Canvas
+
 const drawData = async (dataURL: string) => {
   await new Promise((resolve, reject) => {
     const img = new Image();
@@ -71,12 +115,29 @@ const loadData = async () => {
     data: window.location.href,
   });
   if (!res?.data) return;
+  addBuffer(res.data);
   drawData(res.data);
+};
+
+const saveData = (persist = false) => {
+  const data = ctx.value?.canvas.toDataURL();
+  if (!data) return alert("Cannot save canvas");
+  addBuffer(data);
+  if (autoPersist || persist) {
+    api.runtime.sendMessage({
+      to: "background",
+      action: "whiteboard_set_item",
+      data: { url: window.location.href, data },
+    });
+  }
 };
 
 const clearCanvas = () => {
   ctx.value?.clearRect(0, 0, ctx.value?.canvas.width, ctx.value?.canvas.height);
+  saveData();
 };
+
+// UI
 
 function UI() {
   const _canvas = useRef<HTMLCanvasElement>(null!);
@@ -107,16 +168,19 @@ function UI() {
       ctx.value.lineTo(ev.offsetX * scale, ev.offsetY * scale);
       ctx.value.stroke();
     }
-    const reset = () => (drawing = false);
+    const reset = (save: boolean) => {
+      if (save) saveData();
+      drawing = false;
+    };
     _canvas.current.addEventListener("mousedown", onMouseDown);
     _canvas.current.addEventListener("mousemove", onMouseMove);
-    _canvas.current.addEventListener("mouseup", reset);
-    _canvas.current.addEventListener("mouseout", reset);
+    _canvas.current.addEventListener("mouseup", () => reset(true));
+    _canvas.current.addEventListener("mouseout", () => reset(false));
     return () => {
       _canvas.current.removeEventListener("mousedown", onMouseDown);
       _canvas.current.removeEventListener("mousemove", onMouseMove);
-      _canvas.current.removeEventListener("mouseup", reset);
-      _canvas.current.removeEventListener("mouseout", reset);
+      _canvas.current.removeEventListener("mouseup", () => reset(true));
+      _canvas.current.removeEventListener("mouseout", () => reset(false));
     };
   }, []);
 
@@ -140,6 +204,7 @@ function UI() {
           ctx.value.fillText(text.value, pos.value[0] * scale, pos.value[1] * scale);
         }
         // reset
+        saveData();
         text.value = "";
         mode.value = fallbackMode;
         pos.value = null;
@@ -176,8 +241,10 @@ function UI() {
         width={canvasSize[0] * scale}
         height={canvasSize[1] * scale}
         style={{
-          height: `${canvasSize[1]}px`,
+          width: `${canvasSize[0]}px`, // initial width
+          height: `${canvasSize[1]}px`, // initial width
           pointerEvents: mode.value === "work" ? "none" : "all",
+          border: mode.value === "work" ? "none" : "1px solid red",
         }}
       />
       <Panel />
@@ -226,49 +293,29 @@ function Panel() {
       >
         <img src={chrome.runtime.getURL("images/icons/RiSettings3Line.svg")} />
       </div>
-      <div
-        title="Save"
-        className={clsx("reface--whiteboard-btn", {})}
-        onClick={() => {
-          const data = ctx.value?.canvas.toDataURL();
-          if (!data) return alert("Cannot save canvas");
-          api.runtime.sendMessage({
-            to: "background",
-            action: "whiteboard_set_item",
-            data: { url: window.location.href, data },
-          });
-        }}
-      >
+      <div title="Save" className="reface--whiteboard-btn" onClick={() => saveData(true)}>
         <img src={chrome.runtime.getURL("images/icons/RiSaveLine.svg")} />
       </div>
-      <div
-        title="Clear"
-        className={clsx("reface--whiteboard-btn", {})}
-        onClick={() => clearCanvas()}
-      >
+      <div title="Clear" className="reface--whiteboard-btn" onClick={clearCanvas}>
         <img src={chrome.runtime.getURL("images/icons/RiDeleteBin.svg")} />
       </div>
       <div
-        title={buffer.value ? "Redo" : "Undo"}
-        className={clsx("reface--whiteboard-btn", {})}
-        onClick={() => {
-          if (!buffer.value) {
-            // undo
-            const data = ctx.value?.canvas.toDataURL();
-            buffer.value = data;
-            clearCanvas();
-            loadData(); // if saved
-            return;
-          }
-          // redo
-          clearCanvas();
-          drawData(buffer.value);
-          buffer.value = undefined;
-        }}
+        title="Undo"
+        className="reface--whiteboard-btn"
+        onClick={canUndo.value ? undo : undefined}
+        style={{ opacity: canUndo.value ? 1 : 0.5, cursor: canUndo.value ? "pointer" : "auto" }}
+      >
+        <img src={chrome.runtime.getURL("images/icons/RiGoBackLine.svg")} />
+      </div>
+      <div
+        title="Redo"
+        className="reface--whiteboard-btn"
+        onClick={canRedo.value ? redo : undefined}
+        style={{ opacity: canRedo.value ? 1 : 0.5, cursor: canRedo.value ? "pointer" : "auto" }}
       >
         <img
           src={chrome.runtime.getURL("images/icons/RiGoBackLine.svg")}
-          style={{ transform: buffer.value ? "rotateY(180deg)" : undefined }}
+          style={{ transform: "rotateY(180deg)" }}
         />
       </div>
     </div>
