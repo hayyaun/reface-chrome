@@ -3,7 +3,6 @@ import api from "@/shared/api";
 import { computed, effect, signal } from "@preact/signals";
 import clsx from "clsx";
 import { render } from "preact";
-import { useEffect, useRef } from "preact/hooks";
 
 type Mode = "draw" | "type" | "work";
 
@@ -132,112 +131,113 @@ const saveData = (persist = false) => {
   }
 };
 
-const clearCanvas = () => {
+const clearCanvas = (save = false) => {
   ctx.value?.clearRect(0, 0, ctx.value?.canvas.width, ctx.value?.canvas.height);
-  saveData();
+  if (save) saveData();
 };
+
+// Effects
+
+// Draw effects
+effect(() => {
+  if (!ctx.value) return;
+  let drawing = false;
+  function onMouseDown(ev: MouseEvent) {
+    if (!ctx.value) return;
+    if (mode.value !== "draw") return;
+    drawing = true;
+    ctx.value.beginPath();
+    ctx.value.strokeStyle = color.value;
+    ctx.value.lineWidth = thickness.value * scale;
+    ctx.value.lineJoin = "round";
+    ctx.value.lineCap = "round";
+    ctx.value.moveTo(ev.offsetX * scale, ev.offsetY * scale);
+  }
+  function onMouseMove(ev: MouseEvent) {
+    if (!ctx.value) return;
+    if (!drawing) return;
+    ctx.value.lineTo(ev.offsetX * scale, ev.offsetY * scale);
+    ctx.value.stroke();
+  }
+  const reset = (save: boolean) => {
+    if (save) saveData();
+    drawing = false;
+  };
+  ctx.value.canvas.addEventListener("mousedown", onMouseDown);
+  ctx.value.canvas.addEventListener("mousemove", onMouseMove);
+  ctx.value.canvas.addEventListener("mouseup", () => reset(true));
+  ctx.value.canvas.addEventListener("mouseout", () => reset(false));
+  return () => {
+    if (!ctx.value) return;
+    ctx.value.canvas.removeEventListener("mousedown", onMouseDown);
+    ctx.value.canvas.removeEventListener("mousemove", onMouseMove);
+    ctx.value.canvas.removeEventListener("mouseup", () => reset(true));
+    ctx.value.canvas.removeEventListener("mouseout", () => reset(false));
+  };
+});
+
+// Typing effects
+effect(() => {
+  if (!ctx.value) return;
+  function stopPropagation(ev: KeyboardEvent) {
+    if (mode.value !== "type") return;
+    ev.stopImmediatePropagation();
+    ev.stopPropagation();
+    ev.preventDefault();
+  }
+  function onKeydown(ev: KeyboardEvent) {
+    if (!ctx.value) return;
+    if (mode.value !== "type") return;
+    stopPropagation(ev);
+    if (ev.key === "Enter") {
+      // Set font style and size
+      ctx.value.fillStyle = color.value;
+      ctx.value.font = `${fontSize.value * scale}px ${fontFamily.value}`;
+      if (pos.value) {
+        ctx.value.fillText(text.value, pos.value[0] * scale, pos.value[1] * scale);
+      }
+      // reset
+      saveData();
+      text.value = "";
+      mode.value = fallbackMode;
+      pos.value = null;
+      return;
+    }
+    // Fill text
+    if (ev.key === "Backspace") {
+      text.value = text.value.slice(0, -1);
+    } else if (ev.key.length === 1) {
+      text.value = text.value + ev.key;
+    }
+  }
+  function reposition(ev: MouseEvent) {
+    // free positioning for users
+    if (mode.value !== "type") return;
+    pos.value = [ev.offsetX, ev.offsetY];
+  }
+  ctx.value.canvas.addEventListener("click", reposition);
+  window.addEventListener("keydown", onKeydown, true);
+  window.addEventListener("keypress", stopPropagation, true);
+  window.addEventListener("keyup", stopPropagation, true);
+  return () => {
+    if (!ctx.value) return;
+    ctx.value.canvas.removeEventListener("click", reposition);
+    window.removeEventListener("keydown", onKeydown, true);
+    window.removeEventListener("keypress", stopPropagation, true);
+    window.removeEventListener("keyup", stopPropagation, true);
+  };
+});
 
 // UI
 
 function UI() {
-  const _canvas = useRef<HTMLCanvasElement>(null!);
-
-  // Load
-  useEffect(() => {
-    ctx.value = _canvas.current.getContext("2d")!;
-    loadData();
-  }, []);
-
-  // Draw effects
-  useEffect(() => {
-    let drawing = false;
-    function onMouseDown(ev: MouseEvent) {
-      if (!ctx.value) return;
-      if (mode.value !== "draw") return;
-      drawing = true;
-      ctx.value.beginPath();
-      ctx.value.strokeStyle = color.value;
-      ctx.value.lineWidth = thickness.value * scale;
-      ctx.value.lineJoin = "round";
-      ctx.value.lineCap = "round";
-      ctx.value.moveTo(ev.offsetX * scale, ev.offsetY * scale);
-    }
-    function onMouseMove(ev: MouseEvent) {
-      if (!ctx.value) return;
-      if (!drawing) return;
-      ctx.value.lineTo(ev.offsetX * scale, ev.offsetY * scale);
-      ctx.value.stroke();
-    }
-    const reset = (save: boolean) => {
-      if (save) saveData();
-      drawing = false;
-    };
-    _canvas.current.addEventListener("mousedown", onMouseDown);
-    _canvas.current.addEventListener("mousemove", onMouseMove);
-    _canvas.current.addEventListener("mouseup", () => reset(true));
-    _canvas.current.addEventListener("mouseout", () => reset(false));
-    return () => {
-      _canvas.current.removeEventListener("mousedown", onMouseDown);
-      _canvas.current.removeEventListener("mousemove", onMouseMove);
-      _canvas.current.removeEventListener("mouseup", () => reset(true));
-      _canvas.current.removeEventListener("mouseout", () => reset(false));
-    };
-  }, []);
-
-  // Typing effects
-  useEffect(() => {
-    function stopPropagation(ev: KeyboardEvent) {
-      if (mode.value !== "type") return;
-      ev.stopImmediatePropagation();
-      ev.stopPropagation();
-      ev.preventDefault();
-    }
-    function onKeydown(ev: KeyboardEvent) {
-      if (!ctx.value) return;
-      if (mode.value !== "type") return;
-      stopPropagation(ev);
-      if (ev.key === "Enter") {
-        // Set font style and size
-        ctx.value.fillStyle = color.value;
-        ctx.value.font = `${fontSize.value * scale}px ${fontFamily.value}`;
-        if (pos.value) {
-          ctx.value.fillText(text.value, pos.value[0] * scale, pos.value[1] * scale);
-        }
-        // reset
-        saveData();
-        text.value = "";
-        mode.value = fallbackMode;
-        pos.value = null;
-        return;
-      }
-      // Fill text
-      if (ev.key === "Backspace") {
-        text.value = text.value.slice(0, -1);
-      } else if (ev.key.length === 1) {
-        text.value = text.value + ev.key;
-      }
-    }
-    function reposition(ev: MouseEvent) {
-      // free positioning for users
-      if (mode.value !== "type") return;
-      pos.value = [ev.offsetX, ev.offsetY];
-    }
-    _canvas.current.addEventListener("click", reposition);
-    window.addEventListener("keydown", onKeydown, true);
-    window.addEventListener("keypress", stopPropagation, true);
-    window.addEventListener("keyup", stopPropagation, true);
-    return () => {
-      _canvas.current.removeEventListener("click", reposition);
-      window.removeEventListener("keydown", onKeydown, true);
-      window.removeEventListener("keypress", stopPropagation, true);
-      window.removeEventListener("keyup", stopPropagation, true);
-    };
-  }, []);
-
   return (
     <>
       <canvas
-        ref={_canvas}
+        ref={(canvas) => {
+          ctx.value = canvas!.getContext("2d")!;
+          loadData();
+        }}
         width={canvasSize[0] * scale}
         height={canvasSize[1] * scale}
         style={{
@@ -296,7 +296,7 @@ function Panel() {
       <div title="Save" className="reface--whiteboard-btn" onClick={() => saveData(true)}>
         <img src={chrome.runtime.getURL("images/icons/RiSaveLine.svg")} />
       </div>
-      <div title="Clear" className="reface--whiteboard-btn" onClick={clearCanvas}>
+      <div title="Clear" className="reface--whiteboard-btn" onClick={() => clearCanvas(true)}>
         <img src={chrome.runtime.getURL("images/icons/RiDeleteBin.svg")} />
       </div>
       <div
