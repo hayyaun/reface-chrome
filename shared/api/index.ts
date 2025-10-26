@@ -1,4 +1,4 @@
-import type { ExtractReturnType, Message } from "../types";
+import type { Message, MessageBy } from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const _api = typeof chrome !== "undefined" ? chrome : browser;
@@ -11,16 +11,16 @@ const api = {
   ..._api,
   runtime: {
     ..._api.runtime,
-    sendMessage<T extends Message>(msg: T) {
+    sendMessage<M extends Message["msg"]>(msg: M): MessageBy<M>["res"] {
       return (
         typeof browser !== "undefined"
           ? browser.runtime.sendMessage(msg)
           : new Promise((resolve) => chrome.runtime.sendMessage(msg, resolve))
-      ) as ExtractReturnType<T>;
+      ) as MessageBy<M>["res"];
     },
     onMessage: {
       ..._api.runtime.onMessage,
-      addListener(cb: <T extends Message>(msg: T) => ExtractReturnType<T>) {
+      addListener<M extends Message["msg"]>(cb: (msg: M) => MessageBy<M>["res"]) {
         return typeof browser !== "undefined"
           ? browser.runtime.onMessage.addListener(cb)
           : chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
@@ -31,7 +31,7 @@ const api = {
               return true; // keep channel open for async
             });
       },
-      removeListener(cb: <T extends Message>(msg: T) => ExtractReturnType<T>) {
+      removeListener<M extends Message["msg"]>(cb: (msg: M) => MessageBy<M>["res"]) {
         return typeof browser !== "undefined"
           ? browser.runtime.onMessage.removeListener(cb)
           : chrome.runtime.onMessage.removeListener((msg, _sender, sendResponse) => {

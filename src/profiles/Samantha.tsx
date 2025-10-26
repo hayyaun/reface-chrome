@@ -26,7 +26,7 @@ export default function Samantha() {
   // thinking
   useEffect(() => {
     if (import.meta.env.DEV) return;
-    async function listener(msg: Message) {
+    async function listener(msg: Message["msg"]) {
       if (msg.to !== "popup" || msg.action !== "samantha_thinking") return null;
       setThinking(msg.data);
     }

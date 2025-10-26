@@ -1,6 +1,5 @@
 import { getElementByXPath, getElementXPath } from "@/service/utils";
 import api from "@/shared/api";
-import type { Message } from "@/shared/types";
 
 // Selection Mode
 

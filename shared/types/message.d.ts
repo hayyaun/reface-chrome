@@ -1,31 +1,23 @@
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import type { BaseMessageCallback } from ".";
 
 type Entity = "background" | "content" | "popup" | "options";
 
-interface BaseMessage<TO extends Entity, ACT extends string, T> {
-  to: TO;
-  action: ACT;
-  data: T;
-}
+type BaseMessage<TO extends Entity, ACT extends string, T, R> = {
+  msg: { to: TO; action: ACT; data: T };
+  res: Promise<R | null>;
+};
 
-type BaseMessageCallback<TO extends Entity, ACT extends string, T, R> = (msg: BaseMessage<TO, ACT, T>, sender: browser.runtime.MessageSender) => Promise<R | null>;
+export type Message =
+  | BaseMessage<"background", "updateBadge", number, undefined>
+  | BaseMessage<"background", "samantha_ask", ChatCompletionMessageParam[], undefined>
+  | BaseMessage<"popup", "samantha_thinking", SamanthaThinkingMessageData, undefined>
+  | BaseMessage<"content", "magic_eraser_selection_mode", boolean, undefined>
+  | BaseMessage<"background", "magic_eraser_on_select", MagicEraserOnSelectMessageData, string>
+  | BaseMessage<"background", "magic_eraser_get_item", string, MagicEraserDBItem | undefined>
+  | BaseMessage<"background", "whiteboard_set_item", WhiteboardDBItem, string>
+  | BaseMessage<"background", "whiteboard_get_item", string, WhiteboardDBItem | undefined>;
 
-export type MessageCallback =
-  | BaseMessageCallback<"background", "updateBadge", number, undefined>
-  | BaseMessageCallback<"background", "samantha_ask", ChatCompletionMessageParam[], undefined>
-  | BaseMessageCallback<"popup", "samantha_thinking", SamanthaThinkingMessageData, undefined>
-  | BaseMessageCallback<"content", "magic_eraser_selection_mode", boolean, undefined>
-  | BaseMessageCallback<"background", "magic_eraser_on_select", MagicEraserOnSelectMessageData, string>
-  | BaseMessageCallback<"background", "magic_eraser_get_item", string, MagicEraserDBItem | undefined>
-  | BaseMessageCallback<"background", "whiteboard_set_item", WhiteboardDBItem, string>
-  | BaseMessageCallback<"background", "whiteboard_get_item", string, WhiteboardDBItem | undefined>
-  | BaseMessageCallback<never, never, never, Promise<null>>;
-
-export type Message = Parameters<MessageCallback>[0];
-
-type ExtractCallback<T extends Message> = Extract<MessageCallback, BaseMessageCallback<T["to"], T["action"], T["data"], unknown>>;
-type ExtractReturnType<T extends Message> = ReturnType<ExtractCallback<T>>;
+type MessageBy<M extends Message["msg"]> = Extract<Message, { msg: M }>;
 
 // Patches
 
