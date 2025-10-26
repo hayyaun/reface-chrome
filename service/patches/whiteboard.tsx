@@ -167,7 +167,7 @@ effect(() => {
     ctx.value.stroke();
   }
   const reset = (save: boolean) => {
-    if (save) saveData();
+    if (save && drawing) saveData();
     drawing = false;
   };
   ctx.value.canvas.addEventListener("mousedown", onMouseDown);
