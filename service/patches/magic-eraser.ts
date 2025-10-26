@@ -68,7 +68,7 @@ function stopSelectionMode() {
   });
 }
 
-api.runtime.onMessage.addListener(async (msg) => {
+api.runtime.onMessage.addListener<"magic_eraser_selection_mode">(async (msg) => {
   if (msg.to !== "content" || msg.action !== "magic_eraser_selection_mode") return null;
   if (msg.data) beginSelectionMode();
   else stopSelectionMode();

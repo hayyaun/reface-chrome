@@ -1,4 +1,4 @@
-import type { Message, MessageBy } from "../types";
+import type { Message, MessageBy, MessageByAction } from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const _api = typeof chrome !== "undefined" ? chrome : browser;
@@ -20,9 +20,11 @@ const api = {
     },
     onMessage: {
       ..._api.runtime.onMessage,
-      addListener<M extends Message["msg"]>(cb: (msg: M) => MessageBy<M>["res"]) {
+      addListener<A extends Message["msg"]["action"]>(
+        cb: (msg: MessageByAction<A>["msg"]) => MessageByAction<A>["res"],
+      ) {
         return typeof browser !== "undefined"
-          ? browser.runtime.onMessage.addListener(cb)
+          ? browser.runtime.onMessage.addListener(cb as any)
           : chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
               const result = cb(msg);
               result.then((value) => {
@@ -31,9 +33,11 @@ const api = {
               return true; // keep channel open for async
             });
       },
-      removeListener<M extends Message["msg"]>(cb: (msg: M) => MessageBy<M>["res"]) {
+      removeListener<A extends Message["msg"]["action"]>(
+        cb: (msg: MessageByAction<A>["msg"]) => MessageByAction<A>["res"],
+      ) {
         return typeof browser !== "undefined"
-          ? browser.runtime.onMessage.removeListener(cb)
+          ? browser.runtime.onMessage.removeListener(cb as any)
           : chrome.runtime.onMessage.removeListener((msg, _sender, sendResponse) => {
               const result = cb(msg);
               result.then((value) => {

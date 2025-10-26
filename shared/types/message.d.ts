@@ -8,7 +8,7 @@ type BaseMessage<TO extends Entity, ACT extends string, T, R> = {
 };
 
 export type Message =
-  | BaseMessage<"background", "updateBadge", number, undefined>
+  | BaseMessage<"background", "update_badge", number, undefined>
   | BaseMessage<"background", "samantha_ask", ChatCompletionMessageParam[], undefined>
   | BaseMessage<"popup", "samantha_thinking", SamanthaThinkingMessageData, undefined>
   | BaseMessage<"content", "magic_eraser_selection_mode", boolean, undefined>
@@ -18,6 +18,7 @@ export type Message =
   | BaseMessage<"background", "whiteboard_get_item", string, WhiteboardDBItem | undefined>;
 
 type MessageBy<M extends Message["msg"]> = Extract<Message, { msg: M }>;
+type MessageByAction<A extends Message["msg"]["action"]> = Extract<Message, { msg: { action: A } }>;
 
 // Patches
 
