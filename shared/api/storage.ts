@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-properties */
+/* eslint-disable no-restricted-globals */
+
 import type { StateStorage } from "zustand/middleware";
 import api from ".";
 

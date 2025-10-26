@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-properties */
+/* eslint-disable no-restricted-globals */
+
 import api, { type Tab } from ".";
 
 export async function reloadActiveTab() {

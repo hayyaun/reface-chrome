@@ -10,6 +10,7 @@ type Pos = [x: number, y: number];
 
 // TODO add eraser button
 // TODO add shapes button
+// TODO add hash to compare unchanged -> don't save
 
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] as number) ?? 0.5;
@@ -296,13 +297,13 @@ function Panel() {
         })}
         onClick={() => (settingsOpen.value = !settingsOpen.value)}
       >
-        <img src={chrome.runtime.getURL("images/icons/RiSettings3Line.svg")} />
+        <img src={api.runtime.getURL("images/icons/RiSettings3Line.svg")} />
       </div>
       <div title="Save" className="reface--whiteboard-btn" onClick={() => saveData(true)}>
-        <img src={chrome.runtime.getURL("images/icons/RiSaveLine.svg")} />
+        <img src={api.runtime.getURL("images/icons/RiSaveLine.svg")} />
       </div>
       <div title="Clear" className="reface--whiteboard-btn" onClick={() => clearCanvas(true)}>
-        <img src={chrome.runtime.getURL("images/icons/RiDeleteBin.svg")} />
+        <img src={api.runtime.getURL("images/icons/RiDeleteBin.svg")} />
       </div>
       <div
         title="Undo"
@@ -310,7 +311,7 @@ function Panel() {
         onClick={canUndo.value ? undo : undefined}
         style={{ opacity: canUndo.value ? 1 : 0.5, cursor: canUndo.value ? "pointer" : "auto" }}
       >
-        <img src={chrome.runtime.getURL("images/icons/RiGoBackLine.svg")} />
+        <img src={api.runtime.getURL("images/icons/RiGoBackLine.svg")} />
       </div>
       <div
         title="Redo"
@@ -319,7 +320,7 @@ function Panel() {
         style={{ opacity: canRedo.value ? 1 : 0.5, cursor: canRedo.value ? "pointer" : "auto" }}
       >
         <img
-          src={chrome.runtime.getURL("images/icons/RiGoBackLine.svg")}
+          src={api.runtime.getURL("images/icons/RiGoBackLine.svg")}
           style={{ transform: "rotateY(180deg)" }}
         />
       </div>

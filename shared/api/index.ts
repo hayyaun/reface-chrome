@@ -1,6 +1,9 @@
+/* eslint-disable no-restricted-properties */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type { Message, MessageBy, MessageByAction } from "../types";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const _api = typeof chrome !== "undefined" ? chrome : browser;
 
 /**

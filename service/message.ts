@@ -3,8 +3,6 @@ import db from "@/shared/store/db";
 import { updateBadge } from "./badge";
 import { ask } from "./samantha";
 
-// TODO remove any
-
 export function addMessageListener() {
   // Badge updates
   api.runtime.onMessage.addListener<"update_badge">(async (msg) => {
