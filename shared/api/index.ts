@@ -30,7 +30,7 @@ const api = {
                   if (value !== null) sendResponse(value);
                 });
                 return true; // keep channel open for async
-              } else {
+              } else if (result !== null) {
                 sendResponse(result);
               }
             });
@@ -45,7 +45,7 @@ const api = {
                   if (value !== null) sendResponse(value);
                 });
                 return true; // keep channel open for async
-              } else {
+              } else if (result !== null) {
                 sendResponse(result);
               }
             });
