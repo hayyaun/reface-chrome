@@ -3,7 +3,7 @@ import api from "@/shared/api";
 import { computed, effect, signal } from "@preact/signals";
 import clsx from "clsx";
 import { render } from "preact";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from "preact/hooks";
 
 type Mode = "draw" | "type" | "work";
 
