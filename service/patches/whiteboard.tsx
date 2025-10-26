@@ -3,6 +3,7 @@ import api from "@/shared/api";
 import { computed, effect, signal } from "@preact/signals";
 import clsx from "clsx";
 import { render } from "preact";
+import { useEffect, useRef } from "react";
 
 type Mode = "draw" | "type" | "work";
 
@@ -237,18 +238,21 @@ effect(() => {
 // UI
 
 function UI() {
+  const _canvas = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (!_canvas.current) return;
+    ctx.value = _canvas.current.getContext("2d")!;
+    initCanvasData();
+  }, []);
   return (
     <>
       <canvas
-        ref={(canvas) => {
-          ctx.value = canvas!.getContext("2d")!;
-          initCanvasData();
-        }}
+        ref={_canvas}
         width={canvasSize[0] * scale}
         height={canvasSize[1] * scale}
         style={{
           width: `${canvasSize[0]}px`, // initial width
-          height: `${canvasSize[1]}px`, // initial width
+          height: `${canvasSize[1]}px`, // initial height
           pointerEvents: mode.value === "work" ? "none" : "all",
           border: mode.value === "work" ? "none" : "1px solid red",
         }}
