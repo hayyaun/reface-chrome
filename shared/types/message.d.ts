@@ -1,4 +1,5 @@
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import type { ConfigValue } from "./main";
 
 type Entity = "background" | "content" | "popup" | "options";
 
@@ -9,11 +10,12 @@ type BaseMessage<TO extends Entity, ACT extends string, T, R> = {
 
 export type Message =
   | BaseMessage<"background", "apply_patch", { patchKey: string }, undefined>
+  | BaseMessage<"background", "update_config", { patchKey: string; configKey: string; value: ConfigValue }, undefined>
   | BaseMessage<"background", "update_badge", number, undefined>
   | BaseMessage<"background", "samantha_ask", ChatCompletionMessageParam[], undefined>
   | BaseMessage<"popup", "samantha_thinking", SamanthaThinkingMessageData, undefined>
   | BaseMessage<"content", "magic_eraser_selection_mode", boolean, undefined>
-  | BaseMessage<"background", "magic_eraser_on_select", MagicEraserOnSelectMessageData, string>
+  | BaseMessage<"background", "magic_eraser_on_select", { hostname: string; selector: string }, string>
   | BaseMessage<"background", "magic_eraser_get_item", string, MagicEraserDBItem | undefined>
   | BaseMessage<"background", "whiteboard_set_item", WhiteboardDBItem, string>
   | BaseMessage<"background", "whiteboard_get_item", string, WhiteboardDBItem | undefined>;
@@ -27,11 +29,6 @@ export type SamanthaThinkingMessageData = {
   iter: number;
   content: string;
 } | null;
-
-export interface MagicEraserOnSelectMessageData {
-  hostname: string;
-  selector: string;
-}
 
 export interface MagicEraserDBItem {
   hostname: string; // primary-key

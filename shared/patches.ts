@@ -87,7 +87,7 @@ const patches: { [key: string]: Patch } = {
     color: "#80ff95",
     css: { "/*": "main" },
     config: {
-      "auto-save": {
+      persist: {
         name: "Auto Save",
         details: "Persistent over reloads",
         defaultValue: true,
@@ -104,7 +104,7 @@ const patches: { [key: string]: Patch } = {
           { name: "Highest", value: 3 },
         ],
       },
-      "init-mode": {
+      mode: {
         name: "Mode",
         details: "Initial mode when page loads",
         defaultValue: "draw",
@@ -130,6 +130,18 @@ const patches: { [key: string]: Patch } = {
           { name: "Trebuchet MS", value: "'Trebuchet MS', sans-serif" },
           { name: "Impact", value: "Impact, sans-serif" },
         ],
+      },
+      "font-size": {
+        name: "Font Size",
+        details: "Default font size for type mode",
+        defaultValue: 48,
+        hidden: true,
+      },
+      thickness: {
+        name: "Thickness",
+        details: "Default thickness for draw/erase mode",
+        defaultValue: 6,
+        hidden: true,
       },
     },
   },

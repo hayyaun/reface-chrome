@@ -5,19 +5,21 @@ import clsx from "clsx";
 import { render } from "preact";
 import { useEffect, useRef } from "preact/hooks";
 
-type Mode = "draw" | "type" | "work";
+type Mode = "work" | "draw" | "type" | "erase";
 
 type Pos = [x: number, y: number];
 
-// TODO add eraser button
 // TODO add shapes button
 // TODO add hash to compare unchanged -> don't save
 
-const config = window.__rc_config["whiteboard"];
+const PATCH_KEY = "whiteboard";
+const config = window.__rc_config[PATCH_KEY];
+const _persist = (config["persist"] as boolean) ?? false;
 const scale = (config["scale"] as number) ?? 0.5;
-const initMode = (config["init-mode"] as Mode) ?? "draw";
-const autoPersist = (config["auto-save"] as boolean) ?? false;
+const _mode = (config["mode"] as Mode) ?? "draw";
 const _fontFamily = (config["font-family"] as string) ?? "Roboto";
+const _fontSize = (config["font-size"] as number) ?? 48;
+const _thickness = (config["thickness"] as number) ?? 6;
 
 const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 const fallbackMode: Mode = "work";
@@ -29,13 +31,15 @@ const ctx = signal<CanvasRenderingContext2D | null>(null);
 const buffer = signal<string[]>([]);
 const shift = signal(0); // present
 const color = signal("#ff0000");
-const mode = signal<Mode>(initMode);
-const thickness = signal(6);
+const mode = signal<Mode>(_mode);
 const fontFamily = signal(_fontFamily);
-const fontSize = signal(48);
+const fontSize = signal(_fontSize);
+const thickness = signal(_thickness);
 const pos = signal<Pos | null>(null);
 const text = signal("");
 const settingsOpen = signal(false);
+
+// Subscriptions
 
 color.subscribe((value) => {
   document.body.style.setProperty("--reface--whiteboard-color", value);
@@ -52,11 +56,21 @@ mode.subscribe((value) => {
   ];
 });
 
-const getModeText = (mode: Mode) => {
-  if (mode === "draw") return "Draw";
-  if (mode === "type") return "Type";
-  return "Normal";
-};
+thickness.subscribe((value) => {
+  api.runtime.sendMessage({
+    to: "background",
+    action: "update_config",
+    data: { patchKey: PATCH_KEY, configKey: "thickness", value },
+  });
+});
+
+fontSize.subscribe((value) => {
+  api.runtime.sendMessage({
+    to: "background",
+    action: "update_config",
+    data: { patchKey: PATCH_KEY, configKey: "font-size", value },
+  });
+});
 
 // Buffer
 
@@ -131,7 +145,7 @@ const saveData = (persist = false) => {
   const data = ctx.value?.canvas.toDataURL();
   if (!data) return alert("Cannot save canvas");
   addBuffer(data);
-  if (autoPersist || persist) {
+  if (_persist || persist) {
     api.runtime.sendMessage({
       to: "background",
       action: "whiteboard_set_item",
@@ -148,16 +162,18 @@ const clearCanvas = (save = false) => {
 // Effects
 
 effect(() => {
-  // Draw effects
+  // Draw/Erase effects
   if (!ctx.value) return;
   let drawing = false;
   function onMouseDown(ev: MouseEvent) {
     if (!ctx.value) return;
-    if (mode.value !== "draw") return;
+    if (mode.value !== "draw" && mode.value !== "erase") return;
     drawing = true;
+    ctx.value.globalCompositeOperation = mode.value === "erase" ? "destination-out" : "source-over";
     ctx.value.beginPath();
     ctx.value.strokeStyle = color.value;
-    ctx.value.lineWidth = thickness.value * scale;
+    const lineScale = mode.value === "erase" ? 5 : 1;
+    ctx.value.lineWidth = thickness.value * scale * lineScale;
     ctx.value.lineJoin = "round";
     ctx.value.lineCap = "round";
     ctx.value.moveTo(ev.offsetX * scale, ev.offsetY * scale);
@@ -239,6 +255,13 @@ effect(() => {
 
 // UI
 
+const getModeText = (mode: Mode) => {
+  if (mode === "draw") return "Draw";
+  if (mode === "type") return "Type";
+  if (mode === "erase") return "Erase";
+  return "Normal";
+};
+
 function UI() {
   const _canvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -284,7 +307,7 @@ function Panel() {
         })}
         onClick={() => (mode.value = "draw")}
       >
-        <div className="reface--whiteboard-dot" />
+        <PenDot />
       </div>
       <div
         title="Type"
@@ -295,6 +318,15 @@ function Panel() {
         onClick={() => (mode.value = "type")}
       >
         T
+      </div>
+      <div
+        title="Erase"
+        className={clsx("reface--whiteboard-btn", {
+          "reface--whiteboard-btn-active": mode.value === "erase",
+        })}
+        onClick={() => (mode.value = "erase")}
+      >
+        <img src={api.runtime.getURL("images/icons/RiEraserFill.svg")} />
       </div>
       <div
         title="Settings"
@@ -351,12 +383,7 @@ function Settings() {
           style={{ cursor: "pointer" }}
         >
           <div>Select color</div>
-          <div className="reface--whiteboard-flex-center" style={{ width: 20, height: 20 }}>
-            <div
-              className="reface--whiteboard-dot"
-              style={{ width: thickness.value, height: thickness.value }}
-            />
-          </div>
+          <PenDot />
         </label>
       </div>
       <div aria-label="Thickness" className="reface--whiteboard-row">
@@ -367,6 +394,7 @@ function Settings() {
           name="thickness"
           min={1}
           max={20}
+          step={1}
           value={thickness}
           onInput={(ev) => (thickness.value = parseFloat(ev.currentTarget.value))}
         />
@@ -379,10 +407,22 @@ function Settings() {
           name="font-size"
           min={8}
           max={128}
+          step={2}
           value={fontSize}
           onInput={(ev) => (fontSize.value = parseFloat(ev.currentTarget.value))}
         />
       </div>
+    </div>
+  );
+}
+
+function PenDot() {
+  return (
+    <div className="reface--whiteboard-flex-center" style={{ width: 20, height: 20 }}>
+      <div
+        className="reface--whiteboard-dot"
+        style={{ width: thickness.value, height: thickness.value }}
+      />
     </div>
   );
 }

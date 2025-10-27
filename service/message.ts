@@ -1,9 +1,11 @@
 import api from "@/shared/api";
 import { getActiveTab } from "@/shared/api/utils";
 import db from "@/shared/store/db";
+import { extractDefaultConfigData } from "@/shared/utils";
 import { updateBadge } from "./badge";
 import { applyPatch } from "./patch";
 import { ask } from "./samantha";
+import { state } from "./state";
 
 export function addMessageListener() {
   /**
@@ -16,6 +18,15 @@ export function addMessageListener() {
     const { patchKey } = msg.data;
     const activeTab = await getActiveTab();
     if (activeTab) applyPatch(patchKey, activeTab);
+  });
+
+  // Update config
+  api.runtime.onMessage.addListener<"update_config">(async (msg) => {
+    if (msg.to !== "background" || msg.action !== "update_config") return null;
+    const { patchKey, configKey, value } = msg.data;
+    const config = state.service.config[patchKey] ?? extractDefaultConfigData(patchKey);
+    const newConfig = { ...config, [configKey]: value };
+    state.service.updateConfig(patchKey, newConfig);
   });
 
   // Badge updates
