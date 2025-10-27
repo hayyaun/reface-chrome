@@ -72,7 +72,7 @@ fontSize.subscribe((value) => {
   });
 });
 
-// Buffer
+// Methods
 
 const canUndo = computed(() => shift.value < buffer.value.length - 1);
 const canRedo = computed(() => shift.value > 0);
@@ -92,6 +92,11 @@ const addBuffer = (dataURL: string) => {
   buffer.value = newBuffer; // triggers subscriptions
 };
 
+const clearCanvas = (save = false) => {
+  ctx.value?.clearRect(0, 0, ctx.value?.canvas.width, ctx.value?.canvas.height);
+  if (save) saveData();
+};
+
 const undo = () => {
   if (!canUndo.value) return;
   shift.value++;
@@ -106,7 +111,18 @@ const redo = () => {
   drawData(buffer.value[index.value]);
 };
 
-// Canvas
+const reset = () => {
+  buffer.value = [];
+  const canvas = ctx.value?.canvas;
+  if (!canvas) return;
+  clearCanvas();
+  canvas.width = canvasSize[0] * scale;
+  canvas.height = canvasSize[1] * scale;
+  canvas.style.width = `${canvasSize[0]}px`; // initial width
+  canvas.style.height = `${canvasSize[1]}px`; // initial height
+  canvas.style.pointerEvents = mode.value === "work" ? "none" : "all";
+  canvas.style.border = mode.value === "work" ? "none" : "1px solid red";
+};
 
 const drawData = async (dataURL: string, imgScale = scale) => {
   await new Promise((resolve, reject) => {
@@ -128,6 +144,7 @@ const initCanvasData = async () => {
     data: window.location.href,
   });
   console.debug({ saved: res });
+  reset();
   if (!res?.data) {
     saveData(); // initial state = empty
     return;
@@ -150,12 +167,23 @@ const saveData = (persist = false) => {
   }
 };
 
-const clearCanvas = (save = false) => {
-  ctx.value?.clearRect(0, 0, ctx.value?.canvas.width, ctx.value?.canvas.height);
-  if (save) saveData();
-};
-
 // Effects
+
+effect(
+  () => {
+    let lastUrl = location.href;
+    const observevr = new MutationObserver(() => {
+      if (location.href !== lastUrl) {
+        lastUrl = location.href;
+        console.debug("URL changed to:", lastUrl);
+        initCanvasData(); // load related data
+      }
+    });
+    observevr.observe(document, { subtree: true, childList: true });
+    return () => observevr.disconnect();
+  },
+  { name: "Watch URL change" },
+);
 
 effect(
   () => {

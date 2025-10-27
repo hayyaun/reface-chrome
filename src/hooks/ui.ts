@@ -7,8 +7,8 @@ export function useUIActions(patchKey: string) {
   const setConfigModal = useUI((s) => s.setConfigModal);
   const setProfileModal = useUI((s) => s.setProfileModal);
 
-  const hasConfig = !!patches[patchKey].config;
-  const hasModal = !!profiles[patchKey].modal;
+  const hasConfig = !!patches[patchKey]?.config;
+  const hasModal = !!profiles[patchKey]?.modal;
 
   const openConfig = (ev?: React.MouseEvent) => {
     ev?.stopPropagation();
