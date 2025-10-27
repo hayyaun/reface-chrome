@@ -163,11 +163,12 @@ const initCanvasData = async () => {
     action: "whiteboard_get_item",
     data: url,
   });
-  console.debug("Load", res);
   if (!res?.data) {
+    console.debug("Load empty");
     saveData(); // initial state = empty
     return;
   }
+  console.debug("Load", res.url, res.scale, res.data.length);
   // initial state = from storage
   addBuffer(res.data);
   drawData(res.data, res.scale);
