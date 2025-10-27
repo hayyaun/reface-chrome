@@ -15,6 +15,7 @@ type Pos = [x: number, y: number];
 
 const config = window.__rc_config["whiteboard"];
 const scale = (config["scale"] as number) ?? 0.5;
+const initMode = (config["init-mode"] as Mode) ?? "draw";
 const autoPersist = (config["auto-save"] as boolean) ?? false;
 const _fontFamily = (config["font-family"] as string) ?? "Roboto";
 
@@ -28,7 +29,7 @@ const ctx = signal<CanvasRenderingContext2D | null>(null);
 const buffer = signal<string[]>([]);
 const shift = signal(0); // present
 const color = signal("#ff0000");
-const mode = signal<Mode>("draw");
+const mode = signal<Mode>(initMode);
 const thickness = signal(6);
 const fontFamily = signal(_fontFamily);
 const fontSize = signal(48);
