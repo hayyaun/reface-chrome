@@ -21,7 +21,6 @@ const _fontFamily = (config["font-family"] as string) ?? "Roboto";
 const _fontSize = (config["font-size"] as number) ?? 48;
 const _thickness = (config["thickness"] as number) ?? 6;
 
-const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 const fallbackMode: Mode = "work";
 const MAX_BUFFER_SIZE = 10;
 
@@ -129,17 +128,27 @@ const redo = () => {
   drawData(buffer.value[index.value]);
 };
 
-const reset = () => {
+const reset = async () => {
   buffer.value = [];
   shift.value = 0;
   mode.value = _mode;
   const canvas = ctx.value?.canvas;
   if (!canvas) return;
   clearCanvas();
-  canvas.width = canvasSize[0] * scale;
-  canvas.height = canvasSize[1] * scale;
-  canvas.style.width = `${canvasSize[0]}px`; // initial width
-  canvas.style.height = `${canvasSize[1]}px`; // initial height
+  canvas.width = 0;
+  canvas.height = 0;
+  canvas.style.width = "0px";
+  canvas.style.height = "0px";
+  return await new Promise((resolve) => {
+    const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
+    setTimeout(() => {
+      canvas.width = canvasSize[0] * scale;
+      canvas.height = canvasSize[1] * scale;
+      canvas.style.width = `${canvasSize[0]}px`; // initial width
+      canvas.style.height = `${canvasSize[1]}px`; // initial height
+      resolve(null);
+    }, 500);
+  });
 };
 
 const drawData = async (dataURL: string, imgScale = scale) => {
@@ -157,7 +166,7 @@ const drawData = async (dataURL: string, imgScale = scale) => {
 };
 
 const initCanvasData = async () => {
-  reset();
+  await reset();
   const res = await api.runtime.sendMessage({
     to: "background",
     action: "whiteboard_get_item",
