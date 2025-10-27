@@ -15,7 +15,12 @@ type Props<T> = {
 
 export default function SettingItem<T>({ title, details, value, onChange, options }: Props<T>) {
   return (
-    <li className="odd-color flex flex-wrap items-center justify-between gap-2 p-2 pl-4 transition select-none">
+    <li
+      className={clsx(
+        "odd-color flex items-center justify-between gap-4 p-2 pl-4 transition select-none",
+        { "flex-wrap": !Array.isArray(options) },
+      )}
+    >
       <Label name={title} details={details} lines={0} />
       {!Array.isArray(options) && typeof value === "boolean" ? (
         <div

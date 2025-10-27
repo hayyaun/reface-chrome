@@ -19,7 +19,7 @@ export default function Dropdown<T>({
   const [hidden, setHidden] = useState(true);
   const title = options.find((o) => o.value === value)?.name ?? placeholder;
   return (
-    <div className="relative w-32">
+    <div className="relative w-32 shrink-0 grow-0">
       <button
         className="group/icon flex w-full items-center justify-between rounded-lg border bg-white/5 px-4 py-2 pr-2 transition hover:bg-white/10 focus:bg-white/15 focus:outline-none"
         onClick={() => setHidden((s) => !s)}

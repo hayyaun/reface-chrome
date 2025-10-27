@@ -98,12 +98,13 @@ const redo = () => {
 
 // Canvas
 
-const drawData = async (dataURL: string) => {
+const drawData = async (dataURL: string, imgScale = scale) => {
   await new Promise((resolve, reject) => {
     const img = new Image();
     img.src = dataURL;
+    const factor = scale / imgScale;
     img.onload = () => {
-      ctx.value?.drawImage(img, 0, 0);
+      ctx.value?.drawImage(img, 0, 0, img.width * factor, img.height * factor);
       resolve(null);
     };
     img.onerror = reject;
@@ -123,7 +124,7 @@ const initCanvasData = async () => {
   }
   // initial state = from storage
   addBuffer(res.data);
-  drawData(res.data);
+  drawData(res.data, res.scale);
 };
 
 const saveData = (persist = false) => {
@@ -134,7 +135,7 @@ const saveData = (persist = false) => {
     api.runtime.sendMessage({
       to: "background",
       action: "whiteboard_set_item",
-      data: { url: window.location.href, data },
+      data: { url: window.location.href, data, scale },
     });
   }
 };

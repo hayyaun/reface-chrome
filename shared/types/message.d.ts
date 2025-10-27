@@ -43,4 +43,5 @@ export interface MagicEraserDBItem {
 export interface WhiteboardDBItem {
   url: string; // primary-key
   data: string; // base-64
+  scale: number;
 }
