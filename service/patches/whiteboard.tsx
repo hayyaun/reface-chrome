@@ -128,6 +128,16 @@ const redo = () => {
   drawData(buffer.value[index.value]);
 };
 
+const resize = () => {
+  const canvas = ctx.value?.canvas;
+  if (!canvas) return;
+  const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
+  canvas.width = canvasSize[0] * scale;
+  canvas.height = canvasSize[1] * scale;
+  canvas.style.width = `${canvasSize[0]}px`; // initial width
+  canvas.style.height = `${canvasSize[1]}px`; // initial height
+};
+
 const reset = async () => {
   buffer.value = [];
   shift.value = 0;
@@ -139,16 +149,7 @@ const reset = async () => {
   canvas.height = 0;
   canvas.style.width = "0px";
   canvas.style.height = "0px";
-  return await new Promise((resolve) => {
-    const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
-    setTimeout(() => {
-      canvas.width = canvasSize[0] * scale;
-      canvas.height = canvasSize[1] * scale;
-      canvas.style.width = `${canvasSize[0]}px`; // initial width
-      canvas.style.height = `${canvasSize[1]}px`; // initial height
-      resolve(null);
-    }, 500);
-  });
+  resize();
 };
 
 const drawData = async (dataURL: string, imgScale = scale) => {
@@ -196,9 +197,14 @@ effect(
       }
     });
     observevr.observe(document, { subtree: true, childList: true });
-    return () => observevr.disconnect();
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(document.body);
+    return () => {
+      observevr.disconnect();
+      resizeObserver.disconnect();
+    };
   },
-  { name: "Watch URL change" },
+  { name: "Observers" },
 );
 
 effect(
