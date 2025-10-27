@@ -78,10 +78,6 @@ const canUndo = computed(() => shift.value < buffer.value.length - 1);
 const canRedo = computed(() => shift.value > 0);
 const index = computed(() => buffer.value.length - 1 - shift.value);
 
-effect(() => {
-  console.debug("buffer", buffer.value.length, "shift", shift.value, "index", index.value);
-});
-
 const addBuffer = (dataURL: string) => {
   const newBuffer = buffer.value.slice(); // clone
   while (shift.value > 0) {
@@ -161,106 +157,106 @@ const clearCanvas = (save = false) => {
 
 // Effects
 
-effect(() => {
-  // Draw/Erase effects
-  if (!ctx.value) return;
-  let drawing = false;
-  function onMouseDown(ev: MouseEvent) {
+effect(
+  () => {
     if (!ctx.value) return;
-    if (mode.value !== "draw" && mode.value !== "erase") return;
-    drawing = true;
-    ctx.value.globalCompositeOperation = mode.value === "erase" ? "destination-out" : "source-over";
-    ctx.value.beginPath();
-    ctx.value.strokeStyle = color.value;
-    const lineScale = mode.value === "erase" ? 5 : 1;
-    ctx.value.lineWidth = thickness.value * scale * lineScale;
-    ctx.value.lineJoin = "round";
-    ctx.value.lineCap = "round";
-    ctx.value.moveTo(ev.offsetX * scale, ev.offsetY * scale);
-  }
-  function onMouseMove(ev: MouseEvent) {
-    if (!ctx.value) return;
-    if (!drawing) return;
-    ctx.value.lineTo(ev.offsetX * scale, ev.offsetY * scale);
-    ctx.value.stroke();
-  }
-  const reset = (save: boolean) => {
-    if (save && drawing) saveData();
-    drawing = false;
-  };
-  ctx.value.canvas.addEventListener("mousedown", onMouseDown);
-  ctx.value.canvas.addEventListener("mousemove", onMouseMove);
-  ctx.value.canvas.addEventListener("mouseup", () => reset(true));
-  ctx.value.canvas.addEventListener("mouseout", () => reset(false));
-  return () => {
-    if (!ctx.value) return;
-    ctx.value.canvas.removeEventListener("mousedown", onMouseDown);
-    ctx.value.canvas.removeEventListener("mousemove", onMouseMove);
-    ctx.value.canvas.removeEventListener("mouseup", () => reset(true));
-    ctx.value.canvas.removeEventListener("mouseout", () => reset(false));
-  };
-});
+    let drawing = false;
+    function onMouseDown(ev: MouseEvent) {
+      if (!ctx.value) return;
+      if (mode.value !== "draw" && mode.value !== "erase") return;
+      drawing = true;
+      ctx.value.globalCompositeOperation =
+        mode.value === "erase" ? "destination-out" : "source-over";
+      ctx.value.beginPath();
+      ctx.value.strokeStyle = color.value;
+      const lineScale = mode.value === "erase" ? 5 : 1;
+      ctx.value.lineWidth = thickness.value * scale * lineScale;
+      ctx.value.lineJoin = "round";
+      ctx.value.lineCap = "round";
+      ctx.value.moveTo(ev.offsetX * scale, ev.offsetY * scale);
+    }
+    function onMouseMove(ev: MouseEvent) {
+      if (!ctx.value || !drawing) return;
+      ctx.value.lineTo(ev.offsetX * scale, ev.offsetY * scale);
+      ctx.value.stroke();
+    }
+    function onMouseUp() {
+      if (drawing) saveData();
+      drawing = false;
+    }
+    function onMouseOut() {
+      drawing = false;
+    }
+    const canvas = ctx.value.canvas;
+    canvas.addEventListener("mousedown", onMouseDown);
+    canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("mouseup", onMouseUp);
+    canvas.addEventListener("mouseout", () => onMouseOut);
+    return () => {
+      canvas.removeEventListener("mousedown", onMouseDown);
+      canvas.removeEventListener("mousemove", onMouseMove);
+      canvas.removeEventListener("mouseup", onMouseUp);
+      canvas.removeEventListener("mouseout", () => onMouseOut);
+    };
+  },
+  { name: "Draw/Erase" },
+);
 
-effect(() => {
-  // Typing effects
-  if (!ctx.value) return;
-  function stopPropagation(ev: KeyboardEvent) {
-    if (mode.value !== "type") return;
-    ev.stopImmediatePropagation();
-    ev.stopPropagation();
-    ev.preventDefault();
-  }
-  function onKeydown(ev: KeyboardEvent) {
+effect(
+  () => {
     if (!ctx.value) return;
-    if (mode.value !== "type") return;
-    stopPropagation(ev);
-    if (ev.key === "Enter") {
-      // Set font style and size
-      ctx.value.fillStyle = color.value;
-      ctx.value.font = `${fontSize.value * scale}px ${fontFamily.value}`;
-      if (pos.value) {
-        ctx.value.fillText(text.value, pos.value[0] * scale, pos.value[1] * scale);
+    function stopPropagation(ev: KeyboardEvent) {
+      if (mode.value !== "type") return;
+      ev.stopImmediatePropagation();
+      ev.stopPropagation();
+      ev.preventDefault();
+    }
+    function onKeydown(ev: KeyboardEvent) {
+      if (!ctx.value) return;
+      if (mode.value !== "type") return;
+      stopPropagation(ev);
+      if (ev.key === "Enter") {
+        // Apply text
+        ctx.value.fillStyle = color.value;
+        ctx.value.font = `${fontSize.value * scale}px ${fontFamily.value}`;
+        if (pos.value) {
+          ctx.value.fillText(text.value, pos.value[0] * scale, pos.value[1] * scale);
+        }
+        // Reset
+        saveData();
+        text.value = "";
+        mode.value = fallbackMode;
+        pos.value = null;
+        return;
       }
-      // reset
-      saveData();
-      text.value = "";
-      mode.value = fallbackMode;
-      pos.value = null;
-      return;
+      // Fill text for preview
+      if (ev.key === "Backspace") {
+        text.value = text.value.slice(0, -1);
+      } else if (ev.key.length === 1) {
+        text.value = text.value + ev.key;
+      }
     }
-    // Fill text
-    if (ev.key === "Backspace") {
-      text.value = text.value.slice(0, -1);
-    } else if (ev.key.length === 1) {
-      text.value = text.value + ev.key;
+    function reposition(ev: MouseEvent) {
+      // free positioning for users
+      if (mode.value !== "type") return;
+      pos.value = [ev.offsetX, ev.offsetY];
     }
-  }
-  function reposition(ev: MouseEvent) {
-    // free positioning for users
-    if (mode.value !== "type") return;
-    pos.value = [ev.offsetX, ev.offsetY];
-  }
-  ctx.value.canvas.addEventListener("click", reposition);
-  window.addEventListener("keydown", onKeydown, true);
-  window.addEventListener("keypress", stopPropagation, true);
-  window.addEventListener("keyup", stopPropagation, true);
-  return () => {
-    if (!ctx.value) return;
-    ctx.value.canvas.removeEventListener("click", reposition);
-    window.removeEventListener("keydown", onKeydown, true);
-    window.removeEventListener("keypress", stopPropagation, true);
-    window.removeEventListener("keyup", stopPropagation, true);
-  };
-});
+    const canvas = ctx.value.canvas;
+    canvas.addEventListener("click", reposition);
+    window.addEventListener("keydown", onKeydown, true);
+    window.addEventListener("keypress", stopPropagation, true);
+    window.addEventListener("keyup", stopPropagation, true);
+    return () => {
+      canvas.removeEventListener("click", reposition);
+      window.removeEventListener("keydown", onKeydown, true);
+      window.removeEventListener("keypress", stopPropagation, true);
+      window.removeEventListener("keyup", stopPropagation, true);
+    };
+  },
+  { name: "Type" },
+);
 
 // UI
-
-const getModeText = (mode: Mode) => {
-  if (mode === "draw") return "Draw";
-  if (mode === "type") return "Type";
-  if (mode === "erase") return "Erase";
-  return "Normal";
-};
 
 function UI() {
   const _canvas = useRef<HTMLCanvasElement>(null);
@@ -293,32 +289,43 @@ function Panel() {
   return (
     <div aria-label="Panel" className="reface--whiteboard-panel">
       <div
-        aria-label="Mode"
-        className="reface--whiteboard-btn"
-        style={{ padding: "4px 12px", aspectRatio: "auto" }}
-        onClick={() => (mode.value = fallbackMode)}
+        title="Normal"
+        className={clsx("reface--whiteboard-btn", {
+          "reface--whiteboard-btn-active": mode.value === "work",
+        })}
+        onClick={() => (mode.value = "work")}
       >
-        {getModeText(mode.value)}
+        <img src={api.runtime.getURL("images/icons/RiCursorFill.svg")} />
       </div>
       <div
         title="Draw"
         className={clsx("reface--whiteboard-btn", {
           "reface--whiteboard-btn-active": mode.value === "draw",
         })}
-        onClick={() => (mode.value = "draw")}
+        onClick={() => {
+          if (mode.value === "draw") settingsOpen.value = !settingsOpen.value;
+          else mode.value = "draw";
+        }}
       >
-        <PenDot />
+        {mode.value === "draw" ? (
+          <PenDot />
+        ) : (
+          <img src={api.runtime.getURL("images/icons/RiPencilFill.svg")} />
+        )}
       </div>
       <div
         title="Type"
         className={clsx("reface--whiteboard-btn", {
           "reface--whiteboard-btn-active": mode.value === "type",
         })}
-        style={{ fontFamily: "Roboto", fontSize: 16 }}
-        onClick={() => (mode.value = "type")}
+        onClick={() => {
+          if (mode.value === "type") settingsOpen.value = !settingsOpen.value;
+          else mode.value = "type";
+        }}
       >
-        T
+        <img src={api.runtime.getURL("images/icons/RiText.svg")} />
       </div>
+      <div style={{ borderRight: "1px solid #fff1", height: 24 }} />
       <div
         title="Erase"
         className={clsx("reface--whiteboard-btn", {
@@ -327,6 +334,9 @@ function Panel() {
         onClick={() => (mode.value = "erase")}
       >
         <img src={api.runtime.getURL("images/icons/RiEraserFill.svg")} />
+      </div>
+      <div title="Clear" className="reface--whiteboard-btn" onClick={() => clearCanvas(true)}>
+        <img src={api.runtime.getURL("images/icons/RiDeleteBin.svg")} />
       </div>
       <div
         title="Settings"
@@ -337,11 +347,9 @@ function Panel() {
       >
         <img src={api.runtime.getURL("images/icons/RiSettings3Line.svg")} />
       </div>
+      <div style={{ borderRight: "1px solid #fff1", height: 24 }} />
       <div title="Save" className="reface--whiteboard-btn" onClick={() => saveData(true)}>
         <img src={api.runtime.getURL("images/icons/RiSaveLine.svg")} />
-      </div>
-      <div title="Clear" className="reface--whiteboard-btn" onClick={() => clearCanvas(true)}>
-        <img src={api.runtime.getURL("images/icons/RiDeleteBin.svg")} />
       </div>
       <div
         title="Undo"
