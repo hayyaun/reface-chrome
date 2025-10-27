@@ -6,6 +6,9 @@ import { applyPatch, clearPatches, findApplicablePatches } from "./patch";
 import { state } from "./state";
 import { watchStorage } from "./storage";
 
+// Events
+
+addMessageListener();
 watchStorage();
 
 // Tabs
@@ -19,10 +22,9 @@ api.webNavigation.onCompleted.addListener(async (details) => {
   if (!tab.url) return;
   const toApply = findApplicablePatches(tab);
   if (!toApply.length) return;
-  const pathname = new URL(tab.url).pathname;
   console.debug("apply", tabId, toApply);
   for (const patchKey of toApply) {
-    applyPatch(patchKey, tabId, pathname);
+    applyPatch(patchKey, tab);
   }
   // on finish
   afterFadeIn(tabId);
@@ -52,7 +54,3 @@ api.tabs.onActivated.addListener(async (activeInfo) => {
   const applicable = findApplicablePatches(tab);
   updateBadgeForTab(tab, applicable.length);
 });
-
-// Events
-
-addMessageListener();

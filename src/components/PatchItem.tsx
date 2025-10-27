@@ -5,7 +5,7 @@ import patches from "@/shared/patches";
 import { usePrefs, useService } from "@/shared/store";
 import type { Patch, Profile } from "@/shared/types";
 import clsx from "clsx";
-import { memo } from "react";
+import { memo, type MouseEvent } from "react";
 import { CiCoffeeCup } from "react-icons/ci";
 import {
   RiAddFill,
@@ -49,6 +49,25 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
 
   const neutral = !patch.css && patch.noJS;
   const modal = neutral || enabled ? profile?.modal : undefined;
+
+  const onClick = (ev: MouseEvent) => {
+    ev.stopPropagation();
+    if (!hostname) return;
+    const isRemoving = enabledGlobally ? !excluded : enabled;
+    const removeAction = enabledGlobally ? excludePatch : removePatch;
+    const addAction = enabledGlobally ? includePatch : addPatch;
+    if (isRemoving) {
+      removeAction(hostname, patchKey);
+      if (autoReload) setTimeout(reloadActiveTab, 150);
+    } else {
+      addAction(hostname, patchKey);
+      api.runtime.sendMessage({
+        to: "background",
+        action: "apply_patch",
+        data: { patchKey },
+      });
+    }
+  };
 
   return (
     <div
@@ -135,17 +154,7 @@ export default memo(function PatchItem({ hostname, patchKey }: Props) {
             "tiny-btn group/icon",
             (enabledGlobally ? !excluded : enabled) ? "btn-red" : "btn-green",
           )}
-          onClick={(ev) => {
-            ev.stopPropagation();
-            if (enabledGlobally) {
-              if (!excluded) excludePatch(hostname, patchKey);
-              else includePatch(hostname, patchKey);
-            } else {
-              if (enabled) removePatch(hostname, patchKey);
-              else addPatch(hostname, patchKey);
-            }
-            if (autoReload) setTimeout(reloadActiveTab, 150);
-          }}
+          onClick={onClick}
         >
           {(enabledGlobally ? !excluded : enabled) ? (
             <RiDeleteBinFill className="icon-zoom" />

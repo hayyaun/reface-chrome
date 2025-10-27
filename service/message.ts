@@ -1,12 +1,26 @@
 import api from "@/shared/api";
+import { getActiveTab } from "@/shared/api/utils";
 import db from "@/shared/store/db";
 import { updateBadge } from "./badge";
+import { applyPatch } from "./patch";
 import { ask } from "./samantha";
 
 export function addMessageListener() {
+  /**
+   * @notice null means irrelevant
+   *  */
+
+  // Apply patch
+  api.runtime.onMessage.addListener<"apply_patch">(async (msg) => {
+    if (msg.to !== "background" || msg.action !== "apply_patch") return null;
+    const { patchKey } = msg.data;
+    const activeTab = await getActiveTab();
+    if (activeTab) applyPatch(patchKey, activeTab);
+  });
+
   // Badge updates
   api.runtime.onMessage.addListener<"update_badge">(async (msg) => {
-    if (msg.to !== "background" || msg.action !== "update_badge") return null; // null means irrelevant
+    if (msg.to !== "background" || msg.action !== "update_badge") return null;
     updateBadge(msg.data);
   });
 

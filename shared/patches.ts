@@ -53,7 +53,7 @@ const patches: { [key: string]: Patch } = {
     details: "Remove elements you hate from a website",
     keywords: [categories.feature, "eraser"],
     hostnames: ["*"],
-    global: false, // not necessary
+    global: false,
     color: "#ff8095",
   },
   whiteboard: {
@@ -61,7 +61,7 @@ const patches: { [key: string]: Patch } = {
     details: "Creates a scrollable canvas to draw on, on any page",
     keywords: [categories.feature, "draw", "whiteboard"],
     hostnames: ["*"],
-    global: false, // no necessary
+    global: true,
     color: "#80ff95",
     css: { "/*": "main" },
     config: {

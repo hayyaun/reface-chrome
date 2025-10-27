@@ -86,7 +86,7 @@ const api = {
     ..._api.scripting,
     executeScript(injection: chrome.scripting.ScriptInjection<any[], any>) {
       return typeof browser !== "undefined"
-        ? browser.scripting.executeScript(injection) // FIXME return keyword is not supported on firefox?
+        ? browser.scripting.executeScript(injection)
         : chrome.scripting.executeScript(injection);
     },
   },

@@ -35,10 +35,11 @@ export function findApplicablePatches(tab: Tab) {
   return [...new Set(applicable)]; // unique
 }
 
-export function applyPatch(patchKey: string, tabId: number, pathname: string) {
-  if (applied[tabId]?.includes(patchKey)) return;
-  if (!applied[tabId]) applied[tabId] = [];
-  applied[tabId].push(patchKey);
+export function applyPatch(patchKey: string, tab: Tab) {
+  if (!tab.id) return;
+  if (applied[tab.id]?.includes(patchKey)) return;
+  if (!applied[tab.id]) applied[tab.id] = [];
+  applied[tab.id].push(patchKey);
   const patch = patches[patchKey];
   // Config
   if (patches[patchKey].config) {
@@ -49,7 +50,7 @@ export function applyPatch(patchKey: string, tabId: number, pathname: string) {
       data = state.service.config[patchKey];
     }
     api.scripting.executeScript({
-      target: { tabId },
+      target: { tabId: tab.id },
       func: ({ patchKey, data }) => {
         window.__rc_config = window.__rc_config || {};
         window.__rc_config[patchKey] = data;
@@ -60,16 +61,17 @@ export function applyPatch(patchKey: string, tabId: number, pathname: string) {
   // JS
   if (!patch.noJS) {
     api.scripting.executeScript({
-      target: { tabId },
+      target: { tabId: tab.id },
       files: [`patches/${patchKey}.js`],
     });
   }
   // CSS
+  const pathname = new URL(tab.url!).pathname;
   if (patch.css) {
     for (const pathRule in patch.css) {
       if (!match(pathname, pathRule)) continue;
       api.scripting.insertCSS({
-        target: { tabId },
+        target: { tabId: tab.id },
         files: [`patches/${patchKey}-${patch.css[pathRule]}.css`],
       });
     }

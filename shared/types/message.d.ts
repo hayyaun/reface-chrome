@@ -8,6 +8,7 @@ type BaseMessage<TO extends Entity, ACT extends string, T, R> = {
 };
 
 export type Message =
+  | BaseMessage<"background", "apply_patch", { patchKey: string }, undefined>
   | BaseMessage<"background", "update_badge", number, undefined>
   | BaseMessage<"background", "samantha_ask", ChatCompletionMessageParam[], undefined>
   | BaseMessage<"popup", "samantha_thinking", SamanthaThinkingMessageData, undefined>
