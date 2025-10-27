@@ -23,8 +23,11 @@ const _thickness = (config["thickness"] as number) ?? 6;
 
 const canvasSize = [document.body.scrollWidth, document.body.scrollHeight];
 const fallbackMode: Mode = "work";
-
 const MAX_BUFFER_SIZE = 10;
+
+// URL
+const cleanURL = () => location.href.split("#")[0].replace(/\/$/, "");
+let url = cleanURL();
 
 // Signals
 const ctx = signal<CanvasRenderingContext2D | null>(null);
@@ -92,8 +95,23 @@ const addBuffer = (dataURL: string) => {
   buffer.value = newBuffer; // triggers subscriptions
 };
 
+const saveData = (persist = false) => {
+  const data = ctx.value?.canvas.toDataURL();
+  if (!data) return alert("Cannot save canvas");
+  addBuffer(data);
+  if (_persist || persist) {
+    api.runtime.sendMessage({
+      to: "background",
+      action: "whiteboard_set_item",
+      data: { url: url, data, scale },
+    });
+  }
+};
+
 const clearCanvas = (save = false) => {
-  ctx.value?.clearRect(0, 0, ctx.value?.canvas.width, ctx.value?.canvas.height);
+  const canvas = ctx.value?.canvas;
+  if (!canvas) return;
+  ctx.value!.clearRect(0, 0, canvas.width, canvas.height);
   if (save) saveData();
 };
 
@@ -113,6 +131,8 @@ const redo = () => {
 
 const reset = () => {
   buffer.value = [];
+  shift.value = 0;
+  mode.value = _mode;
   const canvas = ctx.value?.canvas;
   if (!canvas) return;
   clearCanvas();
@@ -120,17 +140,16 @@ const reset = () => {
   canvas.height = canvasSize[1] * scale;
   canvas.style.width = `${canvasSize[0]}px`; // initial width
   canvas.style.height = `${canvasSize[1]}px`; // initial height
-  canvas.style.pointerEvents = mode.value === "work" ? "none" : "all";
-  canvas.style.border = mode.value === "work" ? "none" : "1px solid red";
 };
 
 const drawData = async (dataURL: string, imgScale = scale) => {
-  await new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     const img = new Image();
     img.src = dataURL;
     const factor = scale / imgScale;
     img.onload = () => {
-      ctx.value?.drawImage(img, 0, 0, img.width * factor, img.height * factor);
+      if (!ctx.value) reject();
+      ctx.value!.drawImage(img, 0, 0, img.width * factor, img.height * factor);
       resolve(null);
     };
     img.onerror = reject;
@@ -138,13 +157,13 @@ const drawData = async (dataURL: string, imgScale = scale) => {
 };
 
 const initCanvasData = async () => {
+  reset();
   const res = await api.runtime.sendMessage({
     to: "background",
     action: "whiteboard_get_item",
-    data: window.location.href,
+    data: url,
   });
-  console.debug({ saved: res });
-  reset();
+  console.debug("Load", res);
   if (!res?.data) {
     saveData(); // initial state = empty
     return;
@@ -154,28 +173,15 @@ const initCanvasData = async () => {
   drawData(res.data, res.scale);
 };
 
-const saveData = (persist = false) => {
-  const data = ctx.value?.canvas.toDataURL();
-  if (!data) return alert("Cannot save canvas");
-  addBuffer(data);
-  if (_persist || persist) {
-    api.runtime.sendMessage({
-      to: "background",
-      action: "whiteboard_set_item",
-      data: { url: window.location.href, data, scale },
-    });
-  }
-};
-
 // Effects
 
 effect(
   () => {
-    let lastUrl = location.href;
     const observevr = new MutationObserver(() => {
-      if (location.href !== lastUrl) {
-        lastUrl = location.href;
-        console.debug("URL changed to:", lastUrl);
+      const newURL = cleanURL();
+      if (newURL !== url) {
+        url = newURL;
+        console.debug("URL changed to:", url);
         initCanvasData(); // load related data
       }
     });
@@ -297,11 +303,7 @@ function UI() {
     <>
       <canvas
         ref={_canvas}
-        width={canvasSize[0] * scale}
-        height={canvasSize[1] * scale}
         style={{
-          width: `${canvasSize[0]}px`, // initial width
-          height: `${canvasSize[1]}px`, // initial height
           pointerEvents: mode.value === "work" ? "none" : "all",
           border: mode.value === "work" ? "none" : "1px solid red",
         }}
