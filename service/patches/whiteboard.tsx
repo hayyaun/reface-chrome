@@ -10,7 +10,6 @@ type Mode = "work" | "draw" | "type" | "erase";
 type Pos = [x: number, y: number];
 
 // TODO add shapes button
-// TODO add hash to compare unchanged -> don't save
 
 const PATCH_KEY = "whiteboard";
 const config = window.__rc_config[PATCH_KEY];
@@ -81,6 +80,7 @@ const canRedo = computed(() => shift.value > 0);
 const index = computed(() => buffer.value.length - 1 - shift.value);
 
 const addBuffer = (dataURL: string) => {
+  if (dataURL === buffer.value.at(-1)) return; // drop exsiting
   const newBuffer = buffer.value.slice(); // clone
   while (shift.value > 0) {
     // make it present
