@@ -5,7 +5,7 @@ type Entity = "background" | "content" | "popup" | "options";
 
 type BaseMessage<TO extends Entity, ACT extends string, T, R> = {
   msg: { to: TO; action: ACT; data: T };
-  res: Promise<R | null>;
+  res: Promise<R | null>; // null means irrelevant - drop
 };
 
 export type Message =
